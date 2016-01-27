@@ -53,7 +53,6 @@ class conf extends CI_Controller {
      * 删除代码库
      */
     public function repos_del() {
-        $this->load->helper('url');
         $id = $this->uri->segment(3, 0);
         $this->load->model('Model_repos', 'repos', TRUE);
         $feedback = $this->repos->del($id);

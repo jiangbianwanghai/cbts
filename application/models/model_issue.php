@@ -61,7 +61,7 @@ class Model_issue extends CI_Model {
      * 删除
      */
     public function del($id) {
-        return $this->db->delete('issue', array('id' => $id));
+        return $this->db->update('issue', array('last_time' => time(), 'last_user' => $this->input->cookie('username'), 'status' => '-1'), array('id' => $id));
     }
 
     /**
@@ -93,7 +93,7 @@ class Model_issue extends CI_Model {
      */
     public function my() {
         $rows = false;
-        $sql = "SELECT * FROM `choc_issue` WHERE `add_user` = '".$this->input->cookie('username')."' ORDER BY `id` DESC";
+        $sql = "SELECT * FROM `choc_issue` WHERE `add_user` = '".$this->input->cookie('username')."' AND `status` = '1' ORDER BY `id` DESC";
         $query = $this->db->query($sql);
         foreach ($query->result_array() as $row)
         {

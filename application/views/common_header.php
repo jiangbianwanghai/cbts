@@ -34,12 +34,12 @@
       <h5 class="sidebartitle">快捷导航</h5>
       <ul class="nav nav-pills nav-stacked nav-bracket">
         <li<?php if ($this->uri->segment(1, '') == '' && $this->uri->segment(2, '') == '') echo ' class="active"';?>><a href="/"><i class="fa fa-home"></i> <span>我的控制台</span></a></li>
-        <li class="nav-parent<?php if ($this->uri->segment(1, '') == 'issue') echo ' active';?>"><a href="javascript:;"><i class="fa fa-edit"></i> <span>提测管理</span></a>
+        <li class="nav-parent<?php if ($this->uri->segment(1, '') == 'issue') echo ' active';?>"><a href="javascript:;"><i class="fa fa-edit"></i> <span>任务管理</span></a>
           <ul class="children"<?php if ($this->uri->segment(1, '') == 'issue') echo ' style="display: block"';?>>
-            <li<?php if ($this->uri->segment(2, '') == 'index') echo ' class="active"';?>><a href="/issue/index"><i class="fa fa-caret-right"></i> 申请提测</a></li>
-            <li<?php if ($this->uri->segment(2, '') == 'my') echo ' class="active"';?>><a href="/issue/my"><span class="pull-right badge badge-danger">3</span><i class="fa fa-caret-right"></i> 我的提测</a></li>
-            <li<?php if ($this->uri->segment(2, '') == 'board') echo ' class="active"';?>><a href="/issue/board"><i class="fa fa-caret-right"></i> 提测广场</a></li>
-            <li<?php if ($this->uri->segment(2, '') == 'analytics') echo ' class="active"';?>><a href="/issue/analytics"><i class="fa fa-caret-right"></i> 提测统计</a></li>
+            <li<?php if ($this->uri->segment(2, '') == 'add') echo ' class="active"';?>><a href="/issue/add"><i class="fa fa-caret-right"></i> 添加任务</a></li>
+            <li<?php if ($this->uri->segment(2, '') == 'my') echo ' class="active"';?>><a href="/issue/my"><span class="pull-right badge badge-danger">3</span><i class="fa fa-caret-right"></i> 我的任务</a></li>
+            <li<?php if ($this->uri->segment(2, '') == 'board' || $this->uri->segment(2, '') == 'view') echo ' class="active"';?>><a href="/issue/board"><i class="fa fa-caret-right"></i> 任务广场</a></li>
+            <li<?php if ($this->uri->segment(2, '') == 'analytics') echo ' class="active"';?>><a href="/issue/analytics"><i class="fa fa-caret-right"></i> 任务统计</a></li>
           </ul>
         </li>
         <li class="nav-parent<?php if ($this->uri->segment(1, '') == 'conf') echo ' active';?>"><a href="javascript:;"><i class="fa fa-suitcase"></i> <span>代码库管理</span></a>
