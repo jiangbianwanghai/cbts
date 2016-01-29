@@ -33,17 +33,6 @@ class Model_issue extends CI_Model {
     }
 
     /**
-     * 生产缓存
-     */
-    public function cacheRefresh()
-    {
-        $data = $this->rows();
-        $this->load->helper('file');
-        $file = "<?php\n//代码库\n\$repos = ".var_export($data, true).";";
-        return write_file('./cache/repos.conf.php', $file);
-    }
-
-    /**
      * 列表
      */
     public function rows() {
@@ -85,7 +74,7 @@ class Model_issue extends CI_Model {
         unset($data['id']);
         $data['last_time'] = time();
         $data['last_user'] = $this->input->cookie('username');
-        return $this->db->update('repos', $data, array('id' => $id));
+        return $this->db->update('issue', $data, array('id' => $id));
     }
 
     /**

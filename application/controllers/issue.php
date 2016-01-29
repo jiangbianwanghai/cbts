@@ -78,4 +78,48 @@ class issue extends CI_Controller {
         }
         echo json_encode($callBack);
     }
+
+    /**
+     * 编辑任务
+     */
+    public function edit() {
+        $data['PAGE_TITLE'] = '编辑任务';
+        $id = $this->uri->segment(3, 0);
+        $this->load->model('Model_issue', 'issue', TRUE);
+        $row = $this->issue->fetchOne($id);
+        if ($row) {
+            $data['row'] = $row;
+            $this->load->view('issue_edit', $data);
+        } else {
+            echo '你查找的数据不存在.';
+        }
+    }
+
+    /**
+     * 异步更新
+     */
+    public function edit_ajax() {
+        $this->load->model('Model_issue', 'issue', TRUE);
+        $post = array(
+            'id' => $this->input->post('id'),
+            'issue_name' => $this->input->post('issue_name'),
+            'url' => $this->input->post('issue_url'),
+            'issue_summary' => $this->input->post('issue_summary')
+        );
+        $feedback = $this->issue->update($post);
+        if ($feedback) {
+            $callBack = array(
+                'status' => true,
+                'message' => '更新成功',
+                'url' => '/issue/my'
+            );
+        } else {
+            $callBack = array(
+                'status' => false,
+                'message' => '更新失败',
+                'url' => '/issue/edit/'.$this->input->post('id')
+            );
+        }
+        echo json_encode($callBack);
+    }
 }

@@ -1,12 +1,12 @@
 <?php include('common_header.php');?>
     <div class="pageheader">
-      <h2><i class="fa fa-pencil"></i> 我的任务 <span>添加任务</span></h2>
+      <h2><i class="fa fa-pencil"></i> 基础信息配置 <span>配置代码库信息</span></h2>
       <div class="breadcrumb-wrapper">
         <span class="label">你的位置:</span>
         <ol class="breadcrumb">
           <li><a href="/">我的控制台</a></li>
-          <li><a href="/issue/my">我的任务</a></li>
-          <li class="active">添加任务</li>
+          <li><a href="/">基础信息配置</a></li>
+          <li class="active">配置代码库信息</li>
         </ol>
       </div>
     </div>
@@ -30,23 +30,24 @@
                 <div class="form-group">
                   <label class="col-sm-3 control-label">名称 <span class="asterisk">*</span></label>
                   <div class="col-sm-9">
-                    <input type="text" id="issue_name" name="issue_name" class="form-control" placeholder="请输入任务名称" required />
+                    <input type="text" id="issue_name" name="issue_name" value="<?php echo $row['issue_name'];?>" class="form-control" placeholder="请输入任务名称" required />
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label class="col-sm-3 control-label">任务地址 <span class="asterisk">*</span></label>
                   <div class="col-sm-9">
-                    <input type="text" id="issue_url" name="issue_url" class="form-control" placeholder="请输入任务地址" required />
+                    <input type="text" id="issue_url" name="issue_url" value="<?php echo $row['url'];?>" class="form-control" placeholder="请输入任务地址" required />
                   </div>
                 </div>
                 <div class="form-group">
                   <label class="col-sm-3 control-label">说明 <span class="asterisk">*</span></label>
                   <div class="col-sm-9">
-                    <textarea id="issue_summary" name="issue_summary" rows="5" class="form-control" placeholder="请简要说明提测的注意事项" required></textarea>
+                    <textarea id="issue_summary" name="issue_summary" rows="5" class="form-control" placeholder="请简要说明提测的注意事项" required><?php echo $row['issue_summary'];?></textarea>
                   </div>
                 </div>
               </div><!-- panel-body -->
+              <input type="hidden" value="<?php echo $row['id'];?>" id="id" name="id">
               <div class="panel-footer">
                 <div class="row">
                   <div class="col-sm-9 col-sm-offset-3">
@@ -124,7 +125,7 @@ jQuery(document).ready(function(){
   $("#basicForm").submit(function(){
     $(this).ajaxSubmit({
       type:"post",
-      url: "/issue/add_ajax",
+      url: "/issue/edit_ajax",
       dataType: "JSON",
       beforeSubmit:validForm,
       success:callBack

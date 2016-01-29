@@ -1,12 +1,12 @@
 <?php include('common_header.php');?>
     <div class="pageheader">
-      <h2><i class="fa fa-pencil"></i> 提测管理 <span>任务列表</span></h2>
+      <h2><i class="fa fa-pencil"></i> 我的任务 <span>任务列表</span></h2>
       <div class="breadcrumb-wrapper">
         <span class="label">你的位置:</span>
         <ol class="breadcrumb">
           <li><a href="/">我的控制台</a></li>
-          <li><a href="/tice/task_list">提测管理</a></li>
-          <li class="active">我的任务列表</li>
+          <li><a href="/issue/my">我的任务</a></li>
+          <li class="active">任务列表</li>
         </ol>
       </div>
     </div>
@@ -22,7 +22,7 @@
                         <a href="" class="panel-close">&times;</a>
                         <a href="" class="minimize">&minus;</a>
                     </div><!-- panel-btns -->
-                    <h5 class="panel-title">我的任务列表</h5>
+                    <h5 class="panel-title">任务列表</h5>
                 </div><!-- panel-heading -->
                 <div class="panel-body panel-table">
                     <div class="table-responsive">
@@ -33,6 +33,8 @@
                                 <th>提交时间</th>
                                 <th>受理进度</th>
                                 <th>阶段/状态</th>
+                                <th>最后修改时间</th>
+                                <th>修改人</th>
                                 <th>&nbsp;</th>
                             </tr>
                         </thead>
@@ -52,8 +54,10 @@
                                     </div>
                                 </td>
                                 <td>开发环境/未提测</td>
+                                <td><?php echo $value['last_time'] ? date("Y-m-d H:i:s", $value['last_time']) : '-';?></td>
+                                <td><?php echo $value['last_user'] ? $value['last_user'] : '-';?></td>
                                 <td class="table-action-hide">
-                                  <a href="/conf/issue_edit/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 编辑</a>
+                                  <a href="/issue/edit/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 编辑</a>
                                   <a href="javascript:;" class="delete-row" reposid="<?php echo $value['id'];?>"><i class="fa fa-trash-o"></i> 删除</a>
                                 </td>
                             </tr>
