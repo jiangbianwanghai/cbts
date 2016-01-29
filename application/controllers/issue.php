@@ -52,9 +52,6 @@ class issue extends CI_Controller {
      * 我的任务列表
      */
     public function my() {
-        $this->config->load('expert', TRUE);
-        $expertid = $this->config->item('expertid', 'expert');
-        print_r($expertid);
         $data['PAGE_TITLE'] = '我的任务列表';
         $this->load->model('Model_issue', 'issue', TRUE);
         $data['rows'] = $this->issue->my();

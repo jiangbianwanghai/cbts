@@ -17,7 +17,8 @@ class admin extends CI_Controller {
      * 登录
      */
     public function login() {
-
+        $this->config->load('extension', TRUE);
+        $rtx = $this->config->item('rtx', 'extension');
         $username = $this->input->post('username');
         $password = $this->input->post('password');
         $this->load->model('Model_users', 'users', TRUE);
@@ -32,7 +33,7 @@ class admin extends CI_Controller {
                 'url' => '/'
             );
         } else {
-            $url = "http://oa.gongchang.cn/userinfo.php?username=".$username."&password=".$password."&p=7232275";
+            $url = $rtx['url']."/userinfo.php?username=".$username."&password=".$password."&p=7232275";
             $result = file_get_contents($url);
             if ((int)$result == 200) {
                 $this->input->set_cookie('username', $username, 86400);
