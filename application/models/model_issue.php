@@ -16,7 +16,7 @@ class Model_issue extends CI_Model {
             'message' => ''
         );
         $data['add_time'] = time();
-        $data['add_user'] = $this->input->cookie('username');
+        $data['add_user'] = $this->input->cookie('uid');
         $sql = "SELECT `id` FROM `choc_issue` WHERE `issue_name` = '".$data['issue_name']."'";
         $query = $this->db->query($sql);
         if ($query->num_rows()) {
@@ -73,7 +73,7 @@ class Model_issue extends CI_Model {
         $id = $data['id'];
         unset($data['id']);
         $data['last_time'] = time();
-        $data['last_user'] = $this->input->cookie('username');
+        $data['last_user'] = $this->input->cookie('uid');
         return $this->db->update('issue', $data, array('id' => $id));
     }
 
@@ -82,7 +82,7 @@ class Model_issue extends CI_Model {
      */
     public function my() {
         $rows = false;
-        $sql = "SELECT * FROM `choc_issue` WHERE `add_user` = '".$this->input->cookie('username')."' AND `status` = '1' ORDER BY `id` DESC";
+        $sql = "SELECT * FROM `choc_issue` WHERE `add_user` = '".$this->input->cookie('uid')."' AND `status` = '1' ORDER BY `id` DESC";
         $query = $this->db->query($sql);
         foreach ($query->result_array() as $row)
         {

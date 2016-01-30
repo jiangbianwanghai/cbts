@@ -34,71 +34,73 @@
               
               <div class="row">
                   <div class="col-sm-12">
-                      <h5 class="subtitle subtitle-lined">Details</h5>
-                      <div class="row">
-                          <div class="col-sm-6">
-                              <div class="row">
-                                  <div class="col-xs-6">类型</div>
-                                  <div class="col-xs-6">Bug</div>
-                              </div>
-                              <div class="row">
-                                  <div class="col-xs-6">阶段</div>
-                                  <div class="col-xs-6">Major</div>
-                              </div>
-                              <div class="row">
-                                  <div class="col-xs-6">标签</div>
-                                  <div class="col-xs-6"><a href="">企业库</a> <a href="">联盟广告</a></div>
-                              </div>
-                          </div><!-- col-sm-6 -->
-                          <div class="col-sm-6">
-                              <div class="row">
-                                  <div class="col-xs-6">状态</div>
-                                  <div class="col-xs-6">进行中...</div>
-                              </div>
-                              <div class="row">
-                                  <div class="col-xs-6">版本</div>
-                                  <div class="col-xs-6">4.1, 4.2</div>
-                              </div>
-                              <div class="row">
-                                  <div class="col-xs-6">提交人</div>
-                                  <div class="col-xs-6"><a href="">李齐明</a></div>
-                              </div>
-                          </div><!-- col-sm-6 -->
-                      </div><!-- row -->
-                      
-                      <br /><br />
                       
                       <h5 class="subtitle subtitle-lined">描述</h5>
-                      <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.</p>
-                      <p>Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.</p>
+                      <p><?php echo $row['issue_summary'];?></p>
                       
-                      <br /><br />
-                      
-                      <ul class="nav nav-tabs">
-                          <li class="active"><a data-toggle="tab" href="#comments"><strong>Comments</strong></a></li>
-                      </ul>
-                      <br />
-                      <div class="tab-content noshadow">
-                          <div id="comments" class="tab-pane active">
-                              <ul class="media-list comment-list">
-                                  
-                                  <li class="media">
-                                      <a href="#" class="pull-left">
-                                          <img alt="" src="images/photos/user1.png" class="media-object">
-                                      </a>
-                                      <div class="media-body">
-                                          <a class="btn btn-default btn-xs pull-right reply" href=""><i class="fa fa-reply"></i></a>
-                                          <h4>Nusja Nawancali</h4>
-                                          <small class="text-muted">January 10, 2014 at 7:30am</small>
-                                          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                                      </div>
-                                  </li><!-- media -->
-                      
-                              </ul>
-                              <br />
-                              <button class="btn btn-primary"><i class="fa fa-comments mr5"></i>提交代码</button>
-                          </div><!-- tab-pane -->
-                      </div><!-- tab-content -->
+                      <div class="panel panel-dark panel-alt">
+                        <div class="panel-heading">
+                            <div class="panel-btns">
+                                <a href="" class="panel-close">&times;</a>
+                                <a href="" class="minimize">&minus;</a>
+                            </div><!-- panel-btns -->
+                            <h5 class="panel-title">提测记录</h5>
+                        </div><!-- panel-heading -->
+                        <div class="panel-body panel-table">
+                            <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr class="table-head-alt">
+                                      <th>#</th>
+                                      <th>相关代码库</th>
+                                      <th>提测版本标识</th>
+                                      <th>提交时间</th>
+                                      <th>受理进度</th>
+                                      <th>阶段/状态</th>
+                                      <th>添加时间</th>
+                                      <th>添加人</th>
+                                      <th>最后修改时间</th>
+                                      <th>修改人</th>
+                                      <th>&nbsp;</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                      if ($test) {
+                                        foreach ($test as $value) {
+                                    ?>
+                                    <tr id="tr-<?php echo $value['id'];?>">
+                                      <td><?php echo $value['id'];?></td>
+                                      <td><?php echo $repos[$value['repos_id']]['repos_name'];?></td>
+                                      <td><?php echo $value['test_flag'];?></td>
+                                      <td><?php echo date("Y-m-d H:i:s", $value['add_time']);?></td>
+                                      <td>
+                                          <div class="progress">
+                                              <div style="width: 2%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="2" role="progressbar" class="progress-bar progress-bar-danger">
+                                                <span class="sr-only">2% Complete (success)</span>
+                                              </div>
+                                          </div>
+                                      </td>
+                                      <td>开发环境/未提测</td>
+                                      <td><?php echo $value['add_time'] ? date("Y-m-d H:i:s", $value['last_time']) : '-';?></td>
+                                      <td><?php echo $value['add_user'] ? $users[$value['add_user']]['realname'] : '-';?></td>
+                                      <td><?php echo $value['last_time'] ? date("Y-m-d H:i:s", $value['last_time']) : '-';?></td>
+                                      <td><?php echo $value['last_user'] ? $users[$value['last_user']]['realname'] : '-';?></td>
+                                      <td class="table-action-hide">
+                                        <a href="/test/add/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 提测</a>
+                                        <a href="/issue/edit/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 编辑</a>
+                                        <a href="javascript:;" class="delete-row" reposid="<?php echo $value['id'];?>"><i class="fa fa-trash-o"></i> 删除</a>
+                                      </td>
+                                    </tr>
+                                    <?php
+                                        }
+                                      }
+                                    ?>
+                                </tbody>
+                            </table>
+                            </div><!-- table-responsive -->
+                        </div><!-- panel-body -->
+                    </div><!-- panel -->
                       
                   </div>
               </div><!-- row -->

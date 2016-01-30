@@ -29,13 +29,14 @@
                     <table class="table">
                         <thead>
                             <tr class="table-head-alt">
-                                <th>名称</th>
-                                <th>提交时间</th>
-                                <th>受理进度</th>
-                                <th>阶段/状态</th>
-                                <th>最后修改时间</th>
-                                <th>修改人</th>
-                                <th>&nbsp;</th>
+                              <th>#</th>
+                              <th>名称</th>
+                              <th>提交时间</th>
+                              <th>受理进度</th>
+                              <th>阶段/状态</th>
+                              <th>最后修改时间</th>
+                              <th>修改人</th>
+                              <th>&nbsp;</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -44,22 +45,24 @@
                                 foreach ($rows as $value) {
                             ?>
                             <tr id="tr-<?php echo $value['id'];?>">
-                                <td><?php if ($value['issue_name']) { echo '<a href="/issue/view/'.$value['id'].'" target="_blank">'.$value['issue_name'].'</a>'; } else { echo '<a href="'.$value['task_url'].'" target="_blank">标题为空</a>'; }?></td>
-                                <td><?php echo date("Y-m-d H:i:s", $value['add_time']);?></td>
-                                <td>
-                                    <div class="progress">
-                                        <div style="width: 2%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="2" role="progressbar" class="progress-bar progress-bar-danger">
-                                          <span class="sr-only">2% Complete (success)</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>开发环境/未提测</td>
-                                <td><?php echo $value['last_time'] ? date("Y-m-d H:i:s", $value['last_time']) : '-';?></td>
-                                <td><?php echo $value['last_user'] ? $value['last_user'] : '-';?></td>
-                                <td class="table-action-hide">
-                                  <a href="/issue/edit/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 编辑</a>
-                                  <a href="javascript:;" class="delete-row" reposid="<?php echo $value['id'];?>"><i class="fa fa-trash-o"></i> 删除</a>
-                                </td>
+                              <td><?php echo $value['id'];?></td>
+                              <td><?php if ($value['issue_name']) { echo '<a href="/issue/view/'.$value['id'].'" target="_blank">'.$value['issue_name'].'</a>'; } else { echo '<a href="'.$value['task_url'].'" target="_blank">标题为空</a>'; }?></td>
+                              <td><?php echo date("Y-m-d H:i:s", $value['add_time']);?></td>
+                              <td>
+                                  <div class="progress">
+                                      <div style="width: 2%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="2" role="progressbar" class="progress-bar progress-bar-danger">
+                                        <span class="sr-only">2% Complete (success)</span>
+                                      </div>
+                                  </div>
+                              </td>
+                              <td>开发环境/未提测</td>
+                              <td><?php echo $value['last_time'] ? date("Y-m-d H:i:s", $value['last_time']) : '-';?></td>
+                              <td><?php echo $value['add_user'] ? $users[$value['add_user']]['realname'] : '-';?></td>
+                              <td class="table-action-hide">
+                                <a href="/test/add/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 提交代码</a>
+                                <a href="/issue/edit/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 编辑</a>
+                                <a href="javascript:;" class="delete-row" reposid="<?php echo $value['id'];?>"><i class="fa fa-trash-o"></i> 删除</a>
+                              </td>
                             </tr>
                             <?php
                                 }

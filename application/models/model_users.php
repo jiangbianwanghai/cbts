@@ -57,7 +57,33 @@ class Model_users extends CI_Model {
     {
         return $this->db->update('users', array('last_login_time' => time()), array('uid' => $id));
     }
-}
 
-/* End of file model_users.php */
-/* Location: ./application/models/model_users.php */
+    /**
+     * 刷新缓存
+     */
+    public function cacheRefresh()
+    {
+        $data = $this->rows();
+        foreach ($data as $val) {
+            unset($val['password']);
+            $rows[$val['uid']] = $val;
+        }
+        $this->load->helper('file');
+        $file = "<?php\n//用户信息\n\$users = ".var_export($rows, true).";";
+        return write_file('./cache/users.conf.php', $file);
+    }
+
+    /**
+     * 列表
+     */
+    public function rows() {
+        $rows = false;
+        $sql = "SELECT * FROM `choc_users` ORDER BY `uid` DESC";
+        $query = $this->db->query($sql);
+        foreach ($query->result_array() as $row)
+        {
+            $rows[] = $row;
+        }
+        return $rows;
+    }
+}

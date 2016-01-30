@@ -45,6 +45,16 @@ class issue extends CI_Controller {
         $this->load->model('Model_issue', 'issue', TRUE);
         $data['row'] = $this->issue->fetchOne($id);
         $data['PAGE_TITLE'] = 'ISSUE-'.$data['row']['id'].' - '.$data['row']['issue_name'].' - 任务详情';
+        $this->load->model('Model_test', 'test', TRUE);
+        $data['test'] = $this->test->listByIssue($id);
+        if (file_exists('./cache/repos.conf.php')) {
+            require './cache/repos.conf.php';
+            $data['repos'] = $repos;
+        }
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+            $data['users'] = $users;
+        }
         $this->load->view('issue_view', $data);
     }
 
@@ -55,6 +65,10 @@ class issue extends CI_Controller {
         $data['PAGE_TITLE'] = '我的任务列表';
         $this->load->model('Model_issue', 'issue', TRUE);
         $data['rows'] = $this->issue->my();
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+            $data['users'] = $users;
+        }
         $this->load->view('issue_my', $data);
     }
 

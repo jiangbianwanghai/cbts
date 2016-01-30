@@ -24,8 +24,9 @@ class admin extends CI_Controller {
         $this->load->model('Model_users', 'users', TRUE);
         $row = $this->users->checkUser($username, $password);
         if ($row) {
-            $this->input->set_cookie('username', $username, 86400);
-            $this->input->set_cookie('realname', $row['realname'], 86400);
+            $this->input->set_cookie('uid', $row['uid'], 86400*15);
+            $this->input->set_cookie('username', $username, 86400*15);
+            $this->input->set_cookie('realname', $row['realname'], 86400*15);
             $feedback = $this->users->updateLoginTime($row['uid']);
             $array = array(
                 'status' => true,
@@ -75,26 +76,10 @@ class admin extends CI_Controller {
         redirect('/', 'location');
     }
     
-    public function captcha()
+    public function refresh_users()
     {
-        $this->load->helper(array('custom_captcha'));
-        $this->load->library('session');
-        $vals = array(
-            'word' => rand(1000, 10000),
-            'img_width' => 70,
-            'img_height' => 30,
-            'font_path' => './font/Duality.ttf'
-        );
-        $cap = create_custom_captcha($vals);
-        $this->session->set_flashdata('captcha_word', $cap);
-    }
-    
-    public function getoption()
-    {
-        require 'cache/1/category.php';
-        echo json_encode($category);
+        $this->load->model('Model_users', 'users', TRUE);
+        $this->users->cacheRefresh();
+        echo '1';
     }
 }
-
-/* End of file index.php */
-/* Location: ./application/controllers/index.php */
