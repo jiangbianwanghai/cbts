@@ -44,12 +44,12 @@
                 <td><input type="text" value="<?php echo $value['repos_url'];?>" id="readonlyinput" readonly="readonly" title="<?php echo $value['repos_url'];?>" data-toggle="tooltip" data-trigger="hover" class="form-control tooltips" /></td>
                 <td><input type="text" placeholder="<?php echo $value['repos_summary'];?>" class="form-control popovers" data-toggle="popover" data-placement="top" data-original-title="说明" data-content="<?php echo $value['repos_summary'];?>" data-trigger="click" /></td>
                 <td><?php echo date("Y-m-d H:i:s", $value['add_time']);?></td>
-                <td><?php echo $value['add_user'];?></td>
+                <td><?php echo $users[$value['add_user']]['realname'];?></td>
                 <td><?php echo $value['last_time'] ? date("Y-m-d H:i:s", $value['last_time']) : '-';?></td>
-                <td><?php echo $value['last_user'] ? $value['last_user'] : '-';?></td>
-                <td class="table-action-hide">
-                  <a href="/conf/repos_edit/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i></a>
-                  <a href="javascript:;" class="delete-row" reposid="<?php echo $value['id'];?>"><i class="fa fa-trash-o"></i></a>
+                <td><?php echo $value['last_user'] ? $users[$value['last_user']]['realname'] : '-';?></td>
+                <td class="table-action">
+                  <a href="/conf/repos_edit/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 编辑</a>
+                  <a href="javascript:;" class="delete-row" reposid="<?php echo $value['id'];?>"><i class="fa fa-trash-o"></i> 删除</a>
                 </td>
               </tr>
               <?php
@@ -59,6 +59,7 @@
             </tbody>
           </table>
           </div><!-- table-responsive -->
+          <?php echo $pages;?>
         </div><!-- col-md-6 -->
         
       </div><!--row -->
@@ -115,14 +116,6 @@
         });
       }
     });
-
-    // Show aciton upon row hover
-    jQuery('.table-hidaction tbody tr').hover(function(){
-      jQuery(this).find('.table-action-hide a').animate({opacity: 1});
-    },function(){
-      jQuery(this).find('.table-action-hide a').animate({opacity: 0});
-    });
-
   });
 </script>
 

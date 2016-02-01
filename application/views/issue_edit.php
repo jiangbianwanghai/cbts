@@ -33,17 +33,16 @@
                     <input type="text" id="issue_name" name="issue_name" value="<?php echo $row['issue_name'];?>" class="form-control" placeholder="请输入任务名称" required />
                   </div>
                 </div>
-                
-                <div class="form-group">
-                  <label class="col-sm-3 control-label">任务地址 <span class="asterisk">*</span></label>
-                  <div class="col-sm-9">
-                    <input type="text" id="issue_url" name="issue_url" value="<?php echo $row['url'];?>" class="form-control" placeholder="请输入任务地址" required />
-                  </div>
-                </div>
                 <div class="form-group">
                   <label class="col-sm-3 control-label">说明 <span class="asterisk">*</span></label>
                   <div class="col-sm-9">
                     <textarea id="issue_summary" name="issue_summary" rows="5" class="form-control" placeholder="请简要说明提测的注意事项" required><?php echo $row['issue_summary'];?></textarea>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">任务地址</label>
+                  <div class="col-sm-9">
+                    <input type="text" id="issue_url" name="issue_url" value="<?php echo $row['url'];?>" class="form-control" placeholder="请输入任务地址" />
                   </div>
                 </div>
               </div><!-- panel-body -->

@@ -58,7 +58,7 @@
                               <td>开发环境/未提测</td>
                               <td><?php echo $value['last_time'] ? date("Y-m-d H:i:s", $value['last_time']) : '-';?></td>
                               <td><?php echo $value['add_user'] ? $users[$value['add_user']]['realname'] : '-';?></td>
-                              <td class="table-action-hide">
+                              <td class="table-action">
                                 <a href="/test/add/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 提交代码</a>
                                 <a href="/issue/edit/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 编辑</a>
                                 <a href="javascript:;" class="delete-row" reposid="<?php echo $value['id'];?>"><i class="fa fa-trash-o"></i> 删除</a>
@@ -72,6 +72,7 @@
                     </table>
                     </div><!-- table-responsive -->
                 </div><!-- panel-body -->
+                <?php echo $pages;?>
             </div><!-- panel -->
             
         </div><!-- col-md-6 -->
@@ -130,14 +131,6 @@
         });
       }
     });
-
-    // Show aciton upon row hover
-    jQuery('.table-responsive tbody tr').hover(function(){
-      jQuery(this).find('.table-action-hide a').animate({opacity: 1});
-    },function(){
-      jQuery(this).find('.table-action-hide a').animate({opacity: 0});
-    });
-
   });
 </script>
 

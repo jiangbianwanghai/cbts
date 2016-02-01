@@ -80,13 +80,20 @@ class Model_issue extends CI_Model {
     /**
      * 我的任务列表
      */
-    public function my() {
+    public function my($page = 1, $per_page = 20) {
         $rows = false;
-        $sql = "SELECT * FROM `choc_issue` WHERE `add_user` = '".$this->input->cookie('uid')."' AND `status` = '1' ORDER BY `id` DESC";
+
+        //获取总数
+        $sql = "SELECT * FROM `choc_issue` WHERE `add_user` = '".$this->input->cookie('uid')."' AND `status` = '1'";
+        $query = $this->db->query($sql);
+        $rows['total_rows'] = $query->num_rows;
+
+        //获取翻页数据
+        $sql = "SELECT * FROM `choc_issue` WHERE `add_user` = '".$this->input->cookie('uid')."' AND `status` = '1' ORDER BY `id` DESC LIMIT ".($page - 1).", ".$per_page."";
         $query = $this->db->query($sql);
         foreach ($query->result_array() as $row)
         {
-            $rows[] = $row;
+            $rows['data'][] = $row;
         }
         return $rows;
     }

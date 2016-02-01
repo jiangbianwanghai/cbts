@@ -44,8 +44,24 @@ class conf extends CI_Controller {
      */
     public function repos_list() {
         $data['PAGE_TITLE'] = '添加代码库';
+        $this->config->load('extension', TRUE);
+        $config = $this->config->item('pages', 'extension');
+        $page = trim($this->uri->segment(3, 1));
         $this->load->model('Model_repos', 'repos', TRUE);
-        $data['rows'] = $this->repos->rows();
+        $rows = $this->repos->rows($page, $config['per_page']);
+        $data['rows'] = $rows['data'];
+        $this->load->library('pagination');
+        $config['total_rows'] = $rows['total_rows'];
+        $config['cur_page'] = $page;
+        $config['base_url'] = '/conf/repos_list';
+        $this->pagination->initialize($config);
+        $data['pages'] = $this->pagination->create_links();
+
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+            $data['users'] = $users;
+        }
+        
         $this->load->view('conf_repos_list', $data);
     }
 

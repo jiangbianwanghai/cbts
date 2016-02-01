@@ -59,8 +59,7 @@ class admin extends CI_Controller {
     /**
      * 登录面板
      */
-    public function signin()
-    {
+    public function signin() {
         $this->load->helper(array('form', 'url'));
         if ($this->input->cookie('username')) {
             redirect('/', 'location');
