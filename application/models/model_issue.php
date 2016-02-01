@@ -50,7 +50,21 @@ class Model_issue extends CI_Model {
      * 删除
      */
     public function del($id) {
-        return $this->db->update('issue', array('last_time' => time(), 'last_user' => $this->input->cookie('username'), 'status' => '-1'), array('id' => $id));
+        return $this->db->update('issue', array('last_time' => time(), 'last_user' => $this->input->cookie('uid'), 'status' => '-1'), array('id' => $id));
+    }
+
+    /**
+     * 关闭
+     */
+    public function close($id) {
+        return $this->db->update('issue', array('last_time' => time(), 'last_user' => $this->input->cookie('uid'), 'status' => '0'), array('id' => $id));
+    }
+
+    /**
+     * 已解决
+     */
+    public function resolve($id) {
+        return $this->db->update('issue', array('last_time' => time(), 'last_user' => $this->input->cookie('uid'), 'status' => '0', 'resolve' => '1'), array('id' => $id));
     }
 
     /**
@@ -80,8 +94,11 @@ class Model_issue extends CI_Model {
     /**
      * 我的任务列表
      */
-    public function my($page = 1, $per_page = 20) {
-        $rows = false;
+    public function my($offset = 0, $per_page = 20) {
+        $rows = array(
+            'total_rows' => 0,
+            'data' => false
+        );
 
         //获取总数
         $sql = "SELECT * FROM `choc_issue` WHERE `add_user` = '".$this->input->cookie('uid')."' AND `status` = '1'";
@@ -89,7 +106,31 @@ class Model_issue extends CI_Model {
         $rows['total_rows'] = $query->num_rows;
 
         //获取翻页数据
-        $sql = "SELECT * FROM `choc_issue` WHERE `add_user` = '".$this->input->cookie('uid')."' AND `status` = '1' ORDER BY `id` DESC LIMIT ".($page - 1).", ".$per_page."";
+        $sql = "SELECT * FROM `choc_issue` WHERE `add_user` = '".$this->input->cookie('uid')."' AND `status` = '1' ORDER BY `id` DESC LIMIT ".$offset .", ".$per_page."";
+        $query = $this->db->query($sql);
+        foreach ($query->result_array() as $row)
+        {
+            $rows['data'][] = $row;
+        }
+        return $rows;
+    }
+
+    /**
+     * 任务广场列表
+     */
+    public function plaza($offset = 0, $per_page = 20) {
+        $rows = array(
+            'total_rows' => 0,
+            'data' => false
+        );
+
+        //获取总数
+        $sql = "SELECT * FROM `choc_issue`";
+        $query = $this->db->query($sql);
+        $rows['total_rows'] = $query->num_rows;
+
+        //获取翻页数据
+        $sql = "SELECT * FROM `choc_issue` ORDER BY `id` DESC LIMIT ".$offset .", ".$per_page."";
         $query = $this->db->query($sql);
         foreach ($query->result_array() as $row)
         {

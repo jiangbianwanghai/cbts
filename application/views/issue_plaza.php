@@ -1,11 +1,11 @@
 <?php include('common_header.php');?>
     <div class="pageheader">
-      <h2><i class="fa fa-pencil"></i> 我的任务 <span>任务列表</span></h2>
+      <h2><i class="fa fa-pencil"></i> 任务广场 <span>任务列表</span></h2>
       <div class="breadcrumb-wrapper">
         <span class="label">你的位置:</span>
         <ol class="breadcrumb">
           <li><a href="/">我的控制台</a></li>
-          <li><a href="/issue/my">我的任务</a></li>
+          <li><a href="/issue/plaza">任务广场</a></li>
           <li class="active">任务列表</li>
         </ol>
       </div>
@@ -32,10 +32,10 @@
                               <th>#</th>
                               <th>名称</th>
                               <th>受理进度</th>
+                              <th>提交人</th>
                               <th>提交时间</th>
                               <th>修改人</th>
                               <th>最后修改时间</th>
-                              <th>&nbsp;</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -53,14 +53,10 @@
                                       </div>
                                   </div>
                               </td>
-                              <td><?php echo date("Y-m-d H:i:s", $value['add_time']);?></td>
                               <td><?php echo $value['add_user'] ? '@'.$users[$value['add_user']]['realname'] : '-';?></td>
+                              <td><?php echo $value['add_time'] ? date("Y-m-d H:i:s", $value['add_time']) : '-';?></td>
+                              <td><?php echo $value['last_user'] ? '@'.$users[$value['last_user']]['realname'] : '-';?></td>
                               <td><?php echo $value['last_time'] ? date("Y-m-d H:i:s", $value['last_time']) : '-';?></td>
-                              <td class="table-action">
-                                <a href="/test/add/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 提交代码</a>
-                                <a href="/issue/edit/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 编辑</a>
-                                <a href="javascript:;" class="delete-row" reposid="<?php echo $value['id'];?>"><i class="fa fa-trash-o"></i> 删除</a>
-                              </td>
                             </tr>
                             <?php
                                 }

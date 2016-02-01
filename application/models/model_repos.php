@@ -49,15 +49,18 @@ class Model_repos extends CI_Model {
     /**
      * 列表
      */
-    public function rows($page = 1, $per_page = 20) {
-        $rows = false;
+    public function rows($offset = 0, $per_page = 20) {
+        $rows = array(
+            'total_rows' => 0,
+            'data' => false
+        );
 
         //数量
         $sql = "SELECT * FROM `choc_repos` WHERE `status` = '1'";
         $query = $this->db->query($sql);
         $rows['total_rows'] = $query->num_rows;
         //翻页
-        $sql = "SELECT * FROM `choc_repos` WHERE `status` = '1' ORDER BY `id` DESC LIMIT ".($page - 1).", ".$per_page."";
+        $sql = "SELECT * FROM `choc_repos` WHERE `status` = '1' ORDER BY `id` DESC LIMIT ".$offset.", ".$per_page."";
         $query = $this->db->query($sql);
         foreach ($query->result_array() as $row)
         {

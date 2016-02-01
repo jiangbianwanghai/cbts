@@ -11,6 +11,7 @@
 
   <link href="/static/css/style.default.css" rel="stylesheet">
   <link href="/static/css/jquery.gritter.css" rel="stylesheet">
+  <link href="/static/css/morris.css" rel="stylesheet">
 
   <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!--[if lt IE 9]>
@@ -37,16 +38,16 @@
         <li class="nav-parent<?php if ($this->uri->segment(1, '') == 'issue') echo ' active';?>"><a href="javascript:;"><i class="fa fa-tasks"></i> <span>任务管理</span></a>
           <ul class="children"<?php if ($this->uri->segment(1, '') == 'issue') echo ' style="display: block"';?>>
             <li<?php if ($this->uri->segment(2, '') == 'add') echo ' class="active"';?>><a href="/issue/add"><i class="fa fa-caret-right"></i> 添加任务</a></li>
-            <li<?php if ($this->uri->segment(2, '') == 'my') echo ' class="active"';?>><a href="/issue/my"><i class="fa fa-caret-right"></i> 我的任务</a></li>
-            <li<?php if ($this->uri->segment(2, '') == 'board' || $this->uri->segment(2, '') == 'view') echo ' class="active"';?>><a href="/issue/board"><i class="fa fa-caret-right"></i> 任务广场</a></li>
-            <li<?php if ($this->uri->segment(2, '') == 'analytics') echo ' class="active"';?>><a href="/issue/analytics"><i class="fa fa-caret-right"></i> 任务统计</a></li>
+            <li<?php if ($this->uri->segment(2, '') == 'my' || $this->uri->segment(2, '') == 'edit') echo ' class="active"';?>><a href="/issue/my"><i class="fa fa-caret-right"></i> 我的任务</a></li>
+            <li<?php if ($this->uri->segment(2, '') == 'plaza' || $this->uri->segment(2, '') == 'view') echo ' class="active"';?>><a href="/issue/plaza"><i class="fa fa-caret-right"></i> 任务广场</a></li>
+            <li<?php if ($this->uri->segment(1, '') == 'issue' && $this->uri->segment(2, '') == 'analytics') echo ' class="active"';?>><a href="/issue/analytics"><i class="fa fa-caret-right"></i> 任务统计</a></li>
           </ul>
         </li>
         <li class="nav-parent<?php if ($this->uri->segment(1, '') == 'test') echo ' active';?>"><a href="javascript:;"><i class="fa fa-medkit"></i> <span>提测管理</span></a>
           <ul class="children"<?php if ($this->uri->segment(1, '') == 'test') echo ' style="display: block"';?>>
             <li<?php if (($this->uri->segment(2, '') == 'my' || $this->uri->segment(2, '') == 'add') && $this->uri->segment(1, '') == 'test') echo ' class="active"';?>><a href="/test/my"><i class="fa fa-caret-right"></i> 我的提测</a></li>
             <li<?php if ($this->uri->segment(2, '') == 'board' || $this->uri->segment(2, '') == 'view') echo ' class="active"';?>><a href="/test/board"><i class="fa fa-caret-right"></i> 提测广场</a></li>
-            <li<?php if ($this->uri->segment(2, '') == 'analytics') echo ' class="active"';?>><a href="/test/analytics"><i class="fa fa-caret-right"></i> 提测统计</a></li>
+            <li<?php if ($this->uri->segment(1, '') == 'test' && $this->uri->segment(2, '') == 'analytics') echo ' class="active"';?>><a href="/test/analytics"><i class="fa fa-caret-right"></i> 提测统计</a></li>
           </ul>
         </li>
         <li class="nav-parent<?php if ($this->uri->segment(1, '') == 'conf') echo ' active';?>"><a href="javascript:;"><i class="fa fa-suitcase"></i> <span>代码库管理</span></a>
@@ -66,10 +67,6 @@
 
       <a class="menutoggle"><i class="fa fa-bars"></i></a>
 
-      <form class="searchform" action="index.html" method="post">
-        <input type="text" class="form-control" name="keyword" placeholder="请输入姓名，查询提测量" />
-      </form>
-
       <div class="header-right">
         <ul class="headermenu">
           <li>
@@ -80,8 +77,6 @@
                 <span class="caret"></span>
               </button>
               <ul class="dropdown-menu dropdown-menu-usermenu pull-right">
-                <li><a href="profile.html"><i class="glyphicon glyphicon-user"></i> 我的提测统计</a></li>
-                <li><a href="#"><i class="glyphicon glyphicon-cog"></i> 帐号设置</a></li>
                 <li><a href="http://192.168.8.91/markdown/"><i class="glyphicon glyphicon-question-sign"></i> 更新日志</a></li>
                 <li><a href="<?php echo site_url("admin/logout");?>"><i class="glyphicon glyphicon-log-out"></i> 退出</a></li>
               </ul>

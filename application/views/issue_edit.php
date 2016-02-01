@@ -1,12 +1,12 @@
 <?php include('common_header.php');?>
     <div class="pageheader">
-      <h2><i class="fa fa-pencil"></i> 基础信息配置 <span>配置代码库信息</span></h2>
+      <h2><i class="fa fa-pencil"></i> 我的任务 <span>编辑任务</span></h2>
       <div class="breadcrumb-wrapper">
         <span class="label">你的位置:</span>
         <ol class="breadcrumb">
           <li><a href="/">我的控制台</a></li>
-          <li><a href="/">基础信息配置</a></li>
-          <li class="active">配置代码库信息</li>
+          <li><a href="/issue/my">我的任务</a></li>
+          <li class="active">编辑任务</li>
         </ol>
       </div>
     </div>
@@ -23,7 +23,7 @@
                   <a href="" class="panel-close">&times;</a>
                   <a href="" class="minimize">&minus;</a>
                 </div>
-                <h4 class="panel-title">申请提测</h4>
+                <h4 class="panel-title">编辑任务</h4>
                 <p>提测分两步：1.添加任务信息，2.添加版本库信息；</p>
               </div>
               <div class="panel-body">

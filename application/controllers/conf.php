@@ -46,13 +46,13 @@ class conf extends CI_Controller {
         $data['PAGE_TITLE'] = '添加代码库';
         $this->config->load('extension', TRUE);
         $config = $this->config->item('pages', 'extension');
-        $page = trim($this->uri->segment(3, 1));
+        $offset = trim($this->uri->segment(3, 0));
         $this->load->model('Model_repos', 'repos', TRUE);
-        $rows = $this->repos->rows($page, $config['per_page']);
+        $rows = $this->repos->rows($offset, $config['per_page']);
         $data['rows'] = $rows['data'];
         $this->load->library('pagination');
         $config['total_rows'] = $rows['total_rows'];
-        $config['cur_page'] = $page;
+        $config['cur_page'] = $offset;
         $config['base_url'] = '/conf/repos_list';
         $this->pagination->initialize($config);
         $data['pages'] = $this->pagination->create_links();

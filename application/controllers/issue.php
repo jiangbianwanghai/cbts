@@ -65,9 +65,9 @@ class issue extends CI_Controller {
         $data['PAGE_TITLE'] = '我的任务列表';
         $this->config->load('extension', TRUE);
         $config = $this->config->item('pages', 'extension');
-        $page = trim($this->uri->segment(3, 1));
+        $offset = trim($this->uri->segment(3, 0));
         $this->load->model('Model_issue', 'issue', TRUE);
-        $rows = $this->issue->my($page, $config['per_page']);
+        $rows = $this->issue->my($offset, $config['per_page']);
         $data['rows'] = $rows['data'];
         if (file_exists('./cache/users.conf.php')) {
             require './cache/users.conf.php';
@@ -75,11 +75,35 @@ class issue extends CI_Controller {
         }
         $this->load->library('pagination');
         $config['total_rows'] = $rows['total_rows'];
-        $config['cur_page'] = $page;
+        $config['cur_page'] = $offset;
         $config['base_url'] = '/issue/my';
         $this->pagination->initialize($config);
         $data['pages'] = $this->pagination->create_links();
         $this->load->view('issue_my', $data);
+    }
+
+    /**
+     * 任务广场列表
+     */
+    public function plaza() {
+        $data['PAGE_TITLE'] = '任务广场列表';
+        $this->config->load('extension', TRUE);
+        $config = $this->config->item('pages', 'extension');
+        $offset = trim($this->uri->segment(3, 0));
+        $this->load->model('Model_issue', 'issue', TRUE);
+        $rows = $this->issue->plaza($offset, $config['per_page']);
+        $data['rows'] = $rows['data'];
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+            $data['users'] = $users;
+        }
+        $this->load->library('pagination');
+        $config['total_rows'] = $rows['total_rows'];
+        $config['cur_page'] = $offset;
+        $config['base_url'] = '/issue/plaza';
+        $this->pagination->initialize($config);
+        $data['pages'] = $this->pagination->create_links();
+        $this->load->view('issue_plaza', $data);
     }
 
     /**
@@ -92,12 +116,60 @@ class issue extends CI_Controller {
         if ($feedback) {
             $callBack = array(
                 'status' => true,
-                'message' => '提交成功'
+                'message' => '删除成功',
+                'url' => '/issue/my'
             );
         } else {
             $callBack = array(
                 'status' => false,
-                'message' => '提交失败'
+                'message' => '删除失败',
+                'url' => '/issue/my'
+            );
+        }
+        echo json_encode($callBack);
+    }
+
+    /**
+     * 任务关闭
+     */
+    public function close() {
+        $id = $this->uri->segment(3, 0);
+        $this->load->model('Model_issue', 'issue', TRUE);
+        $feedback = $this->issue->close($id);
+        if ($feedback) {
+            $callBack = array(
+                'status' => true,
+                'message' => '关闭成功',
+                'url' => '/issue/my'
+            );
+        } else {
+            $callBack = array(
+                'status' => false,
+                'message' => '关闭失败',
+                'url' => '/issue/my'
+            );
+        }
+        echo json_encode($callBack);
+    }
+
+    /**
+     * 任务已解决
+     */
+    public function resolve() {
+        $id = $this->uri->segment(3, 0);
+        $this->load->model('Model_issue', 'issue', TRUE);
+        $feedback = $this->issue->resolve($id);
+        if ($feedback) {
+            $callBack = array(
+                'status' => true,
+                'message' => '解决成功',
+                'url' => '/issue/my'
+            );
+        } else {
+            $callBack = array(
+                'status' => false,
+                'message' => '解决失败',
+                'url' => '/issue/my'
             );
         }
         echo json_encode($callBack);
@@ -145,5 +217,14 @@ class issue extends CI_Controller {
             );
         }
         echo json_encode($callBack);
+    }
+
+
+    /**
+     * 分析
+     */
+    public function analytics() {
+        $data['PAGE_TITLE'] = '任务统计';
+        $this->load->view('issue_analytics', $data);
     }
 }
