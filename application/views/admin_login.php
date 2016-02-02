@@ -91,24 +91,39 @@
 <script src="/static/js/custom.js"></script>
 
 <script type="text/javascript">
-  $(document).ready(function(){
-    $("#button").click(function(){
-      username = $("#username").val();
-      password = $("#password").val();
-      $.ajax({
-       type: "POST",
-       url: "/admin/login",
-       data: "username="+username+"&password="+password,
-       dataType: "JSON",
-       success: function(data){
+
+  function login() {
+    username = $("#username").val();
+    password = $("#password").val();
+    $.ajax({
+      type: "POST",
+      url: "/admin/login",
+      data: "username="+username+"&password="+password,
+      dataType: "JSON",
+      success: function(data){
         if (data.status) {
           location.href = data.url;
         } else {
           location.href = data.url;
         }
-       }
+      }
     });
+  }
+
+  $(document).ready(function(){
+    $("#button").click(function(){
+      login();
     });
+
+    $('input:text:first').focus();
+    var $inp = $('input');
+    $inp.keypress(function (e) {
+      var key = e.which; //e.which是按键的值 
+      if (key == 13) { 
+        login();
+      } 
+    }); 
+
   });
 </script>
 
