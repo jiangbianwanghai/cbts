@@ -38,7 +38,7 @@
         <li class="nav-parent<?php if ($this->uri->segment(1, '') == 'issue') echo ' active';?>"><a href="javascript:;"><i class="fa fa-tasks"></i> <span>任务管理</span></a>
           <ul class="children"<?php if ($this->uri->segment(1, '') == 'issue') echo ' style="display: block"';?>>
             <li<?php if ($this->uri->segment(2, '') == 'add') echo ' class="active"';?>><a href="/issue/add"><i class="fa fa-caret-right"></i> 添加任务</a></li>
-            <li<?php if ($this->uri->segment(2, '') == 'my' || $this->uri->segment(2, '') == 'edit') echo ' class="active"';?>><a href="/issue/my"><i class="fa fa-caret-right"></i> 我的任务</a></li>
+            <li<?php if ($this->uri->segment(1, '') == 'issue' &&($this->uri->segment(2, '') == 'my' || $this->uri->segment(2, '') == 'edit')) echo ' class="active"';?>><a href="/issue/my"><i class="fa fa-caret-right"></i> 我的任务</a></li>
             <li<?php if ($this->uri->segment(2, '') == 'plaza' || $this->uri->segment(2, '') == 'view') echo ' class="active"';?>><a href="/issue/plaza"><i class="fa fa-caret-right"></i> 任务广场</a></li>
             <li<?php if ($this->uri->segment(1, '') == 'issue' && $this->uri->segment(2, '') == 'analytics') echo ' class="active"';?>><a href="/issue/analytics"><i class="fa fa-caret-right"></i> 任务统计</a></li>
           </ul>

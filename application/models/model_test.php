@@ -94,13 +94,47 @@ class Model_test extends CI_Model {
     /**
      * 我的任务列表
      */
-    public function my() {
-        $rows = false;
-        $sql = "SELECT * FROM `choc_test` WHERE `add_user` = '".$this->input->cookie('uid')."' AND `status` = '1' ORDER BY `id` DESC";
+    public function my($offset = 0, $per_page = 20) {
+        $rows = array(
+            'total_rows' => 0,
+            'data' => false
+        );
+
+        //获取总数
+        $sql = "SELECT * FROM `choc_test` WHERE `add_user` = '".$this->input->cookie('uid')."' AND `status` = '1'";
+        $query = $this->db->query($sql);
+        $rows['total_rows'] = $query->num_rows;
+
+        //获取翻页数据
+        $sql = "SELECT * FROM `choc_test` WHERE `add_user` = '".$this->input->cookie('uid')."' AND `status` = '1' ORDER BY `id` DESC LIMIT ".$offset .", ".$per_page."";
         $query = $this->db->query($sql);
         foreach ($query->result_array() as $row)
         {
-            $rows[] = $row;
+            $rows['data'][] = $row;
+        }
+        return $rows;
+    }
+
+    /**
+     * 提测广场列表
+     */
+    public function plaza($offset = 0, $per_page = 20) {
+        $rows = array(
+            'total_rows' => 0,
+            'data' => false
+        );
+
+        //获取总数
+        $sql = "SELECT * FROM `choc_test`";
+        $query = $this->db->query($sql);
+        $rows['total_rows'] = $query->num_rows;
+
+        //获取翻页数据
+        $sql = "SELECT * FROM `choc_test` ORDER BY `id` DESC LIMIT ".$offset .", ".$per_page."";
+        $query = $this->db->query($sql);
+        foreach ($query->result_array() as $row)
+        {
+            $rows['data'][] = $row;
         }
         return $rows;
     }

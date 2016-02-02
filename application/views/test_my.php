@@ -34,8 +34,8 @@
                       <th>版本标识</th>
                       <th>相关任务</th>
                       <th>添加时间</th>
-                      <th>最后修改时间</th>
                       <th>修改人</th>
+                      <th>最后修改时间</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -45,12 +45,12 @@
                     ?>
                     <tr id="tr-<?php echo $value['id'];?>">
                       <td><?php echo $value['id'];?></td>
-                      <td><a href="#"><?php echo $repos[$value['repos_id']]['repos_name'];?></a></td>
+                      <td><a href="javascript:;" class="view" testid="<?php echo $value['id'];?>" data-toggle="modal" data-target=".bs-example-modal"><?php echo $repos[$value['repos_id']]['repos_name'];?></a></td>
                       <td><?php echo $value['test_flag'];?></td>
                       <td><a href="/issue/view/<?php echo $value['issue_id'];?>">ISSUE-<?php echo $value['issue_id'];?></a></td>
                       <td><?php echo $value['add_time'] ? date("Y-m-d H:i:s", $value['add_time']) : '-';?></td>
-                      <td><?php echo $value['last_time'] ? date("Y-m-d H:i:s", $value['last_time']) : '-';?></td>
                       <td><?php echo $value['last_user'] ? '@'.$users[$value['last_user']]['realname'] : '-';?></td>
+                      <td><?php echo $value['last_time'] ? date("Y-m-d H:i:s", $value['last_time']) : '-';?></td>
                     </tr>
                     <?php
                         }
@@ -60,6 +60,7 @@
                 </table>
               </div><!-- table-responsive -->
             </div><!-- panel-body -->
+            <?php echo $pages;?>
           </div><!-- panel -->
         </div><!-- col-md-6 -->
         
@@ -70,6 +71,18 @@
   </div><!-- mainpanel -->
   
 </section>
+
+<div class="modal fade bs-example-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
+            <h4 class="modal-title">提测详情</h4>
+        </div>
+        <div class="modal-body">...</div>
+    </div>
+  </div>
+</div>
 
 <script src="/static/js/jquery-1.11.1.min.js"></script>
 <script src="/static/js/jquery-migrate-1.2.1.min.js"></script>
@@ -118,11 +131,15 @@
       }
     });
 
-    // Show aciton upon row hover
-    jQuery('.table-hidaction tbody tr').hover(function(){
-      jQuery(this).find('.table-action-hide a').animate({opacity: 1});
-    },function(){
-      jQuery(this).find('.table-action-hide a').animate({opacity: 0});
+    $(".view").click(function(){
+      id = $(this).attr("testid");
+        $.ajax({
+          type: "GET",
+          url: "/test/view/"+id,
+          success: function(data){
+            $(".modal-body").html(data);
+          }
+        });
     });
 
   });

@@ -63,8 +63,12 @@ class test extends CI_Controller {
      */
     public function my() {
         $data['PAGE_TITLE'] = '我的提测列表';
+        $this->config->load('extension', TRUE);
+        $config = $this->config->item('pages', 'extension');
+        $offset = trim($this->uri->segment(3, 0));
         $this->load->model('Model_test', 'test', TRUE);
-        $data['rows'] = $this->test->my();
+        $rows = $this->test->my($offset, $config['per_page']);
+        $data['rows'] = $rows['data'];
         if (file_exists('./cache/repos.conf.php')) {
             require './cache/repos.conf.php';
             $data['repos'] = $repos;
@@ -73,6 +77,12 @@ class test extends CI_Controller {
             require './cache/users.conf.php';
             $data['users'] = $users;
         }
+        $this->load->library('pagination');
+        $config['total_rows'] = $rows['total_rows'];
+        $config['cur_page'] = $offset;
+        $config['base_url'] = '/test/my';
+        $this->pagination->initialize($config);
+        $data['pages'] = $this->pagination->create_links();
         $this->load->view('test_my', $data);
     }
 
@@ -98,5 +108,51 @@ class test extends CI_Controller {
             );
         }
         echo json_encode($callBack);
+    }
+
+    /**
+     * 提测详情
+     */
+    public function view() {
+        $id = $this->uri->segment(3, 0);
+        $this->load->model('Model_test', 'test', TRUE);
+        $row = $this->test->fetchOne($id);
+        echo '<p>'.$row['test_summary'].'</p>';
+    }
+
+    /**
+     * 提测广场列表
+     */
+    public function plaza() {
+        $data['PAGE_TITLE'] = '提测广场列表';
+        $this->config->load('extension', TRUE);
+        $config = $this->config->item('pages', 'extension');
+        $offset = trim($this->uri->segment(3, 0));
+        $this->load->model('Model_test', 'test', TRUE);
+        $rows = $this->test->plaza($offset, $config['per_page']);
+        $data['rows'] = $rows['data'];
+        if (file_exists('./cache/repos.conf.php')) {
+            require './cache/repos.conf.php';
+            $data['repos'] = $repos;
+        }
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+            $data['users'] = $users;
+        }
+        $this->load->library('pagination');
+        $config['total_rows'] = $rows['total_rows'];
+        $config['cur_page'] = $offset;
+        $config['base_url'] = '/test/plaza';
+        $this->pagination->initialize($config);
+        $data['pages'] = $this->pagination->create_links();
+        $this->load->view('test_plaza', $data);
+    }
+
+    /**
+     * 分析
+     */
+    public function analytics() {
+        $data['PAGE_TITLE'] = '测试统计';
+        $this->load->view('issue_analytics', $data);
     }
 }
