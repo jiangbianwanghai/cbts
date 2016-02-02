@@ -207,7 +207,7 @@ class issue extends CI_Controller {
             $callBack = array(
                 'status' => true,
                 'message' => '更新成功',
-                'url' => '/issue/my'
+                'url' => '/issue/view/'.$this->input->post('id')
             );
         } else {
             $callBack = array(

@@ -63,8 +63,40 @@ class test extends CI_Controller {
      */
     public function my() {
         $data['PAGE_TITLE'] = '我的提测列表';
-        $this->load->model('Model_task', 'task', TRUE);
-        $data['rows'] = $this->task->my();
-        $this->load->view('tice_task_my', $data);
+        $this->load->model('Model_test', 'test', TRUE);
+        $data['rows'] = $this->test->my();
+        if (file_exists('./cache/repos.conf.php')) {
+            require './cache/repos.conf.php';
+            $data['repos'] = $repos;
+        }
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+            $data['users'] = $users;
+        }
+        $this->load->view('test_my', $data);
+    }
+
+    /**
+     * 任务删除
+     */
+    public function del() {
+        $testId = $this->uri->segment(3, 0);
+        $issueId = $this->uri->segment(4, 0);
+        $this->load->model('Model_test', 'test', TRUE);
+        $feedback = $this->test->del($testId);
+        if ($feedback) {
+            $callBack = array(
+                'status' => true,
+                'message' => '删除成功',
+                'url' => '/issue/view/'.$issueId
+            );
+        } else {
+            $callBack = array(
+                'status' => false,
+                'message' => '删除失败',
+                'url' => '/issue/view/'.$issueId
+            );
+        }
+        echo json_encode($callBack);
     }
 }

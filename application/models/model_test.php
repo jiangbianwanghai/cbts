@@ -51,7 +51,7 @@ class Model_test extends CI_Model {
      */
     public function listByIssue($id) {
         $rows = false;
-        $sql = "SELECT * FROM `choc_test` WHERE `issue_id` = '".$id."' ORDER BY `id` DESC";
+        $sql = "SELECT * FROM `choc_test` WHERE `issue_id` = '".$id."' AND `status` = 1 ORDER BY `id` DESC";
         $query = $this->db->query($sql);
         foreach ($query->result_array() as $row)
         {

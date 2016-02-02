@@ -109,13 +109,12 @@
                                       <th>#</th>
                                       <th>相关代码库</th>
                                       <th>提测版本标识</th>
-                                      <th>提交时间</th>
                                       <th>受理进度</th>
                                       <th>阶段/状态</th>
-                                      <th>添加时间</th>
                                       <th>添加人</th>
-                                      <th>最后修改时间</th>
+                                      <th>添加时间</th>
                                       <th>修改人</th>
+                                      <th>最后修改时间</th>
                                       <th>&nbsp;</th>
                                     </tr>
                                 </thead>
@@ -128,7 +127,6 @@
                                       <td><?php echo $value['id'];?></td>
                                       <td><?php echo $repos[$value['repos_id']]['repos_name'];?></td>
                                       <td><?php echo $value['test_flag'];?></td>
-                                      <td><?php echo date("Y-m-d H:i:s", $value['add_time']);?></td>
                                       <td>
                                           <div class="progress">
                                               <div style="width: 2%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="2" role="progressbar" class="progress-bar progress-bar-danger">
@@ -137,21 +135,21 @@
                                           </div>
                                       </td>
                                       <td>开发环境/未提测</td>
-                                      <td><?php echo $value['add_time'] ? date("Y-m-d H:i:s", $value['last_time']) : '-';?></td>
-                                      <td><?php echo $value['add_user'] ? $users[$value['add_user']]['realname'] : '-';?></td>
+                                      <td><?php echo $value['add_user'] ? '@'.$users[$value['add_user']]['realname'] : '-';?></td>
+                                      <td><?php echo $value['add_time'] ? date("Y-m-d H:i:s", $value['add_time']) : '-';?></td>
+                                      <td><?php echo $value['last_user'] ? '@'.$users[$value['last_user']]['realname'] : '-';?></td>
                                       <td><?php echo $value['last_time'] ? date("Y-m-d H:i:s", $value['last_time']) : '-';?></td>
-                                      <td><?php echo $value['last_user'] ? $users[$value['last_user']]['realname'] : '-';?></td>
                                       <td class="table-action">
-                                        <a href="/test/add/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 提测</a>
-                                        <a href="/issue/edit/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 编辑</a>
-                                        <a href="javascript:;" class="delete-row" reposid="<?php echo $value['id'];?>"><i class="fa fa-trash-o"></i> 删除</a>
+                                        <a href="/tice/do/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 提测</a>
+                                        <a href="/test/edit/<?php echo $row['id'];?>/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 编辑</a>
+                                        <a href="javascript:;" class="delete-row" issueid="<?php echo $row['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-trash-o"></i> 删除</a>
                                       </td>
                                     </tr>
                                     <?php
                                         }
                                       } else {
                                     ?>
-                                    <tr><td colspan="11" align="center">无提测信息</td></tr>
+                                    <tr><td colspan="10" align="center">无提测信息</td></tr>
                                     <?php } ?>
                                 </tbody>
                             </table>
@@ -236,6 +234,37 @@
     $("#resolve").click(
       changeIssueStatus('#resolve','resolve','确认要解决吗？')
     );
+
+    $(".delete-row").click(function(){
+      var c = confirm("确认要删除吗？");
+      if(c) {
+        testid = $(this).attr("testid");
+        issueid = $(this).attr("issueid");
+        $.ajax({
+          type: "GET",
+          url: "/test/del/"+testid+"/"+issueid,
+          dataType: "JSON",
+          success: function(data){
+            if (data.status) {
+              $("#tr-"+testid).fadeOut(function(){
+                $("#tr-"+testid).remove();
+              });
+              return false;
+            } else {
+              jQuery.gritter.add({
+                title: '提醒',
+                text: data.message,
+                  class_name: 'growl-danger',
+                  image: '/static/images/screen.png',
+                sticky: false,
+                time: ''
+              });
+            };
+          }
+        });
+      }
+    });
+
   });
 </script>
 
