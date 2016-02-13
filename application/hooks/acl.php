@@ -11,8 +11,8 @@ class acl{
     {
         if ($this->CI->uri->segment(1) != 'admin' && $this->CI->uri->segment(2) != 'signin') {
             $this->CI->load->helper('url');
-            if (!$this->CI->input->cookie('username')) {
-                redirect('/admin/signin', 'location', 301);
+            if (!$this->CI->input->cookie('uids')) {
+                redirect('/admin/signin', 'location');
             }
         }
     }

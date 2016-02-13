@@ -16,7 +16,7 @@ class Model_repos extends CI_Model {
             'message' => ''
         );
         $data['add_time'] = time();
-        $data['add_user'] = $this->input->cookie('uid');
+        $data['add_user'] = $this->input->cookie('uids');
         $sql = "SELECT `id` FROM `choc_repos` WHERE `repos_name` = '".$data['repos_name']."'";
         $query = $this->db->query($sql);
         if ($query->num_rows()) {
@@ -73,7 +73,7 @@ class Model_repos extends CI_Model {
      * 删除
      */
     public function del($id) {
-        return $this->db->update('repos', array('last_time' => time(), 'last_user' => $this->input->cookie('uid'), 'status' => '-1'), array('id' => $id));
+        return $this->db->update('repos', array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'status' => '-1'), array('id' => $id));
     }
 
     /**
@@ -96,7 +96,7 @@ class Model_repos extends CI_Model {
         $id = $data['id'];
         unset($data['id']);
         $data['last_time'] = time();
-        $data['last_user'] = $this->input->cookie('uid');
+        $data['last_user'] = $this->input->cookie('uids');
         return $this->db->update('repos', $data, array('id' => $id));
     }
 }

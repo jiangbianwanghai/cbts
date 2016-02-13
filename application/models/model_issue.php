@@ -16,7 +16,7 @@ class Model_issue extends CI_Model {
             'message' => ''
         );
         $data['add_time'] = time();
-        $data['add_user'] = $this->input->cookie('uid');
+        $data['add_user'] = $this->input->cookie('uids');
         $sql = "SELECT `id` FROM `choc_issue` WHERE `issue_name` = '".$data['issue_name']."'";
         $query = $this->db->query($sql);
         if ($query->num_rows()) {
@@ -50,21 +50,21 @@ class Model_issue extends CI_Model {
      * 删除
      */
     public function del($id) {
-        return $this->db->update('issue', array('last_time' => time(), 'last_user' => $this->input->cookie('uid'), 'status' => '-1'), array('id' => $id));
+        return $this->db->update('issue', array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'status' => '-1'), array('id' => $id));
     }
 
     /**
      * 关闭
      */
     public function close($id) {
-        return $this->db->update('issue', array('last_time' => time(), 'last_user' => $this->input->cookie('uid'), 'status' => '0'), array('id' => $id));
+        return $this->db->update('issue', array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'status' => '0'), array('id' => $id));
     }
 
     /**
      * 已解决
      */
     public function resolve($id) {
-        return $this->db->update('issue', array('last_time' => time(), 'last_user' => $this->input->cookie('uid'), 'status' => '0', 'resolve' => '1'), array('id' => $id));
+        return $this->db->update('issue', array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'status' => '0', 'resolve' => '1'), array('id' => $id));
     }
 
     /**
@@ -87,7 +87,7 @@ class Model_issue extends CI_Model {
         $id = $data['id'];
         unset($data['id']);
         $data['last_time'] = time();
-        $data['last_user'] = $this->input->cookie('uid');
+        $data['last_user'] = $this->input->cookie('uids');
         return $this->db->update('issue', $data, array('id' => $id));
     }
 
@@ -101,12 +101,12 @@ class Model_issue extends CI_Model {
         );
 
         //获取总数
-        $sql = "SELECT * FROM `choc_issue` WHERE `add_user` = '".$this->input->cookie('uid')."' AND `status` = '1'";
+        $sql = "SELECT * FROM `choc_issue` WHERE `add_user` = '".$this->input->cookie('uids')."' AND `status` = '1'";
         $query = $this->db->query($sql);
         $rows['total_rows'] = $query->num_rows;
 
         //获取翻页数据
-        $sql = "SELECT * FROM `choc_issue` WHERE `add_user` = '".$this->input->cookie('uid')."' AND `status` = '1' ORDER BY `id` DESC LIMIT ".$offset .", ".$per_page."";
+        $sql = "SELECT * FROM `choc_issue` WHERE `add_user` = '".$this->input->cookie('uids')."' AND `status` = '1' ORDER BY `id` DESC LIMIT ".$offset .", ".$per_page."";
         $query = $this->db->query($sql);
         foreach ($query->result_array() as $row)
         {
