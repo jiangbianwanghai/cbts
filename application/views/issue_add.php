@@ -23,7 +23,7 @@
                   <a href="" class="panel-close">&times;</a>
                   <a href="" class="minimize">&minus;</a>
                 </div>
-                <h4 class="panel-title">申请提测</h4>
+                <h4 class="panel-title">添加任务</h4>
                 <p>提测分两步：1.添加任务信息，2.添加版本库信息；</p>
               </div>
               <div class="panel-body">

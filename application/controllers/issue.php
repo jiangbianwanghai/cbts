@@ -112,19 +112,29 @@ class issue extends CI_Controller {
     public function del() {
         $id = $this->uri->segment(3, 0);
         $this->load->model('Model_issue', 'issue', TRUE);
-        $feedback = $this->issue->del($id);
-        if ($feedback) {
+        //已经解决的任务自动归档不能删除了
+        $resolve = $this->issue->checkResolve($id);
+        if ($resolve) {
             $callBack = array(
-                'status' => true,
-                'message' => '删除成功',
+                'status' => false,
+                'message' => '已经解决的任务自动归档不能删除了',
                 'url' => '/issue/my'
             );
         } else {
-            $callBack = array(
-                'status' => false,
-                'message' => '删除失败',
-                'url' => '/issue/my'
-            );
+            $feedback = $this->issue->del($id);
+            if ($feedback) {
+                $callBack = array(
+                    'status' => true,
+                    'message' => '删除成功',
+                    'url' => '/issue/my'
+                );
+            } else {
+                $callBack = array(
+                    'status' => false,
+                    'message' => '删除失败',
+                    'url' => '/issue/my'
+                );
+            }
         }
         echo json_encode($callBack);
     }
@@ -182,6 +192,11 @@ class issue extends CI_Controller {
         $data['PAGE_TITLE'] = '编辑任务';
         $id = $this->uri->segment(3, 0);
         $this->load->model('Model_issue', 'issue', TRUE);
+        //已经解决的任务自动归档不能删除了
+        $resolve = $this->issue->checkResolve($id);
+        if ($resolve) {
+            exit('已经解决的任务自动归档不能编辑了~');
+        }
         $row = $this->issue->fetchOne($id);
         if ($row) {
             $data['row'] = $row;

@@ -13,6 +13,11 @@ class test extends CI_Controller {
         if (!$data['row']) {
             exit("查询数据错误.");
         }
+        //已经解决的任务不能再次添加提测信息
+        $resolve = $this->issue->checkResolve($id);
+        if ($resolve) {
+            exit('已经解决的任务不能再次添加提测信息~');
+        }
         if (file_exists('./cache/repos.conf.php')) {
             require './cache/repos.conf.php';
             $data['repos'] = $repos;

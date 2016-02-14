@@ -24,7 +24,7 @@
               <div class="panel-title"><?php if ($row['status'] == '-1') { ?><s><?php echo $row['issue_name'];?></s><?php } else { ?><?php echo $row['issue_name'];?><?php } ?></div>
           </div><!-- panel-heading-->
           <div class="panel-body">
-              <?php if ($row['status'] != '-1') { ?>
+              <?php if ($row['status'] == 1 && $row['resolve'] == 0) { ?>
               <div class="btn-group mr10">
                   <a href="/issue/edit/<?php echo $row['id'];?>" class="btn btn-primary"><i class="fa fa-pencil mr5"></i> 编辑</a>
                   <a href="/test/add/<?php echo $row['id'];?>" class="btn btn-primary"><i class="fa fa-comments mr5"></i> 提交代码</a>
