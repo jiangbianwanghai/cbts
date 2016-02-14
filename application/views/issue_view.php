@@ -49,42 +49,42 @@
                                 <div class="col-xs-6"><?php echo $row['add_user'] ? '@'.$users[$row['add_user']]['realname'] : '-';?></div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-6">提交时间</div>
-                                <div class="col-xs-6"><?php echo $row['add_time'] ? date("Y-m-d H:i:s", $row['add_time']) : '-';?></div>
-                            </div>
-                            <div class="row">
                                 <div class="col-xs-6">最后修改人</div>
                                 <div class="col-xs-6"><?php echo $row['last_user'] ? '@'.$users[$row['last_user']]['realname'] : '-';?></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6">受理人</div>
+                                <div class="col-xs-6"><?php echo $row['accept_user'] ? '@'.$users[$row['accept_user']]['realname'] : '-';?></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6">相关链接：</div>
+                                <div class="col-xs-6"><?php if ($row['url']) { echo "<a href=\"".$row['url']."\" target=\"_blank\">点击查看</a>";}?></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6">所属产品版本</div>
+                                <div class="col-xs-6">-</div>
+                            </div>
+                          </div><!-- col-sm-6 -->
+                          <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-xs-6">提交时间</div>
+                                <div class="col-xs-6"><?php echo $row['add_time'] ? date("Y-m-d H:i:s", $row['add_time']) : '-';?></div>
                             </div>
                             <div class="row">
                                 <div class="col-xs-6">最后修改时间</div>
                                 <div class="col-xs-6"><?php echo $row['last_time'] ? date("Y-m-d H:i:s", $row['last_time']) : '-';?></div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-6">受理人</div>
-                                <div class="col-xs-6"></div>
-                            </div>
-                          </div><!-- col-sm-6 -->
-                          <div class="col-sm-6">
-                            <div class="row">
                                 <div class="col-xs-6">受理时间：</div>
-                                <div class="col-xs-6"><?php echo $row['url'];?></div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-6">相关链接：</div>
-                                <div class="col-xs-6"><?php echo $row['url'];?></div>
+                                <div class="col-xs-6"><?php echo $row['accept_time'] ? date("Y-m-d H:i:s", $row['accept_time']) : '-';?></div>
                             </div>
                             <div class="row">
                                 <div class="col-xs-6">标签</div>
-                                <div class="col-xs-6">4.1, 4.2</div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-6">所属产品版本</div>
-                                <div class="col-xs-6">1.0</div>
+                                <div class="col-xs-6">-</div>
                             </div>
                             <div class="row">
                                 <div class="col-xs-6">都谁贡献了代码</div>
-                                <div class="col-xs-6">吕小虎,闫向格</div>
+                                <div class="col-xs-6">-</div>
                             </div>
                           </div><!-- col-sm-6 -->
                       </div><!-- row -->
@@ -109,8 +109,8 @@
                                       <th>#</th>
                                       <th>相关代码库</th>
                                       <th>提测版本标识</th>
-                                      <th>受理进度</th>
-                                      <th>阶段/状态</th>
+                                      <th>所处阶段</th>
+                                      <th>提测状态</th>
                                       <th>添加人</th>
                                       <th>最后修改人</th>
                                       <th>&nbsp;</th>
@@ -126,13 +126,30 @@
                                       <td><?php echo $repos[$value['repos_id']]['repos_name'];?></td>
                                       <td><?php echo $value['test_flag'];?></td>
                                       <td>
-                                          <div class="progress">
-                                              <div style="width: 2%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="2" role="progressbar" class="progress-bar progress-bar-danger">
-                                                <span class="sr-only">2% Complete (success)</span>
-                                              </div>
-                                          </div>
+                                        <?php if ($value['rank'] == 0) {?>
+                                        <button class="btn btn-default btn-xs">开发环境</button>
+                                        <?php } ?>
+                                        <?php if ($value['rank'] == 1) {?>
+                                        <button class="btn btn-primary btn-xs">测试环境</button>
+                                        <?php } ?>
+                                        <?php if ($value['rank'] == 2) {?>
+                                        <button class="btn btn-success btn-xs">开发环境</button>
+                                        <?php } ?>
                                       </td>
-                                      <td>开发环境/未提测</td>
+                                      <td>
+                                        <?php if ($value['state'] == 0) {?>
+                                        <button class="btn btn-default btn-xs">待测</button>
+                                        <?php } ?>
+                                        <?php if ($value['state'] == 1) {?>
+                                        <button class="btn btn-primary btn-xs">测试中……</button>
+                                        <?php } ?>
+                                        <?php if ($value['state'] == -3) {?>
+                                        <button class="btn btn-danger btn-xs">不通过</button>
+                                        <?php } ?>
+                                        <?php if ($value['state'] == 3) {?>
+                                        <button class="btn btn-success btn-xs">通过</button>
+                                        <?php } ?>
+                                      </td>
                                       <td><?php echo $value['add_user'] ? '@'.$users[$value['add_user']]['realname'] : '-';?></td>
                                       <td><?php echo $value['last_user'] ? '@'.$users[$value['last_user']]['realname'] : '-';?></td>
                                       <td class="table-action">
