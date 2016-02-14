@@ -25,10 +25,10 @@
                 <th>别称</th>
                 <th>地址</th>
                 <th>说明</th>
-                <th>添加时间</th>
                 <th>添加人</th>
-                <th>最后修改时间</th>
+                <th>添加时间</th>
                 <th>修改人</th>
+                <th>最后修改时间</th>
                 <th></th>
               </tr>
             </thead>
@@ -43,10 +43,10 @@
                 <td><?php echo $value['repos_name_other'];?></td>
                 <td><input type="text" value="<?php echo $value['repos_url'];?>" id="readonlyinput" readonly="readonly" title="<?php echo $value['repos_url'];?>" data-toggle="tooltip" data-trigger="hover" class="form-control tooltips" /></td>
                 <td><input type="text" placeholder="<?php echo $value['repos_summary'];?>" class="form-control popovers" data-toggle="popover" data-placement="top" data-original-title="说明" data-content="<?php echo $value['repos_summary'];?>" data-trigger="click" /></td>
-                <td><?php echo date("Y-m-d H:i:s", $value['add_time']);?></td>
                 <td><?php echo $users[$value['add_user']]['realname'];?></td>
-                <td><?php echo $value['last_time'] ? date("Y-m-d H:i:s", $value['last_time']) : '-';?></td>
+                <td><?php echo date("Y-m-d H:i:s", $value['add_time']);?></td>
                 <td><?php echo $value['last_user'] ? $users[$value['last_user']]['realname'] : '-';?></td>
+                <td><?php echo $value['last_time'] ? date("Y-m-d H:i:s", $value['last_time']) : '-';?></td>
                 <td class="table-action">
                   <a href="/conf/repos_edit/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 编辑</a>
                   <a href="javascript:;" class="delete-row" reposid="<?php echo $value['id'];?>"><i class="fa fa-trash-o"></i> 删除</a>

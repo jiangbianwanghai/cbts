@@ -37,19 +37,19 @@ class Model_repos extends CI_Model {
      */
     public function cacheRefresh()
     {
-        $data = $this->rows();
-        foreach ($data as $val) {
-            $rows[$val['id']] = $val;
+        $rows = $this->rows(0,20,1);
+        foreach ($rows['data'] as $val) {
+            $reposRows[$val['id']] = $val;
         }
         $this->load->helper('file');
-        $file = "<?php\n//代码库\n\$repos = ".var_export($rows, true).";";
+        $file = "<?php\n//代码库\n\$repos = ".var_export($reposRows, true).";";
         return write_file('./cache/repos.conf.php', $file);
     }
 
     /**
      * 列表
      */
-    public function rows($offset = 0, $per_page = 20) {
+    public function rows($offset = 0, $per_page = 20, $all = 0) {
         $rows = array(
             'total_rows' => 0,
             'data' => false
@@ -59,8 +59,13 @@ class Model_repos extends CI_Model {
         $sql = "SELECT * FROM `choc_repos` WHERE `status` = '1'";
         $query = $this->db->query($sql);
         $rows['total_rows'] = $query->num_rows;
-        //翻页
-        $sql = "SELECT * FROM `choc_repos` WHERE `status` = '1' ORDER BY `id` DESC LIMIT ".$offset.", ".$per_page."";
+
+        //记录
+        if ($all) {
+            $sql = "SELECT * FROM `choc_repos` WHERE `status` = '1'";
+        } else {
+            $sql = "SELECT * FROM `choc_repos` WHERE `status` = '1' ORDER BY `id` DESC LIMIT ".$offset.", ".$per_page."";
+        }
         $query = $this->db->query($sql);
         foreach ($query->result_array() as $row)
         {

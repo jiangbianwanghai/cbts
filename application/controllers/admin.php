@@ -85,4 +85,11 @@ class admin extends CI_Controller {
         $this->users->cacheRefresh();
         echo '1';
     }
+
+    public function refresh_repos()
+    {
+        $this->load->model('Model_repos', 'repos', TRUE);
+        $this->repos->cacheRefresh();
+        echo '1';
+    }
 }
