@@ -49,13 +49,57 @@ class test extends CI_Controller {
     }
 
     /**
-     * 代码库列表
+     * 编辑提测
      */
-    public function task_list() {
-        $data['PAGE_TITLE'] = '提测列表';
-        $this->load->model('Model_task', 'task', TRUE);
-        $data['rows'] = $this->task->rows();
-        $this->load->view('tice_task_list', $data);
+    public function edit() {
+        $data['PAGE_TITLE'] = '编辑提测';
+        $issueId = $this->uri->segment(3, 0);
+        $this->load->model('Model_issue', 'issue', TRUE);
+        $data['row'] = $this->issue->fetchOne($issueId);
+        if (!$data['row']) {
+            exit("查询数据错误.");
+        }
+        $testId = $this->uri->segment(4, 0);
+        $this->load->model('Model_test', 'test', TRUE);
+        $row = $this->test->fetchOne($testId);
+        if ($row) {
+            $data['test'] = $row;
+            if (file_exists('./cache/repos.conf.php')) {
+                require './cache/repos.conf.php';
+                $data['repos'] = $repos;
+            }
+            $this->load->view('test_edit', $data);
+        } else {
+            echo '你查找的数据不存在.';
+        }
+    }
+
+    /**
+     * 异步更新
+     */
+    public function edit_ajax() {
+        $this->load->model('Model_test', 'test', TRUE);
+        $post = array(
+            'id' => $this->input->post('test_id'),
+            'repos_id' => $this->input->post('repos_id'),
+            'test_flag' => $this->input->post('test_flag'),
+            'test_summary' => $this->input->post('test_summary')
+        );
+        $feedback = $this->test->update($post);
+        if ($feedback) {
+            $callBack = array(
+                'status' => true,
+                'message' => '更新成功',
+                'url' => '/issue/view/'.$this->input->post('issue_id')
+            );
+        } else {
+            $callBack = array(
+                'status' => false,
+                'message' => '更新失败',
+                'url' => '/issue/edit/'.$this->input->post('issue_id')
+            );
+        }
+        echo json_encode($callBack);
     }
 
     /**

@@ -91,6 +91,7 @@ class conf extends CI_Controller {
      * 编辑代码库面板
      */
     public function repos_edit() {
+        $data['PAGE_TITLE'] = '编辑代码库';
         $id = $this->uri->segment(3, 0);
         $this->load->model('Model_repos', 'repos', TRUE);
         $row = $this->repos->fetchOne($id);

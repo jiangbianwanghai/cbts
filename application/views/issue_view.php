@@ -112,9 +112,7 @@
                                       <th>受理进度</th>
                                       <th>阶段/状态</th>
                                       <th>添加人</th>
-                                      <th>添加时间</th>
-                                      <th>修改人</th>
-                                      <th>最后修改时间</th>
+                                      <th>最后修改人</th>
                                       <th>&nbsp;</th>
                                     </tr>
                                 </thead>
@@ -136,9 +134,7 @@
                                       </td>
                                       <td>开发环境/未提测</td>
                                       <td><?php echo $value['add_user'] ? '@'.$users[$value['add_user']]['realname'] : '-';?></td>
-                                      <td><?php echo $value['add_time'] ? date("Y-m-d H:i:s", $value['add_time']) : '-';?></td>
                                       <td><?php echo $value['last_user'] ? '@'.$users[$value['last_user']]['realname'] : '-';?></td>
-                                      <td><?php echo $value['last_time'] ? date("Y-m-d H:i:s", $value['last_time']) : '-';?></td>
                                       <td class="table-action">
                                         <a href="/tice/do/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 提测</a>
                                         <a href="/test/edit/<?php echo $row['id'];?>/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 编辑</a>
