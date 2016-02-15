@@ -19,7 +19,8 @@ class conf extends CI_Controller {
             'repos_name' => $this->input->post('repos_name'),
             'repos_name_other' => $this->input->post('repos_name_other'),
             'repos_url' => $this->input->post('repos_url'),
-            'repos_summary' => $this->input->post('repos_summary')
+            'repos_summary' => $this->input->post('repos_summary'),
+            'merge' => $this->input->post('merge')
         );
         $feedback = $this->repos->add($post);
         if ($feedback['status']) {
@@ -113,7 +114,8 @@ class conf extends CI_Controller {
             'repos_name' => $this->input->post('repos_name'),
             'repos_name_other' => $this->input->post('repos_name_other'),
             'repos_url' => $this->input->post('repos_url'),
-            'repos_summary' => $this->input->post('repos_summary')
+            'repos_summary' => $this->input->post('repos_summary'),
+            'merge' => $this->input->post('merge')
         );
         $feedback = $this->repos->update($post);
         if ($feedback) {

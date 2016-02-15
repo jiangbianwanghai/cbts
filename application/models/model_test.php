@@ -8,6 +8,20 @@ class Model_test extends CI_Model {
     }
 
     /**
+     * 获取最新的10条记录
+     */
+    public function top10() {
+        $rows = false;
+        $sql = "SELECT * FROM `choc_test` ORDER BY `id` DESC LIMIT 0,10";
+        $query = $this->db->query($sql);
+        foreach ($query->result_array() as $row)
+        {
+            $rows[] = $row;
+        }
+        return $rows;
+    }
+
+    /**
      * 添加数据
      */
     public function add($data) {
@@ -75,6 +89,24 @@ class Model_test extends CI_Model {
         if ($query->num_rows()) {
             $row = $query->row_array();
             return $row;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 验证版本号是否可以添加
+     */
+    public function checkFlag($repos_id, $test_flag) {
+        $query = $this->db->get_where('test', array('repos_id' => $repos_id), 1);
+        if ($query->num_rows()) {
+            $row = $query->row_array();
+            if ($row) {
+                if ($row['test_flag'] < $test_flag) {
+                    return true;
+                }
+            }
+            return false;
         } else {
             return false;
         }

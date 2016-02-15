@@ -114,6 +114,7 @@
                                       <th>添加人</th>
                                       <th>最后修改人</th>
                                       <th>&nbsp;</th>
+                                      <th>&nbsp;</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -133,7 +134,7 @@
                                         <button class="btn btn-primary btn-xs">测试环境</button>
                                         <?php } ?>
                                         <?php if ($value['rank'] == 2) {?>
-                                        <button class="btn btn-success btn-xs">开发环境</button>
+                                        <button class="btn btn-success btn-xs">生产环境</button>
                                         <?php } ?>
                                       </td>
                                       <td>
@@ -152,10 +153,14 @@
                                       </td>
                                       <td><?php echo $value['add_user'] ? '@'.$users[$value['add_user']]['realname'] : '-';?></td>
                                       <td><?php echo $value['last_user'] ? '@'.$users[$value['last_user']]['realname'] : '-';?></td>
+                                      <td>
+                                        <?php if ($value['tice'] == 0) {?><button class="btn btn-success btn-xs" id="tice" testid="<?php echo $value['id'];?>"><i class="fa fa-send"></i> 提测</button><?php }?>
+                                      </td>
                                       <td class="table-action">
-                                        <a href="/tice/do/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 提测</a>
+                                        <?php if ($row['status'] == 1) {?>
                                         <a href="/test/edit/<?php echo $row['id'];?>/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 编辑</a>
                                         <a href="javascript:;" class="delete-row" issueid="<?php echo $row['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-trash-o"></i> 删除</a>
+                                        <?php }?>
                                       </td>
                                     </tr>
                                     <?php
@@ -228,15 +233,51 @@
                 sticky: false,
                 time: ''
               });
-              setTimeout(function(){
-                location.href = data.url;
-              }, 2000);
             };
           }
         });
       }
     });
   }
+
+  function tice() {
+    $("#tice").click(function(){
+      id = $(this).attr("testid");
+      $.ajax({
+        type: "GET",
+        url: "/test/tice/"+id,
+        dataType: "JSON",
+        success: function(data){
+          if (data.status) {
+            jQuery.gritter.add({
+              title: '提醒',
+              text: data.message,
+                class_name: 'growl-success',
+                image: '/static/images/screen.png',
+              sticky: false,
+              time: ''
+            });
+            setTimeout(function(){
+              location.href = data.url;
+            }, 2000);
+          } else {
+            jQuery.gritter.add({
+              title: '提醒',
+              text: data.message,
+                class_name: 'growl-danger',
+                image: '/static/images/screen.png',
+              sticky: false,
+              time: ''
+            });
+            setTimeout(function(){
+              location.href = data.url;
+            }, 2000);
+          };
+        }
+      });
+    });
+  }
+
   $(document).ready(function(){
     $("#del").click(
       changeIssueStatus('#del','del','确认要删除吗？')
@@ -246,6 +287,9 @@
     );
     $("#resolve").click(
       changeIssueStatus('#resolve','resolve','确认要解决吗？')
+    );
+    $("#tice").click(
+      tice()
     );
 
     $(".delete-row").click(function(){

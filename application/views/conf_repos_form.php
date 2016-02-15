@@ -53,6 +53,20 @@
                     <textarea id="repos_summary" name="repos_summary" rows="5" class="form-control" placeholder="请简要说明代码库的作用" required></textarea>
                   </div>
                 </div>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">提测前合并 <span class="asterisk">*</span></label>
+                  <div class="col-sm-9">
+                    <div class="rdio rdio-primary">
+                      <input type="radio" id="you" value="1" name="merge" required />
+                      <label for="you">需要</label>
+                    </div><!-- rdio -->
+                    <div class="rdio rdio-primary">
+                      <input type="radio" value="0" id="wu" name="merge">
+                      <label for="wu">不需要</label>
+                    </div><!-- rdio -->
+                    <label class="error" for="merge"></label>
+                  </div>
+                </div>
               </div><!-- panel-body -->
               <div class="panel-footer">
                 <div class="row">

@@ -30,6 +30,16 @@ class test extends CI_Controller {
      */
     public function add_ajax() {
     	$this->load->model('Model_test', 'test', TRUE);
+        $checkTestFlag = $this->test->checkFlag($this->input->post('repos_id'), $this->input->post('test_flag'));
+        if (!$checkTestFlag) {
+            $callBack = array(
+                'status' => false,
+                'message' => '提测版本已经存在',
+                'url' => '/test/add/'.$this->input->post('issue_id')
+            );
+            echo json_encode($callBack);
+            exit();
+        }
         $post = array(
             'issue_id' => $this->input->post('issue_id'),
             'repos_id' => $this->input->post('repos_id'),
@@ -203,5 +213,39 @@ class test extends CI_Controller {
     public function analytics() {
         $data['PAGE_TITLE'] = '测试统计';
         $this->load->view('issue_analytics', $data);
+    }
+
+    /**
+     * 提测
+     */
+    public function tice() {
+        //需要先标记受理权
+        $id = $this->uri->segment(3, 0);
+        $callBack = array(
+            'status' => false,
+            'message' => '数据错误',
+            'url' => '/issue/view/'.$id
+        );
+        $this->load->model('Model_test', 'test', TRUE);
+        $row = $this->test->fetchOne($id);
+        if ($row) {
+            $this->load->model('Model_issue', 'issue', TRUE);
+            $flag = $this->issue->checkAccept($row['issue_id']);
+            if ($flag) {
+                $callBack = array(
+                    'status' => false,
+                    'message' => '已经被别人受理了',
+                    'url' => '/issue/view/'.$row['issue_id']
+                );
+            } else {
+                $this->issue->accept($row['issue_id']);
+                $callBack = array(
+                    'status' => true,
+                    'message' => '受理成功',
+                    'url' => '/issue/view/'.$row['issue_id']
+                );
+            }
+        } 
+        echo json_encode($callBack);
     }
 }

@@ -9,6 +9,18 @@ class admin extends CI_Controller {
         if (!$this->input->cookie('username')) {
             redirect('/admin/signin', 'location');
         } else {
+            $this->load->model('Model_issue', 'issue', TRUE);
+            $this->load->model('Model_test', 'test', TRUE);
+            $data['issueTop10'] = $this->issue->top10();
+            $data['testTop10'] = $this->test->top10();
+            if (file_exists('./cache/repos.conf.php')) {
+                require './cache/repos.conf.php';
+                $data['repos'] = $repos;
+            }
+            if (file_exists('./cache/users.conf.php')) {
+                require './cache/users.conf.php';
+                $data['users'] = $users;
+            }
             $this->load->view('admin_home', $data);
         }
     }

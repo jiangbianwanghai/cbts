@@ -8,6 +8,20 @@ class Model_issue extends CI_Model {
     }
 
     /**
+     * 获取最新的10条记录
+     */
+    public function top10() {
+        $rows = false;
+        $sql = "SELECT * FROM `choc_issue` ORDER BY `id` DESC LIMIT 0,10";
+        $query = $this->db->query($sql);
+        foreach ($query->result_array() as $row)
+        {
+            $rows[] = $row;
+        }
+        return $rows;
+    }
+
+    /**
      * 添加数据
      */
     public function add($data) {
@@ -150,5 +164,25 @@ class Model_issue extends CI_Model {
             $rows['data'][] = $row;
         }
         return $rows;
+    }
+
+    /**
+     * 受理
+     */
+    public function accept($id) {
+        return $this->db->update('issue', array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'accept_user' => $this->input->cookie('uids'), 'accept_time' => time()), array('id' => $id));
+    }
+
+    /**
+     * 验证是否受理
+     */
+    public function checkAccept($id) {
+        $row = $this->fetchOne($id);
+        if ($row) {
+            if ($row['accept_user']) {
+                return $row['accept_user'];
+            }
+        }
+        return false;
     }
 }
