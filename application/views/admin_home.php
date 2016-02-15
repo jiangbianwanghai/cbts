@@ -13,7 +13,7 @@
 
     <div class="contentpanel">
       <div class="row">
-
+        <?php if ($testTop10) { ?>
         <div class="col-sm-6 col-md-6">
           <div class="panel panel-default panel-alt widget-messaging">
           <div class="panel-heading">
@@ -22,8 +22,7 @@
             <div class="panel-body">
               <ul>
                 <?php
-                  if ($testTop10) {
-                    foreach ($testTop10 as $value) {
+                  foreach ($testTop10 as $value) {
                 ?>
                 <li>
                   <small class="pull-right">提测人：<?php echo $value['add_user'] ? '@'.$users[$value['add_user']]['realname'] : '-';?></small>
@@ -54,15 +53,13 @@
                     <?php } ?>
                   </small>
                 </li>
-                <?php
-                    }
-                  }
-                ?>
+                <?php } ?>
               </ul>
             </div><!-- panel-body -->
           </div><!-- panel -->
         </div><!-- col-sm-6 -->
-
+        <?php } ?>
+        <?php if ($issueTop10) { ?>
         <div class="col-sm-6 col-md-6">
           <div class="panel panel-default panel-alt widget-messaging">
           <div class="panel-heading">
@@ -71,8 +68,7 @@
             <div class="panel-body">
               <ul>
                 <?php
-                  if ($testTop10) {
-                    foreach ($issueTop10 as $value) {
+                  foreach ($issueTop10 as $value) {
                 ?>
                 <li>
                   <small class="pull-right">添加人：<?php echo $value['add_user'] ? '@'.$users[$value['add_user']]['realname'] : '-';?></small>
@@ -85,20 +81,17 @@
                     <?php if ($value['status'] == -1) {?> <span class="label label-white">已删除</span><?php }?>
                   </small>
                 </li>
-                <?php
-                    }
-                  }
-                ?>
+                <?php } ?>
               </ul>
             </div><!-- panel-body -->
           </div><!-- panel -->
         </div><!-- col-sm-6 -->
-
+        <?php } ?>
       </div>
     </div><!-- contentpanel -->
 
   </div><!-- mainpanel -->
-
+  <?php include('common_users.php');?>
 </section>
 
 <script src="/static/js/jquery-1.11.1.min.js"></script>

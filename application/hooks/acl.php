@@ -14,6 +14,9 @@ class acl{
             if (!$this->CI->input->cookie('uids')) {
                 redirect('/admin/signin', 'location');
             }
+            if (file_exists('./cache/users.conf.php')) {
+                require './cache/users.conf.php';
+            }
         }
     }
 }
