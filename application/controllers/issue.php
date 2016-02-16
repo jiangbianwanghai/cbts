@@ -140,13 +140,13 @@ class issue extends CI_Controller {
             $callBack = array(
                 'status' => true,
                 'message' => '删除成功',
-                'url' => '/issue/my'
+                'url' => '/issue/view/'.$id
             );
         } else {
             $callBack = array(
                 'status' => false,
                 'message' => '删除失败',
-                'url' => '/issue/my'
+                'url' => '/issue/view/'.$id
             );
         }
         echo json_encode($callBack);
@@ -169,18 +169,39 @@ class issue extends CI_Controller {
             echo json_encode($callBack);
             exit(); 
         }
+        $row = $this->issue->fetchOne($id);
+        if (!$row) {
+            $callBack = array(
+                'status' => false,
+                'message' => '数据错误',
+                'url' => '/'
+            );
+            echo json_encode($callBack);
+            exit();
+        }
+
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+        }
+
+        $this->config->load('extension', TRUE);
+        $home = $this->config->item('home', 'extension');
+
         $feedback = $this->issue->close($id);
+        $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：[".$row['issue_name']."]他给关闭了";
+        $this->rtx($users[$row['add_user']]['username'],$home,$subject);
+
         if ($feedback) {
             $callBack = array(
                 'status' => true,
                 'message' => '关闭成功',
-                'url' => '/issue/my'
+                'url' => '/issue/view/'.$id
             );
         } else {
             $callBack = array(
                 'status' => false,
                 'message' => '关闭失败',
-                'url' => '/issue/my'
+                'url' => '/issue/view/'.$id
             );
         }
         echo json_encode($callBack);
@@ -203,18 +224,37 @@ class issue extends CI_Controller {
             echo json_encode($callBack);
             exit(); 
         }
+        $row = $this->issue->fetchOne($id);
+        if (!$row) {
+            $callBack = array(
+                'status' => false,
+                'message' => '数据错误',
+                'url' => '/'
+            );
+            echo json_encode($callBack);
+            exit();
+        }
+
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+        }
+
+        $this->config->load('extension', TRUE);
+        $home = $this->config->item('home', 'extension');
         $feedback = $this->issue->resolve($id);
+        $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：[".$row['issue_name']."]已经解决并关闭了";
+        $this->rtx($users[$row['add_user']]['username'],$home,$subject);
         if ($feedback) {
             $callBack = array(
                 'status' => true,
                 'message' => '解决成功',
-                'url' => '/issue/my'
+                'url' => '/issue/view/'.$id
             );
         } else {
             $callBack = array(
                 'status' => false,
                 'message' => '解决失败',
-                'url' => '/issue/my'
+                'url' => '/issue/view/'.$id
             );
         }
         echo json_encode($callBack);
@@ -281,5 +321,30 @@ class issue extends CI_Controller {
     public function analytics() {
         $data['PAGE_TITLE'] = '任务统计';
         $this->load->view('issue_analytics', $data);
+    }
+
+    private function rtx($toList,$url,$subject)
+    {
+        $subject = str_replace(array('#', '&', ' '), '', $subject);
+        $pushInfo = array(
+            'to' => $toList,
+            'title' => '提测请求',     
+            'msg' => '[' . $subject . '|' . $url . ']',
+            'delaytime' => '',                                                                                                                                                               
+        );
+        $receiver        = iconv("utf-8","gbk//IGNORE", $pushInfo['to']);
+        $this->config->load('extension', TRUE);
+        $rtx = $this->config->item('rtx', 'extension');
+        $url = $rtx['url'].'/sendtortx.php?receiver=' . $receiver . '&notifytitle=' .$pushInfo['title']. '&notifymsg=' . $pushInfo['msg'] . '&delaytime=' . $pushInfo['delaytime'];           
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt ($curl, CURLOPT_TIMEOUT, 60);
+        curl_setopt($curl, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.9.2.8) Gecko/20100722 Firefox/3.6.8");
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, TRUE);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        $str = curl_exec($curl);
+        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        curl_close($curl);
     }
 }

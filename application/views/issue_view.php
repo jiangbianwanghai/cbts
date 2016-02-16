@@ -154,9 +154,26 @@
                                       <td><?php echo $value['last_user'] ? $users[$value['last_user']]['realname'] : '-';?></td>
                                       <td class="table-action">
                                         <?php if ($value['tice'] == 0 && $row['status'] == 1) {?><button class="btn btn-success btn-xs" id="tice" testid="<?php echo $value['id'];?>"><i class="fa fa-send"></i> 提测</button><?php }?>
+                                        <?php if ($value['tice'] == -1 ) {?><button class="btn btn-warning btn-xs" id="tice" testid="<?php echo $value['id'];?>"><i class="fa fa-exclamation-circle"></i> 提测失败,请再提测</button><?php }?>
+                                        <?php if ($value['tice'] == 3 ) {?><button class="btn btn-white btn-xs" testid="<?php echo $value['id'];?>" disabled><i class="fa fa-exclamation-circle"></i> 提测中……</button><?php }?>
                                         <?php if ($row['status'] == 1) {?>
+                                        <?php if ($value['tice'] < 1) {?>
                                         <a class="btn btn-white btn-xs" href="/test/edit/<?php echo $row['id'];?>/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 编辑</a>
-                                        <a class="btn btn-white btn-xs" href="javascript:;" class="delete-row" issueid="<?php echo $row['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-trash-o"></i> 删除</a>
+                                        <a class="btn btn-white btn-xs delete-row" href="javascript:;" issueid="<?php echo $row['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-trash-o"></i> 删除</a>
+                                        <?php }?>
+                                        <?php }?>
+                                        <?php if ($value['tice'] == 1) {?>
+                                        <div class="btn-group">
+                                          <button type="button" class="btn btn-xs btn-primary">更改测试状态</button>
+                                          <button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown">
+                                            <span class="caret"></span>
+                                            <span class="sr-only">Toggle Dropdown</span>
+                                          </button>
+                                          <ul class="dropdown-menu" role="menu">
+                                            <li><a href="javascript:;" id="success" testid="<?php echo $value['id'];?>">通过</a></li>
+                                            <li><a href="javascript:;" id="fail" testid="<?php echo $value['id'];?>">不通过</a></li>
+                                          </ul>
+                                        </div><!-- btn-group -->
                                         <?php }?>
                                       </td>
                                     </tr>
@@ -237,8 +254,47 @@
     });
   }
 
+  function changeTestStatus(obj1,obj2,obj3) {
+    $(obj1).click(function(){
+      var c = confirm(obj3);
+      if(c) {
+        id = $(this).attr("testid");
+        $.ajax({
+          type: "GET",
+          url: "/test/"+obj2+"/"+id,
+          dataType: "JSON",
+          success: function(data){
+            if (data.status) {
+              jQuery.gritter.add({
+                title: '提醒',
+                text: data.message,
+                  class_name: 'growl-success',
+                  image: '/static/images/screen.png',
+                sticky: false,
+                time: ''
+              });
+              setTimeout(function(){
+                location.href = data.url;
+              }, 2000);
+            } else {
+              jQuery.gritter.add({
+                title: '提醒',
+                text: data.message,
+                  class_name: 'growl-danger',
+                  image: '/static/images/screen.png',
+                sticky: false,
+                time: ''
+              });
+            };
+          }
+        });
+      }
+    });
+  }
+
   function tice() {
     $("#tice").click(function(){
+      $("#tice").attr("disabled", true);
       id = $(this).attr("testid");
       $.ajax({
         type: "GET",
@@ -284,6 +340,12 @@
     );
     $("#resolve").click(
       changeIssueStatus('#resolve','resolve','确认要解决吗？')
+    );
+    $("#success").click(
+      changeTestStatus('#success','success','确认要通过吗？')
+    );
+    $("#fail").click(
+      changeTestStatus('#fail','fail','确认要不通过，驳回吗？')
     );
     $("#tice").click(
       tice()

@@ -74,19 +74,26 @@ class test extends CI_Controller {
         if (!$data['row']) {
             exit("查询数据错误.");
         }
-        $testId = $this->uri->segment(4, 0);
-        $this->load->model('Model_test', 'test', TRUE);
-        $row = $this->test->fetchOne($testId);
-        if ($row) {
-            $data['test'] = $row;
-            if (file_exists('./cache/repos.conf.php')) {
-                require './cache/repos.conf.php';
-                $data['repos'] = $repos;
+        //只有发布人和受理人可以编辑
+        if ($data['row']['add_user'] == $this->input->cookie('uids') || $data['row']['accept_user'] == $this->input->cookie('uids')) {
+            $testId = $this->uri->segment(4, 0);
+            $this->load->model('Model_test', 'test', TRUE);
+            $row = $this->test->fetchOne($testId);
+            if ($row) {
+                $data['test'] = $row;
+                if (file_exists('./cache/repos.conf.php')) {
+                    require './cache/repos.conf.php';
+                    $data['repos'] = $repos;
+                }
+                $this->load->view('test_edit', $data);
+            } else {
+                echo '你查找的数据不存在.';
             }
-            $this->load->view('test_edit', $data);
         } else {
-            echo '你查找的数据不存在.';
+            exit("只有发布人和受理人可以编辑");
         }
+
+        
     }
 
     /**
@@ -152,17 +159,47 @@ class test extends CI_Controller {
         $testId = $this->uri->segment(3, 0);
         $issueId = $this->uri->segment(4, 0);
         $this->load->model('Model_test', 'test', TRUE);
-        $feedback = $this->test->del($testId);
-        if ($feedback) {
+        //验证传参是否正确
+        $row = $this->test->fetchOne($testId);
+        if (!$row) {
             $callBack = array(
-                'status' => true,
-                'message' => '删除成功',
+                'status' => false,
+                'message' => '查询数据错误',
                 'url' => '/issue/view/'.$issueId
             );
+            echo json_encode($callBack);
+            exit();
+        }
+
+        //只有发布人和受理人可以编辑
+        if ($row['add_user'] == $this->input->cookie('uids') || $row['accept_user'] == $this->input->cookie('uids')) {
+            //一旦提测都无法删除
+            if ($row['rank'] > 0) {
+                $callBack = array(
+                    'status' => false,
+                    'message' => '已经提测，无法删除',
+                    'url' => '/issue/view/'.$issueId
+                );
+            } else {
+                $feedback = $this->test->del($testId);
+                if ($feedback) {
+                    $callBack = array(
+                        'status' => true,
+                        'message' => '删除成功',
+                        'url' => '/issue/view/'.$issueId
+                    );
+                } else {
+                    $callBack = array(
+                        'status' => false,
+                        'message' => '删除失败',
+                        'url' => '/issue/view/'.$issueId
+                    );
+                }
+            }
         } else {
             $callBack = array(
                 'status' => false,
-                'message' => '删除失败',
+                'message' => '只有发布人和受理人可以删除',
                 'url' => '/issue/view/'.$issueId
             );
         }
@@ -251,25 +288,190 @@ class test extends CI_Controller {
 
             //标记提测受理
             $this->test->accept($id);
-            
-            $prev_flag = 10;
-            $reason = "说明";
+
+            //验证是否需要合并后提测
+            if (file_exists('./cache/repos.conf.php')) {
+                require './cache/repos.conf.php';
+            }
+            if (file_exists('./cache/users.conf.php')) {
+                require './cache/users.conf.php';
+            }
 
             $this->config->load('extension', TRUE);
-            $rtx = $this->config->item('rtx', 'extension');
+            $sqs = $this->config->item('sqs', 'extension');
+            $cap = $this->config->item('cap', 'extension');
 
-            //打队列，数据顺序：test_id[提测任务ID]|add_user[提测任务添加人]|repos_id[代码ID]|prev_flag[测试任务前一个标识]|curr_flag[当前标识]
-            $sqs_url = $rtx['sqs']."/?name=mergev2&opt=put&data=";
-            $sqs_url .= $row['id']."|".$row['add_user']."|".$row['repos_id']."|".$prev_flag."|".$row['test_flag']."|".$reason;
-            file_get_contents($sqs_url);
+            if ($repos[$row['repos_id']]['merge']) {
+                //获取该版本库的前面的一个提测任务
+                $prevRow = $this->test->prev($row['repos_id'], $row['id']);
+                if ($prevRow) {
+                    $oldversion = $row['trunk_flag'];
+                } else {
+                    $oldversion = 1;
+                }
 
-            
+                $reason = "说明";
+                
+
+                //打队列，数据顺序：test_id[提测任务ID]|add_user[提测任务添加人]|repos_id[代码ID]|oldversion[测试任务前一个标识]|curr_flag[当前标识]
+                $sqs_url = $sqs."/?name=mergev2&opt=put&data=";
+                $sqs_url .= $row['id']."|".$row['add_user']."|".$row['repos_id']."|".$oldversion."|".$row['test_flag']."|".$reason."&auth=mypass123";
+                file_get_contents($sqs_url);
+            } else {
+                //获取该版本库的前面的一个提测任务
+                $prevRow = $this->test->prev($row['repos_id'], $row['test_flag']);
+                if ($prevRow) {
+                    if ($prevRow['state'] == 0 || $prevRow['state'] == 1) {
+                        $callBack = array(
+                            'status' => true,
+                            'message' => '前面有测试任务正在进行，请稍后',
+                            'url' => '/issue/view/'.$row['issue_id']
+                        );
+                        $this->test->returntice($id);
+                        echo json_encode($callBack);
+                        exit();
+                    }
+                    $oldversion = $row['test_flag'];
+                } else {
+                    $oldversion = 1;
+                }
+
+                //组合发布API参数
+                $cap_url = $cap."/pub/deployapi/?oldversion=".$oldversion."&newversion=".$row['test_flag']."&appname=".$repos[$row['repos_id']]['repos_name_other']."&reason=".$users[$row['add_user']]['realname']."提交代码".$users[$row['accept_user']]['realname']."测试"."&secret=7232275";
+                //echo $cap_url;
+                $con = file_get_contents($cap_url);
+                //echo $con;
+                $con_arr = json_decode($con, true);
+
+                //获取PID
+                $pid = 0;
+                if ($con_arr['status']) {
+                    $pid = $con_arr['pid'];
+                } else {
+                    $this->test->returntice($id);
+                }
+                if ($pid) {
+                    //打队列
+                    $sqs_url = $sqs."/?name=stateupdatev2&opt=put&data=";
+                    $sqs_url .= $row['id']."|".$pid."|".$row['add_user']."|".$row['test_flag']."&auth=mypass123";
+                    file_get_contents($sqs_url);
+                }
+            }
             $callBack = array(
                 'status' => true,
-                'message' => '提测成功',
+                'message' => '提测中……',
                 'url' => '/issue/view/'.$row['issue_id']
             );
         } 
         echo json_encode($callBack);
+    }
+
+    /**
+     * 测试通过
+     */
+    public function success() {
+        $id = $this->uri->segment(3, 0);
+        $this->load->model('Model_test', 'test', TRUE);
+        $row = $this->test->fetchOne($id);
+        if (!$row) {
+            $callBack = array(
+                'status' => false,
+                'message' => '数据错误',
+                'url' => '/'
+            );
+            echo json_encode($callBack);
+            exit();
+        }
+
+        //
+        if (file_exists('./cache/repos.conf.php')) {
+            require './cache/repos.conf.php';
+        }
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+        }
+
+        $this->config->load('extension', TRUE);
+        $cap = $this->config->item('cap', 'extension');
+        $home = $this->config->item('home', 'extension');
+
+        $cap_url = $cap."/pub/vertifyapi/?appname=".$repos[$row['repos_id']]['repos_name_other']."&version=".$row['test_flag']."&operate=4&secret=7232275";
+        file_get_contents($cap_url);
+        $this->test->changestat($row['id'], 3);
+        $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：".$repos[$row['repos_id']]['repos_name']."(".$row['test_flag'].")测试通过，会择机发布到线上";
+        $this->rtx($users[$row['add_user']]['username'],$home,$subject);
+        $callBack = array(
+            'status' => true,
+            'message' => '操作成功',
+            'url' => '/issue/view/'.$row['issue_id']
+        );
+        echo json_encode($callBack);
+    }
+
+    /**
+     * 测试不通过
+     */
+    public function fail() {
+        $id = $this->uri->segment(3, 0);
+        $this->load->model('Model_test', 'test', TRUE);
+        $row = $this->test->fetchOne($id);
+        if (!$row) {
+            $callBack = array(
+                'status' => false,
+                'message' => '数据错误',
+                'url' => '/'
+            );
+            echo json_encode($callBack);
+            exit();
+        }
+
+        //
+        if (file_exists('./cache/repos.conf.php')) {
+            require './cache/repos.conf.php';
+        }
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+        }
+        
+        $this->config->load('extension', TRUE);
+        $cap = $this->config->item('cap', 'extension');
+        $home = $this->config->item('home', 'extension');
+
+        $cap_url = $cap."/pub/vertifyapi/?appname=".$repos[$row['repos_id']]['repos_name_other']."&version=".$row['test_flag']."&operate=2&secret=7232275";
+        file_get_contents($cap_url);
+        $this->test->changestat($row['id'], '-3');
+        $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：".$repos[$row['repos_id']]['repos_name']."(".$row['test_flag'].")测试不通过，并驳回了";
+        $this->rtx($users[$row['add_user']]['username'],$home,$subject);
+        $callBack = array(
+            'status' => true,
+            'message' => '操作成功',
+            'url' => '/issue/view/'.$row['issue_id']
+        );
+        echo json_encode($callBack);
+    }
+
+    private function rtx($toList,$url,$subject)
+    {
+        $subject = str_replace(array('#', '&', ' '), '', $subject);
+        $pushInfo = array(
+            'to' => $toList,
+            'title' => '提测请求',     
+            'msg' => '[' . $subject . '|' . $url . ']',
+            'delaytime' => '',                                                                                                                                                               
+        );
+        $receiver        = iconv("utf-8","gbk//IGNORE", $pushInfo['to']);
+        $this->config->load('extension', TRUE);
+        $rtx = $this->config->item('rtx', 'extension');
+        $url = $rtx['url'].'/sendtortx.php?receiver=' . $receiver . '&notifytitle=' .$pushInfo['title']. '&notifymsg=' . $pushInfo['msg'] . '&delaytime=' . $pushInfo['delaytime'];           
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt ($curl, CURLOPT_TIMEOUT, 60);
+        curl_setopt($curl, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.9.2.8) Gecko/20100722 Firefox/3.6.8");
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, TRUE);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        $str = curl_exec($curl);
+        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        curl_close($curl);
     }
 }
