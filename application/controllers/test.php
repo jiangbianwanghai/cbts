@@ -231,20 +231,44 @@ class test extends CI_Controller {
         if ($row) {
             $this->load->model('Model_issue', 'issue', TRUE);
             $flag = $this->issue->checkAccept($row['issue_id']);
-            if ($flag) {
-                $callBack = array(
-                    'status' => false,
-                    'message' => '已经被别人受理了',
-                    'url' => '/issue/view/'.$row['issue_id']
-                );
-            } else {
+            if (!$flag) {
+                //进行受理
                 $this->issue->accept($row['issue_id']);
                 $callBack = array(
                     'status' => true,
                     'message' => '受理成功',
                     'url' => '/issue/view/'.$row['issue_id']
                 );
+            } else {
+                if ($flag != $this->input->cookie('uids')) {
+                    $callBack = array(
+                        'status' => false,
+                        'message' => '已经被别人受理了',
+                        'url' => '/issue/view/'.$row['issue_id']
+                    );
+                }
             }
+
+            //标记提测受理
+            $this->test->accept($id);
+            
+            $prev_flag = 10;
+            $reason = "说明";
+
+            $this->config->load('extension', TRUE);
+            $rtx = $this->config->item('rtx', 'extension');
+
+            //打队列，数据顺序：test_id[提测任务ID]|add_user[提测任务添加人]|repos_id[代码ID]|prev_flag[测试任务前一个标识]|curr_flag[当前标识]
+            $sqs_url = $rtx['sqs']."/?name=mergev2&opt=put&data=";
+            $sqs_url .= $row['id']."|".$row['add_user']."|".$row['repos_id']."|".$prev_flag."|".$row['test_flag']."|".$reason;
+            file_get_contents($sqs_url);
+
+            
+            $callBack = array(
+                'status' => true,
+                'message' => '提测成功',
+                'url' => '/issue/view/'.$row['issue_id']
+            );
         } 
         echo json_encode($callBack);
     }

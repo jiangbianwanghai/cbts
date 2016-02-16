@@ -12,7 +12,7 @@ class Model_issue extends CI_Model {
      */
     public function top10() {
         $rows = false;
-        $sql = "SELECT * FROM `choc_issue` ORDER BY `id` DESC LIMIT 0,10";
+        $sql = "SELECT * FROM `choc_issue` WHERE `status` = 1 ORDER BY `id` DESC LIMIT 0,10";
         $query = $this->db->query($sql);
         foreach ($query->result_array() as $row)
         {

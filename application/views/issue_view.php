@@ -21,7 +21,7 @@
       <div class="panel">
           <div class="panel-heading">
               <h5 class="bug-key-title">ISSUE-<?php echo $row['id'];?></h5>
-              <div class="panel-title"><?php if ($row['status'] == '-1') { ?><s><?php echo $row['issue_name'];?></s><?php } else { ?><?php echo $row['issue_name'];?><?php } ?></div>
+              <div class="panel-title"><?php if ($row['status'] == '-1') { ?><s><?php echo $row['issue_name'];?></s><?php } else { ?><?php echo $row['issue_name'];?><?php } ?> <?php if ($row['resolve']) { ?> <span class="label label-success">已解决</span><?php }?> <?php if ($row['status'] == 0) {?> <span class="label label-default">已关闭</span><?php }?></div>
           </div><!-- panel-heading-->
           <div class="panel-body">
               <?php if ($row['status'] == 1 && $row['resolve'] == 0) { ?>
@@ -46,15 +46,15 @@
                           <div class="col-sm-6">
                             <div class="row">
                                 <div class="col-xs-6">提交人</div>
-                                <div class="col-xs-6"><?php echo $row['add_user'] ? '@'.$users[$row['add_user']]['realname'] : '-';?></div>
+                                <div class="col-xs-6"><?php echo $row['add_user'] ? $users[$row['add_user']]['realname'] : '-';?></div>
                             </div>
                             <div class="row">
                                 <div class="col-xs-6">最后修改人</div>
-                                <div class="col-xs-6"><?php echo $row['last_user'] ? '@'.$users[$row['last_user']]['realname'] : '-';?></div>
+                                <div class="col-xs-6"><?php echo $row['last_user'] ? $users[$row['last_user']]['realname'] : '-';?></div>
                             </div>
                             <div class="row">
                                 <div class="col-xs-6">受理人</div>
-                                <div class="col-xs-6"><?php echo $row['accept_user'] ? '@'.$users[$row['accept_user']]['realname'] : '-';?></div>
+                                <div class="col-xs-6"><?php echo $row['accept_user'] ? $users[$row['accept_user']]['realname'] : '-';?></div>
                             </div>
                             <div class="row">
                                 <div class="col-xs-6">相关链接：</div>
@@ -114,7 +114,6 @@
                                       <th>添加人</th>
                                       <th>最后修改人</th>
                                       <th>&nbsp;</th>
-                                      <th>&nbsp;</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -151,15 +150,13 @@
                                         <button class="btn btn-success btn-xs">通过</button>
                                         <?php } ?>
                                       </td>
-                                      <td><?php echo $value['add_user'] ? '@'.$users[$value['add_user']]['realname'] : '-';?></td>
-                                      <td><?php echo $value['last_user'] ? '@'.$users[$value['last_user']]['realname'] : '-';?></td>
-                                      <td>
-                                        <?php if ($value['tice'] == 0) {?><button class="btn btn-success btn-xs" id="tice" testid="<?php echo $value['id'];?>"><i class="fa fa-send"></i> 提测</button><?php }?>
-                                      </td>
+                                      <td><?php echo $value['add_user'] ? $users[$value['add_user']]['realname'] : '-';?></td>
+                                      <td><?php echo $value['last_user'] ? $users[$value['last_user']]['realname'] : '-';?></td>
                                       <td class="table-action">
+                                        <?php if ($value['tice'] == 0 && $row['status'] == 1) {?><button class="btn btn-success btn-xs" id="tice" testid="<?php echo $value['id'];?>"><i class="fa fa-send"></i> 提测</button><?php }?>
                                         <?php if ($row['status'] == 1) {?>
-                                        <a href="/test/edit/<?php echo $row['id'];?>/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 编辑</a>
-                                        <a href="javascript:;" class="delete-row" issueid="<?php echo $row['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-trash-o"></i> 删除</a>
+                                        <a class="btn btn-white btn-xs" href="/test/edit/<?php echo $row['id'];?>/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 编辑</a>
+                                        <a class="btn btn-white btn-xs" href="javascript:;" class="delete-row" issueid="<?php echo $row['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-trash-o"></i> 删除</a>
                                         <?php }?>
                                       </td>
                                     </tr>

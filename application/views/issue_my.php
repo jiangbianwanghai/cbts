@@ -51,7 +51,7 @@
                             <?php if ($value['status'] == 0) {?> <span class="label label-default">已关闭</span><?php }?>
                             <?php if ($value['status'] == -1) {?> <span class="label label-white">已删除</span><?php }?>
                           </td>
-                          <td><?php echo $value['add_user'] ? '@'.$users[$value['add_user']]['realname'] : '-';?></td>
+                          <td><?php echo $value['last_user'] ? $users[$value['last_user']]['realname'] : '-';?></td>
                           <td class="table-action">
                             <?php if ($value['status'] == 1 && $value['resolve'] == 0) { ?>
                             <a href="/test/add/<?php echo $value['id'];?>"><i class="fa fa-slack"></i> 提交代码</a>

@@ -12,7 +12,7 @@ class Model_test extends CI_Model {
      */
     public function top10() {
         $rows = false;
-        $sql = "SELECT * FROM `choc_test` ORDER BY `id` DESC LIMIT 0,10";
+        $sql = "SELECT * FROM `choc_test` WHERE `status` = 1 ORDER BY `id` DESC LIMIT 0,10";
         $query = $this->db->query($sql);
         foreach ($query->result_array() as $row)
         {
@@ -108,7 +108,7 @@ class Model_test extends CI_Model {
             }
             return false;
         } else {
-            return false;
+            return true;
         }
     }
 
@@ -169,5 +169,12 @@ class Model_test extends CI_Model {
             $rows['data'][] = $row;
         }
         return $rows;
+    }
+
+    /**
+     * 受理
+     */
+    public function accept($id) {
+        return $this->db->update('test', array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'accept_user' => $this->input->cookie('uids'), 'accept_time' => time()), array('id' => $id));
     }
 }

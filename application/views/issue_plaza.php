@@ -33,6 +33,7 @@
                           <th>名称</th>
                           <th>受理进度</th>
                           <th>状态</th>
+                          <th>添加人</th>
                           <th>最后修改</th>
                           <th>&nbsp;</th>
                         </tr>
@@ -49,9 +50,10 @@
                           <td>
                             <?php if ($value['status'] == 1) {?> <span class="label label-primary">正常</span><?php }?>
                             <?php if ($value['status'] == 0) {?> <span class="label label-default">已关闭</span><?php }?>
-                            <?php if ($value['status'] == -1) {?> <span class="label label-white">已删除</span><?php }?>
+                            <?php if ($value['status'] == -1) {?> <span class="label label-warning">已删除</span><?php }?>
                           </td>
-                          <td><?php echo $value['add_user'] ? '@'.$users[$value['add_user']]['realname'] : '-';?></td>
+                          <td><?php echo $value['add_user'] ? $users[$value['add_user']]['realname'] : '-';?></td>
+                          <td><?php echo $value['last_user'] ? $users[$value['last_user']]['realname'] : '-';?></td>
                           <td class="table-action"></td>
                         </tr>
                         <?php

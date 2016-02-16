@@ -42,6 +42,7 @@ class Model_users extends CI_Model {
         }
         $res = $this->db->insert('users', $data);
         if ($res) {
+            $feedback['uid'] = $this->db->insert_id();
             $feedback['status'] = true;
             $feedback['message'] = 'success';
         } else {

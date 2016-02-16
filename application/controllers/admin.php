@@ -6,7 +6,7 @@ class admin extends CI_Controller {
     {
         $data['PAGE_TITLE'] = '我的控制台';
         $this->load->helper('url');
-        if (!$this->input->cookie('username')) {
+        if (!$this->input->cookie('uids')) {
             redirect('/admin/signin', 'location');
         } else {
             $this->load->model('Model_issue', 'issue', TRUE);
@@ -53,6 +53,7 @@ class admin extends CI_Controller {
                 $this->input->set_cookie('realname', $username, 86400);
                 $feedback = $this->users->add(array('username' => $username, 'password' => md5($password)));
                 if ($feedback['status']) {
+                    $this->input->set_cookie('uids', $feedback['uid'], 86400);
                     $this->users->cacheRefresh();
                     $array = array(
                         'status' => true,
@@ -76,7 +77,7 @@ class admin extends CI_Controller {
      */
     public function signin() {
         $this->load->helper(array('form', 'url'));
-        if ($this->input->cookie('username')) {
+        if ($this->input->cookie('uids')) {
             redirect('/', 'location');
         }
         $this->load->view('admin_login');
@@ -88,6 +89,9 @@ class admin extends CI_Controller {
         set_cookie('uids',0,0);
         set_cookie('username',0,0);
         set_cookie('realname',0,0);
+        delete_cookie('uids');
+        delete_cookie('username');
+        delete_cookie('realname');
         redirect('/', 'location');
     }
     
