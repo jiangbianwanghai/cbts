@@ -46,7 +46,7 @@
                         ?>
                         <tr id="tr-<?php echo $value['id'];?>">
                           <td><?php echo $value['id'];?></td>
-                          <td><a href="/test/repos/<?php echo $value['repos_id'];?>"><?php echo $repos[$value['repos_id']]['repos_name'];?></a></td>
+                          <td><?php echo $repos[$value['repos_id']]['repos_name'];?></td>
                           <td><?php echo $value['test_flag'];?></td>
                           <td><a href="/issue/view/<?php echo $value['issue_id'];?>">ISSUE-<?php echo $value['issue_id'];?></a></td>
                           <td><?php echo $value['add_time'] ? date("Y-m-d H:i:s", $value['add_time']) : '-';?></td>

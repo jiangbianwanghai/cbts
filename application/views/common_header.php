@@ -46,7 +46,8 @@
         <li class="nav-parent<?php if ($this->uri->segment(1, '') == 'test') echo ' active';?>"><a href="javascript:;"><i class="fa fa-medkit"></i> <span>提测管理</span></a>
           <ul class="children"<?php if ($this->uri->segment(1, '') == 'test') echo ' style="display: block"';?>>
             <li<?php if (($this->uri->segment(2, '') == 'my' || $this->uri->segment(2, '') == 'add') && $this->uri->segment(1, '') == 'test') echo ' class="active"';?>><a href="/test/my"><i class="fa fa-caret-right"></i> 我的提测</a></li>
-            <li<?php if ($this->uri->segment(1, '') == 'test' && ($this->uri->segment(2, '') == 'plaza' || $this->uri->segment(2, '') == 'edit')) echo ' class="active"';?>><a href="/test/plaza"><i class="fa fa-caret-right"></i> 提测广场</a></li>
+            <li<?php if ($this->uri->segment(1, '') == 'test' && ($this->uri->segment(2, '') == 'plaza' || $this->uri->segment(2, '') == 'edit'  || $this->uri->segment(2, '') == 'repos')) echo ' class="active"';?>><a href="/test/plaza"><i class="fa fa-caret-right"></i> 提测广场</a></li>
+            <li<?php if ($this->uri->segment(1, '') == 'test' && $this->uri->segment(2, '') == 'todo') echo ' class="active"';?>><a href="/test/todo"><i class="fa fa-caret-right"></i> 我的待测</a></li>
             <li<?php if ($this->uri->segment(1, '') == 'test' && $this->uri->segment(2, '') == 'analytics') echo ' class="active"';?>><a href="/test/analytics"><i class="fa fa-caret-right"></i> 提测统计</a></li>
           </ul>
         </li>

@@ -57,7 +57,7 @@
                         }
                       } else {
                     ?>
-                      <tr><td colspan="7" align="center">提测列表为空~</td></tr>
+                      <tr><td colspan="7" align="center">待测列表为空~</td></tr>
                     <?php
                       }
                     ?>

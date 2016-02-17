@@ -245,6 +245,65 @@ class test extends CI_Controller {
     }
 
     /**
+     * 某个版本库的提测列表
+     */
+    public function repos() {
+        $this->config->load('extension', TRUE);
+        $config = $this->config->item('pages', 'extension');
+        $repos_id = trim($this->uri->segment(3, 0));
+        $offset = trim($this->uri->segment(4, 0));
+        $this->load->model('Model_test', 'test', TRUE);
+        $rows = $this->test->repos($repos_id, $offset, $config['per_page']);
+        $data['rows'] = $rows['data'];
+        if (file_exists('./cache/repos.conf.php')) {
+            require './cache/repos.conf.php';
+            $data['repos'] = $repos;
+        }
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+            $data['users'] = $users;
+        }
+        $data['PAGE_TITLE'] = $repos[$repos_id]['repos_name'].'的提测历史';
+
+        $this->load->library('pagination');
+        $config['total_rows'] = $rows['total_rows'];
+        $config['cur_page'] = $offset;
+        $config['base_url'] = '/test/repos';
+        $this->pagination->initialize($config);
+        $data['pages'] = $this->pagination->create_links();
+        $this->load->view('test_repos', $data);
+    }
+
+    /**
+     * 我的待测
+     */
+    public function todo() {
+        $data['PAGE_TITLE'] = '我的待测';
+        $this->config->load('extension', TRUE);
+        $config = $this->config->item('pages', 'extension');
+        $repos_id = trim($this->uri->segment(3, 0));
+        $offset = trim($this->uri->segment(4, 0));
+        $this->load->model('Model_test', 'test', TRUE);
+        $rows = $this->test->todo($offset, $config['per_page']);
+        $data['rows'] = $rows['data'];
+        if (file_exists('./cache/repos.conf.php')) {
+            require './cache/repos.conf.php';
+            $data['repos'] = $repos;
+        }
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+            $data['users'] = $users;
+        }
+        $this->load->library('pagination');
+        $config['total_rows'] = $rows['total_rows'];
+        $config['cur_page'] = $offset;
+        $config['base_url'] = '/test/todo';
+        $this->pagination->initialize($config);
+        $data['pages'] = $this->pagination->create_links();
+        $this->load->view('test_todo', $data);
+    }
+
+    /**
      * 分析
      */
     public function analytics() {
@@ -302,9 +361,20 @@ class test extends CI_Controller {
             $cap = $this->config->item('cap', 'extension');
 
             if ($repos[$row['repos_id']]['merge']) {
+                //需要合并
                 //获取该版本库的前面的一个提测任务
-                $prevRow = $this->test->prev($row['repos_id'], $row['id']);
+                $prevRow = $this->test->prev($row['repos_id'], $row['test_flag']);
                 if ($prevRow) {
+                    if ($prevRow['state'] == 0 || $prevRow['state'] == 1) {
+                        $callBack = array(
+                            'status' => true,
+                            'message' => '前面有测试任务正在进行，请稍后',
+                            'url' => '/issue/view/'.$row['issue_id']
+                        );
+                        $this->test->returntice($id);
+                        echo json_encode($callBack);
+                        exit();
+                    }
                     $oldversion = $row['trunk_flag'];
                 } else {
                     $oldversion = 1;
