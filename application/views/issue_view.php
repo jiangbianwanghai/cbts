@@ -153,8 +153,8 @@
                                       <td><?php echo $value['add_user'] ? $users[$value['add_user']]['realname'] : '-';?></td>
                                       <td><?php echo $value['last_user'] ? $users[$value['last_user']]['realname'] : '-';?></td>
                                       <td class="table-action">
-                                        <?php if ($value['tice'] == 0 && $row['status'] == 1) {?><button class="btn btn-success btn-xs" id="tice" testid="<?php echo $value['id'];?>"><i class="fa fa-send"></i> 提测</button><?php }?>
-                                        <?php if ($value['tice'] == -1 ) {?><button class="btn btn-warning btn-xs" id="tice" testid="<?php echo $value['id'];?>"><i class="fa fa-exclamation-circle"></i> 提测失败,请再提测</button><?php }?>
+                                        <?php if ($value['tice'] == 0 && $row['status'] == 1) {?><button class="btn btn-success btn-xs tice"  id="tice-<?php echo $value['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-send"></i> 提测</button><?php }?>
+                                        <?php if ($value['tice'] == -1 ) {?><button class="btn btn-warning btn-xs tice" id="tice-<?php echo $value['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-exclamation-circle"></i> 提测失败,请再提测</button><?php }?>
                                         <?php if ($value['tice'] == 3 ) {?><button class="btn btn-white btn-xs" testid="<?php echo $value['id'];?>" disabled><i class="fa fa-exclamation-circle"></i> 提测中……</button><?php }?>
                                         <?php if ($row['status'] == 1) {?>
                                         <?php if ($value['tice'] < 1) {?>
@@ -162,7 +162,7 @@
                                         <a class="btn btn-white btn-xs delete-row" href="javascript:;" issueid="<?php echo $row['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-trash-o"></i> 删除</a>
                                         <?php }?>
                                         <?php }?>
-                                        <?php if ($value['tice'] == 1) {?>
+                                        <?php if ($value['tice'] == 1 && $value['state'] != 3) {?>
                                         <div class="btn-group">
                                           <button type="button" class="btn btn-xs btn-primary">更改测试状态</button>
                                           <button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -292,9 +292,25 @@
     });
   }
 
-  function tice() {
-    $("#tice").click(function(){
-      $("#tice").attr("disabled", true);
+  $(document).ready(function(){
+    $("#del").click(
+      changeIssueStatus('#del','del','确认要删除吗？')
+    );
+    $("#close").click(
+      changeIssueStatus('#close','close','确认要关闭吗？')
+    );
+    $("#resolve").click(
+      changeIssueStatus('#resolve','resolve','确认要解决吗？')
+    );
+    $("#success").click(
+      changeTestStatus('#success','success','确认要通过吗？')
+    );
+    $("#fail").click(
+      changeTestStatus('#fail','fail','确认要不通过，驳回吗？')
+    );
+
+    $(".tice").click(function(){
+      $(this).attr("disabled", true);
       id = $(this).attr("testid");
       $.ajax({
         type: "GET",
@@ -329,27 +345,6 @@
         }
       });
     });
-  }
-
-  $(document).ready(function(){
-    $("#del").click(
-      changeIssueStatus('#del','del','确认要删除吗？')
-    );
-    $("#close").click(
-      changeIssueStatus('#close','close','确认要关闭吗？')
-    );
-    $("#resolve").click(
-      changeIssueStatus('#resolve','resolve','确认要解决吗？')
-    );
-    $("#success").click(
-      changeTestStatus('#success','success','确认要通过吗？')
-    );
-    $("#fail").click(
-      changeTestStatus('#fail','fail','确认要不通过，驳回吗？')
-    );
-    $("#tice").click(
-      tice()
-    );
 
     $(".delete-row").click(function(){
       var c = confirm("确认要删除吗？");

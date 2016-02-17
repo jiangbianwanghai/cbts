@@ -143,6 +143,30 @@ class Model_issue extends CI_Model {
     }
 
     /**
+     * 我的受理列表
+     */
+    public function todo($offset = 0, $per_page = 20) {
+        $rows = array(
+            'total_rows' => 0,
+            'data' => false
+        );
+
+        //获取总数
+        $sql = "SELECT * FROM `choc_issue` WHERE `accept_user` = '".$this->input->cookie('uids')."' AND `status` = '1'";
+        $query = $this->db->query($sql);
+        $rows['total_rows'] = $query->num_rows;
+
+        //获取翻页数据
+        $sql = "SELECT * FROM `choc_issue` WHERE `accept_user` = '".$this->input->cookie('uids')."' AND `status` = '1' ORDER BY `id` DESC LIMIT ".$offset .", ".$per_page."";
+        $query = $this->db->query($sql);
+        foreach ($query->result_array() as $row)
+        {
+            $rows['data'][] = $row;
+        }
+        return $rows;
+    }
+
+    /**
      * 任务广场列表
      */
     public function plaza($offset = 0, $per_page = 20) {

@@ -7,7 +7,7 @@
   <meta name="author" content="">
   <link rel="shortcut icon" href="images/favicon.png" type="image/png">
 
-  <title>巧克力(Choc)提测系统-Beta</title>
+  <title>巧克力(CBTS)提测系统-Beta</title>
 
   <link href="/static/css/style.default.css" rel="stylesheet">
 
@@ -30,12 +30,12 @@
                 
                 <div class="signin-info">
                     <div class="logopanel">
-                        <h1><span>[</span> Choc <span>]</span></h1>
+                        <h1><span>[</span> CBTS <sup>beta</sup> <span>]</span></h1>
                     </div><!-- logopanel -->
                 
                     <div class="mb20"></div>
                 
-                    <h5><strong>欢迎使用巧克力（Choc）提测系统</strong></h5>
+                    <h5><strong>Chocolate Bug Tracker System</strong></h5>
                     <ul>
                         <li><i class="fa fa-arrow-circle-o-right mr5"></i> 跟踪提测代码进度</li>
                         <li><i class="fa fa-arrow-circle-o-right mr5"></i> 提测状态Rtx提醒</li>

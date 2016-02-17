@@ -380,7 +380,7 @@ class test extends CI_Controller {
                     $oldversion = 1;
                 }
 
-                $reason = "说明";
+                $reason = $users[$row['add_user']]['realname']."提测，并由".$users[$this->input->cookie('uids')]['realname']."进行测试，解决的问题是ISSUE-".$row['issue_id'];
                 
 
                 //打队列，数据顺序：test_id[提测任务ID]|add_user[提测任务添加人]|repos_id[代码ID]|oldversion[测试任务前一个标识]|curr_flag[当前标识]
@@ -465,7 +465,7 @@ class test extends CI_Controller {
         $cap = $this->config->item('cap', 'extension');
         $home = $this->config->item('home', 'extension');
 
-        $cap_url = $cap."/pub/vertifyapi/?appname=".$repos[$row['repos_id']]['repos_name_other']."&version=".$row['test_flag']."&operate=4&secret=7232275";
+        $cap_url = $cap."/pub/vertifyapi/?appname=".$repos[$row['repos_id']]['repos_name_other']."&version=".$row['trunk_flag']."&operate=4&secret=7232275";
         file_get_contents($cap_url);
         $this->test->changestat($row['id'], 3);
         $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：".$repos[$row['repos_id']]['repos_name']."(".$row['test_flag'].")测试通过，会择机发布到线上";
@@ -507,7 +507,7 @@ class test extends CI_Controller {
         $cap = $this->config->item('cap', 'extension');
         $home = $this->config->item('home', 'extension');
 
-        $cap_url = $cap."/pub/vertifyapi/?appname=".$repos[$row['repos_id']]['repos_name_other']."&version=".$row['test_flag']."&operate=2&secret=7232275";
+        $cap_url = $cap."/pub/vertifyapi/?appname=".$repos[$row['repos_id']]['repos_name_other']."&version=".$row['trunk_flag']."&operate=2&secret=7232275";
         file_get_contents($cap_url);
         $this->test->changestat($row['id'], '-3');
         $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：".$repos[$row['repos_id']]['repos_name']."(".$row['test_flag'].")测试不通过，并驳回了";

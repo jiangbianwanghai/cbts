@@ -83,6 +83,30 @@ class issue extends CI_Controller {
     }
 
     /**
+     * 我的受理列表
+     */
+    public function todo() {
+        $data['PAGE_TITLE'] = '我的受理列表';
+        $this->config->load('extension', TRUE);
+        $config = $this->config->item('pages', 'extension');
+        $offset = trim($this->uri->segment(3, 0));
+        $this->load->model('Model_issue', 'issue', TRUE);
+        $rows = $this->issue->todo($offset, $config['per_page']);
+        $data['rows'] = $rows['data'];
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+            $data['users'] = $users;
+        }
+        $this->load->library('pagination');
+        $config['total_rows'] = $rows['total_rows'];
+        $config['cur_page'] = $offset;
+        $config['base_url'] = '/issue/todo';
+        $this->pagination->initialize($config);
+        $data['pages'] = $this->pagination->create_links();
+        $this->load->view('issue_todo', $data);
+    }
+
+    /**
      * 任务广场列表
      */
     public function plaza() {
