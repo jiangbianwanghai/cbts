@@ -49,7 +49,7 @@
                       <td><?php echo $value['test_flag'];?></td>
                       <td><a href="/issue/view/<?php echo $value['issue_id'];?>">ISSUE-<?php echo $value['issue_id'];?></a></td>
                       <td><?php echo $value['add_time'] ? date("Y-m-d H:i:s", $value['add_time']) : '-';?></td>
-                      <td><?php echo $value['last_user'] ? '@'.$users[$value['last_user']]['realname'] : '-';?></td>
+                      <td><?php echo $value['last_user'] ? $users[$value['last_user']]['realname'] : '-';?></td>
                       <td><?php echo $value['last_time'] ? date("Y-m-d H:i:s", $value['last_time']) : '-';?></td>
                       <td><?php if ($value['test_summary']) {?><a href="javascript:;" class="view" testid="<?php echo $value['id'];?>" data-toggle="modal" data-target=".bs-example-modal">有说明</a><?php } ?></td>
                     </tr>

@@ -39,7 +39,7 @@
               ?>
               <tr id="tr-<?php echo $value['id'];?>">
                 <td><?php echo $value['id'];?></td>
-                <td><?php echo $value['repos_name'];?></td>
+                <td><a href="/test/repos/<?php echo $value['id'];?>"><?php echo $repos[$value['id']]['repos_name'];?></a></td>
                 <td><?php echo $value['repos_name_other'];?></td>
                 <td><input type="text" value="<?php echo $value['repos_url'];?>" id="readonlyinput" readonly="readonly" title="<?php echo $value['repos_url'];?>" data-toggle="tooltip" data-trigger="hover" class="form-control tooltips" /></td>
                 <td><input type="text" placeholder="<?php echo $value['repos_summary'];?>" class="form-control popovers" data-toggle="popover" data-placement="top" data-original-title="说明" data-content="<?php echo $value['repos_summary'];?>" data-trigger="click" /></td>

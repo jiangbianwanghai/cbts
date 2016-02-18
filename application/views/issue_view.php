@@ -84,7 +84,19 @@
                             </div>
                             <div class="row">
                                 <div class="col-xs-6">都谁贡献了代码</div>
-                                <div class="col-xs-6">-</div>
+                                <div class="col-xs-6">
+                                  <?php 
+                                  if ($shareUsers) {
+                                    foreach($shareUsers as $val) {
+                                      echo $users[$val]['realname']." ";
+                                  ?> 
+                                  <?php 
+                                    }
+                                  }else { 
+                                    echo '-';
+                                  }
+                                  ?>
+                                </div>
                             </div>
                           </div><!-- col-sm-6 -->
                       </div><!-- row -->
@@ -156,6 +168,7 @@
                                         <?php if ($value['tice'] == 0 && $row['status'] == 1) {?><button class="btn btn-success btn-xs tice"  id="tice-<?php echo $value['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-send"></i> 提测</button><?php }?>
                                         <?php if ($value['tice'] == -1 ) {?><button class="btn btn-warning btn-xs tice" id="tice-<?php echo $value['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-exclamation-circle"></i> 提测失败,请再提测</button><?php }?>
                                         <?php if ($value['tice'] == 3 ) {?><button class="btn btn-white btn-xs" testid="<?php echo $value['id'];?>" disabled><i class="fa fa-exclamation-circle"></i> 提测中……</button><?php }?>
+                                        <?php if ($value['state'] == 3 && $value['rank'] == 1 && $this->input->cookie('uids') == 1) {?><button class="btn btn-success btn-xs cap_production"  id="cap_production-<?php echo $value['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-send"></i> 发布到生产环境</button><?php }?>
                                         <?php if ($row['status'] == 1) {?>
                                         <?php if ($value['tice'] < 1) {?>
                                         <a class="btn btn-white btn-xs" href="/test/edit/<?php echo $row['id'];?>/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 编辑</a>
@@ -315,6 +328,44 @@
       $.ajax({
         type: "GET",
         url: "/test/tice/"+id,
+        dataType: "JSON",
+        success: function(data){
+          if (data.status) {
+            jQuery.gritter.add({
+              title: '提醒',
+              text: data.message,
+                class_name: 'growl-success',
+                image: '/static/images/screen.png',
+              sticky: false,
+              time: ''
+            });
+            setTimeout(function(){
+              location.href = data.url;
+            }, 2000);
+          } else {
+            jQuery.gritter.add({
+              title: '提醒',
+              text: data.message,
+                class_name: 'growl-danger',
+                image: '/static/images/screen.png',
+              sticky: false,
+              time: ''
+            });
+            setTimeout(function(){
+              location.href = data.url;
+            }, 2000);
+          };
+        }
+      });
+    });
+
+    //发布到生产环境
+    $(".cap_production").click(function(){
+      $(this).attr("disabled", true);
+      id = $(this).attr("testid");
+      $.ajax({
+        type: "GET",
+        url: "/test/cap_production/"+id,
         dataType: "JSON",
         success: function(data){
           if (data.status) {

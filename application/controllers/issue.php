@@ -55,6 +55,8 @@ class issue extends CI_Controller {
             require './cache/users.conf.php';
             $data['users'] = $users;
         }
+        //获取贡献代码的用户信息
+        $data['shareUsers'] = $this->test->shareUsers($id);
         $this->load->view('issue_view', $data);
     }
 

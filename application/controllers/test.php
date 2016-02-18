@@ -30,6 +30,18 @@ class test extends CI_Controller {
      */
     public function add_ajax() {
     	$this->load->model('Model_test', 'test', TRUE);
+        //提测版本号不能为空
+        $test_flag = $this->input->post('test_flag');
+        if ($test_flag <= 0) {
+            $callBack = array(
+                'status' => false,
+                'message' => '提测版本号不能为空',
+                'url' => '/test/add/'.$this->input->post('issue_id')
+            );
+            echo json_encode($callBack);
+            exit();
+        }
+        //提测版本号不能已经存在
         $checkTestFlag = $this->test->checkFlag($this->input->post('repos_id'), $this->input->post('test_flag'));
         if (!$checkTestFlag) {
             $callBack = array(
@@ -375,7 +387,7 @@ class test extends CI_Controller {
                         echo json_encode($callBack);
                         exit();
                     }
-                    $oldversion = $row['trunk_flag'];
+                    $oldversion = $prevRow['trunk_flag'];
                 } else {
                     $oldversion = 1;
                 }
@@ -401,13 +413,13 @@ class test extends CI_Controller {
                         echo json_encode($callBack);
                         exit();
                     }
-                    $oldversion = $row['test_flag'];
+                    $oldversion = $prevRow['test_flag'];
                 } else {
                     $oldversion = 1;
                 }
 
                 //组合发布API参数
-                $cap_url = $cap."/pub/deployapi/?oldversion=".$oldversion."&newversion=".$row['test_flag']."&appname=".$repos[$row['repos_id']]['repos_name_other']."&reason=".$users[$row['add_user']]['realname']."提交代码".$users[$row['accept_user']]['realname']."测试"."&secret=7232275";
+                $cap_url = $cap."/pub/deployapi/?oldversion=".$oldversion."&newversion=".$row['test_flag']."&appname=".$repos[$row['repos_id']]['repos_name_other']."&reason=".$users[$row['add_user']]['realname']."提交代码".$users[$this->input->cookie('uids')]['realname']."测试"."&secret=7232275";
                 //echo $cap_url;
                 $con = file_get_contents($cap_url);
                 //echo $con;
@@ -448,6 +460,17 @@ class test extends CI_Controller {
                 'status' => false,
                 'message' => '数据错误',
                 'url' => '/'
+            );
+            echo json_encode($callBack);
+            exit();
+        }
+
+        //不是受理本人不能操作
+        if ($row['accept_user'] != $this->input->cookie('uids')) {
+            $callBack = array(
+                'status' => false,
+                'message' => '不是受理人本人没有权限操作',
+                'url' => '/issue/view/'.$row['issue_id']
             );
             echo json_encode($callBack);
             exit();
@@ -495,6 +518,17 @@ class test extends CI_Controller {
             exit();
         }
 
+        //不是受理本人不能操作
+        if ($row['accept_user'] != $this->input->cookie('uids')) {
+            $callBack = array(
+                'status' => false,
+                'message' => '不是受理人本人没有权限操作',
+                'url' => '/issue/view/'.$row['issue_id']
+            );
+            echo json_encode($callBack);
+            exit();
+        }
+
         //
         if (file_exists('./cache/repos.conf.php')) {
             require './cache/repos.conf.php';
@@ -507,11 +541,82 @@ class test extends CI_Controller {
         $cap = $this->config->item('cap', 'extension');
         $home = $this->config->item('home', 'extension');
 
+        //组合发布API参数
+        $cap_url = $cap."/pub/deployapi/?oldversion=".$oldversion."&newversion=".$row['test_flag']."&appname=".$repos[$row['repos_id']]['repos_name_other']."&reason=".$users[$row['add_user']]['realname']."提交代码".$users[$this->input->cookie('uids')]['realname']."测试"."&secret=7232275";
+        //echo $cap_url;
+        $con = file_get_contents($cap_url);
+
         $cap_url = $cap."/pub/vertifyapi/?appname=".$repos[$row['repos_id']]['repos_name_other']."&version=".$row['trunk_flag']."&operate=2&secret=7232275";
         file_get_contents($cap_url);
         $this->test->changestat($row['id'], '-3');
         $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：".$repos[$row['repos_id']]['repos_name']."(".$row['test_flag'].")测试不通过，并驳回了";
         $this->rtx($users[$row['add_user']]['username'],$home,$subject);
+        $callBack = array(
+            'status' => true,
+            'message' => '操作成功',
+            'url' => '/issue/view/'.$row['issue_id']
+        );
+        echo json_encode($callBack);
+    }
+
+    /**
+     * 发布到生产环境
+     */
+    public function cap_production() {
+
+        //验证ID是否合法
+        $id = $this->uri->segment(3, 0);
+        $this->load->model('Model_test', 'test', TRUE);
+        $row = $this->test->fetchOne($id);
+        if (!$row) {
+            $callBack = array(
+                'status' => false,
+                'message' => '数据错误',
+                'url' => '/'
+            );
+            echo json_encode($callBack);
+            exit();
+        }
+
+        //获取该版本库的前面的一个提测任务
+        $prevRow = $this->test->prev($row['repos_id'], $row['test_flag']);
+        if ($prevRow) {
+            $oldversion = $prevRow['test_flag'];
+        } else {
+            $oldversion = 1;
+        }
+
+        //
+        if (file_exists('./cache/repos.conf.php')) {
+            require './cache/repos.conf.php';
+        }
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+        }
+
+        $this->config->load('extension', TRUE);
+        $cap = $this->config->item('cap', 'extension');
+        $sqs = $this->config->item('sqs', 'extension');
+
+        //组合发布API参数
+        $cap_url = $cap."/pub/deployapi/?oldversion=".$oldversion."&newversion=".$row['trunk_flag']."&appname=".$repos[$row['repos_id']]['repos_name_other']."&reason=".$users[$row['accept_user']]['realname']."上线"."&environment=formal&secret=7232275";
+        //echo $cap_url;
+        $con = file_get_contents($cap_url);
+        //echo $con;
+        $con_arr = json_decode($con, true);
+
+        //获取PID
+        $pid = 0;
+        if ($con_arr['status']) {
+            $pid = $con_arr['pid'];
+        }
+        if ($pid) {
+            //打队列
+            $sqs_url = $sqs."/?name=capproduction&opt=put&data=";
+            $sqs_url .= $row['id']."|".$pid."|".$row['add_user']."|".$row['trunk_flag']."&auth=mypass123";
+            file_get_contents($sqs_url);
+        }
+
         $callBack = array(
             'status' => true,
             'message' => '操作成功',

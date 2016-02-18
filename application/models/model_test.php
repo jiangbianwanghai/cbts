@@ -253,4 +253,15 @@ class Model_test extends CI_Model {
     public function changestat($id, $state) {
         return $this->db->update('test', array('state' => $state), array('id' => $id));
     }
+
+    public function shareUsers($issue_id) {
+        $rows = false;
+        $sql = "SELECT `add_user` from `choc_test` WHERE `issue_id` = '".$issue_id."' group by `add_user`";
+        $query = $this->db->query($sql);
+        foreach ($query->result_array() as $row)
+        {
+            $rows[] = $row['add_user'];
+        }
+        return $rows;
+    }
 }

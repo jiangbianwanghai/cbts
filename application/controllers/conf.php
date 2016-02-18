@@ -62,6 +62,11 @@ class conf extends CI_Controller {
             require './cache/users.conf.php';
             $data['users'] = $users;
         }
+
+        if (file_exists('./cache/repos.conf.php')) {
+            require './cache/repos.conf.php';
+            $data['repos'] = $repos;
+        }
         
         $this->load->view('conf_repos_list', $data);
     }

@@ -33,9 +33,10 @@
                           <th>版本库</th>
                           <th>版本标识</th>
                           <th>相关任务</th>
-                          <th>添加时间</th>
-                          <th>修改人</th>
-                          <th>最后修改时间</th>
+                          <th>所处阶段</th>
+                          <th>提测状态</th>
+                          <th>添加人</th>
+                          <th>最后修改人</th>
                           <th></th>
                         </tr>
                       </thead>
@@ -49,9 +50,33 @@
                           <td><a href="/test/repos/<?php echo $value['repos_id'];?>"><?php echo $repos[$value['repos_id']]['repos_name'];?></a></td>
                           <td><?php echo $value['test_flag'];?></td>
                           <td><a href="/issue/view/<?php echo $value['issue_id'];?>">ISSUE-<?php echo $value['issue_id'];?></a></td>
-                          <td><?php echo $value['add_time'] ? date("Y-m-d H:i:s", $value['add_time']) : '-';?></td>
-                          <td><?php echo $value['last_user'] ? '@'.$users[$value['last_user']]['realname'] : '-';?></td>
-                          <td><?php echo $value['last_time'] ? date("Y-m-d H:i:s", $value['last_time']) : '-';?></td>
+                          <td>
+                            <?php if ($value['rank'] == 0) {?>
+                            <button class="btn btn-default btn-xs">开发环境</button>
+                            <?php } ?>
+                            <?php if ($value['rank'] == 1) {?>
+                            <button class="btn btn-primary btn-xs">测试环境</button>
+                            <?php } ?>
+                            <?php if ($value['rank'] == 2) {?>
+                            <button class="btn btn-success btn-xs">生产环境</button>
+                            <?php } ?>
+                          </td>
+                          <td>
+                            <?php if ($value['state'] == 0) {?>
+                            <button class="btn btn-default btn-xs">待测</button>
+                            <?php } ?>
+                            <?php if ($value['state'] == 1) {?>
+                            <button class="btn btn-primary btn-xs">测试中……</button>
+                            <?php } ?>
+                            <?php if ($value['state'] == -3) {?>
+                            <button class="btn btn-danger btn-xs">不通过</button>
+                            <?php } ?>
+                            <?php if ($value['state'] == 3) {?>
+                            <button class="btn btn-success btn-xs">通过</button>
+                            <?php } ?>
+                          </td>
+                          <td><?php echo $value['add_user'] ? $users[$value['add_user']]['realname'] : '-';?></td>
+                          <td><?php echo $value['last_user'] ? $users[$value['last_user']]['realname'] : '-';?></td>
                           <td><?php if ($value['test_summary']) {?><a href="javascript:;" class="view" testid="<?php echo $value['id'];?>" data-toggle="modal" data-target=".bs-example-modal">有说明</a><?php } ?></td>
                         </tr>
                         <?php
