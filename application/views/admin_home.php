@@ -12,6 +12,11 @@
     </div>
 
     <div class="contentpanel">
+      <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>温馨提示：</strong>如果一个任务涉及到研发和前端，那么这个任务由研发创建后，前端可以在任务中增加提测，如果这个任务仅仅涉及到前端代码的修改，由前端人员自行创建。原则上，提测的版本需要和任务相关联。
+      </div>
+
       <div class="row">
         <?php if ($testTop10) { ?>
         <div class="col-sm-6 col-md-6">
