@@ -22,6 +22,10 @@ class test extends CI_Controller {
             require './cache/repos.conf.php';
             $data['repos'] = $repos;
         }
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+            $data['users'] = $users;
+        }
         $this->load->view('test_add', $data);
     }
 
@@ -56,10 +60,25 @@ class test extends CI_Controller {
             'issue_id' => $this->input->post('issue_id'),
             'repos_id' => $this->input->post('repos_id'),
             'test_flag' => $this->input->post('test_flag'),
-            'test_summary' => $this->input->post('test_summary')
+            'test_summary' => $this->input->post('test_summary'),
+            'accept_user' => $this->input->post('accept_user'),
+            'accept_time' => time()
         );
         $feedback = $this->test->add($post);
         if ($feedback['status']) {
+            //发RTX消息提醒受理人
+            if (file_exists('./cache/repos.conf.php')) {
+                require './cache/repos.conf.php';
+            }
+            if (file_exists('./cache/users.conf.php')) {
+                require './cache/users.conf.php';
+            }
+            $this->config->load('extension', TRUE);
+            $home = $this->config->item('home', 'extension');
+
+            $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：".$repos[$this->input->post('repos_id')]['repos_name']."(".$this->input->post('test_flag').")请求提测";
+            $this->rtx($users[$this->input->post('accept_user')]['username'],$home,$subject);
+
             $callBack = array(
                 'status' => true,
                 'message' => '提交成功',

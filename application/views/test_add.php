@@ -35,7 +35,7 @@
                 </div>
 
                 <div class="form-group">
-                  <label class="col-sm-3 control-label">代码库</label>
+                  <label class="col-sm-3 control-label">代码库 <span class="asterisk">*</span></label>
                   <div class="col-sm-9">
                     <select id="repos_id" name="repos_id" class="select2-2" data-placeholder="请选择代码库" required>
                       <option value=""></option>
@@ -58,6 +58,27 @@
                     <input type="text" id="test_flag" name="test_flag" class="form-control" placeholder="请输入版本号" required />
                   </div>
                 </div>
+
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">让谁受理你的请求 <span class="asterisk">*</span></label>
+                  <div class="col-sm-9">
+                    <select id="accept_user" name="accept_user" class="select2" data-placeholder="请选择受理人" required>
+                      <option value=""></option>
+                      <?php
+                      if (isset($users) && $users) {
+                        foreach ($users as $value) {
+                          if ($value['role'] == 1) {
+                      ?>
+                      <option value="<?php echo $value['uid'];?>"><?php echo $value['realname'];?></option>
+                      <?php
+                          }
+                        }
+                      }
+                      ?>
+                    </select>
+                  </div>
+                </div>
+
                 <div class="form-group">
                   <label class="col-sm-3 control-label">说明 </label>
                   <div class="col-sm-9">
@@ -163,6 +184,10 @@ jQuery(document).ready(function(){
   });
 
   jQuery(".select2-2").select2({
+      width: '100%'
+  });
+
+  jQuery(".select2").select2({
       width: '100%'
   });
 
