@@ -52,27 +52,30 @@
                           <td><a href="/issue/view/<?php echo $value['issue_id'];?>">ISSUE-<?php echo $value['issue_id'];?></a></td>
                           <td>
                             <?php if ($value['rank'] == 0) {?>
-                            <button class="btn btn-default btn-xs">开发环境</button>
+                            <button class="btn btn-default btn-xs"><i class="fa fa-coffee"></i> 开发环境</button>
                             <?php } ?>
                             <?php if ($value['rank'] == 1) {?>
-                            <button class="btn btn-primary btn-xs">测试环境</button>
+                            <button class="btn btn-primary btn-xs"><?php if ($value['state'] == 5) { ?><i class="fa fa-exclamation-circle"></i> <s>测试环境</s><?php } else {?><i class="fa fa-check-circle"></i> 测试环境<?php } ?></button>
                             <?php } ?>
                             <?php if ($value['rank'] == 2) {?>
-                            <button class="btn btn-success btn-xs">生产环境</button>
+                            <button class="btn btn-success btn-xs"><i class="fa fa-check-circle"></i> 生产环境</button>
                             <?php } ?>
                           </td>
                           <td>
                             <?php if ($value['state'] == 0) {?>
-                            <button class="btn btn-default btn-xs">待测</button>
+                            <button class="btn btn-default btn-xs"><i class="fa fa-coffee"></i> 待测</button>
                             <?php } ?>
                             <?php if ($value['state'] == 1) {?>
-                            <button class="btn btn-primary btn-xs">测试中……</button>
+                            <button class="btn btn-primary btn-xs"><i class="fa fa-clock-o"></i> 测试中……</button>
                             <?php } ?>
                             <?php if ($value['state'] == -3) {?>
-                            <button class="btn btn-danger btn-xs">不通过</button>
+                            <button class="btn btn-danger btn-xs"><i class="fa fa-exclamation-circle"></i> 不通过</button>
                             <?php } ?>
                             <?php if ($value['state'] == 3) {?>
-                            <button class="btn btn-success btn-xs">通过</button>
+                            <button class="btn btn-success btn-xs"><i class="fa fa-check-circle"></i> 通过</button>
+                            <?php } ?>
+                            <?php if ($value['state'] == 5) {?>
+                            <button class="btn btn-success btn-xs"><i class="fa fa-exclamation-circle"></i> 已被后续版本覆盖</button>
                             <?php } ?>
                           </td>
                           <td><?php echo $value['add_user'] ? $users[$value['add_user']]['realname'] : '-';?></td>

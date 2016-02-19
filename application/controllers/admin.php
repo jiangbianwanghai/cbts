@@ -36,10 +36,17 @@ class admin extends CI_Controller {
         $this->load->model('Model_users', 'users', TRUE);
         $row = $this->users->checkUser($username, $password);
         if ($row) {
+
+            //写Cookie刷新登录时间
             $this->input->set_cookie('uids', $row['uid'], 86400*15);
             $this->input->set_cookie('username', $username, 86400*15);
             $this->input->set_cookie('realname', $row['realname'], 86400*15);
             $feedback = $this->users->updateLoginTime($row['uid']);
+
+            //刷新用户文件缓存
+            $this->users->cacheRefresh();
+
+            //返回响应状态
             $array = array(
                 'status' => true,
                 'message' => '登录成功',

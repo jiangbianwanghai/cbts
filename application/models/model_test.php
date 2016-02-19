@@ -109,6 +109,22 @@ class Model_test extends CI_Model {
     }
 
     /**
+     * 验证后续的版本是否正在测试，如果后续版本已经发布，则当前版本状态改为已覆盖
+     */
+    public function checkOver($id, $repos_id, $test_flag) {
+        $sql = "SELECT * FROM `choc_test` WHERE `repos_id` = '".$repos_id."' AND `test_flag` > '".$test_flag."' AND `rank` = 2 ORDER BY `id` ASC LIMIT 1";
+        $query = $this->db->query($sql);
+        if ($query->num_rows()) {
+            //更改为已覆盖
+            $this->db->update('test', array('state' => '5'), array('id' => $id));
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * 验证版本号是否可以添加
      */
     public function checkFlag($repos_id, $test_flag) {
@@ -248,12 +264,21 @@ class Model_test extends CI_Model {
     }
 
     /**
+     * 更改提测状态为发布中，用于往线上发布
+     */
+    public function cap($id) {
+        return $this->db->update('test', array('tice' => '5'), array('id' => $id));
+    }
+
+    /**
      * 更改状态
      */
     public function changestat($id, $state) {
         return $this->db->update('test', array('state' => $state), array('id' => $id));
     }
-
+    /**
+     * 贡献代码者
+     */
     public function shareUsers($issue_id) {
         $rows = false;
         $sql = "SELECT `add_user` from `choc_test` WHERE `issue_id` = '".$issue_id."' group by `add_user`";
@@ -261,6 +286,16 @@ class Model_test extends CI_Model {
         foreach ($query->result_array() as $row)
         {
             $rows[] = $row['add_user'];
+        }
+        return $rows;
+    }
+
+    public function analytics() {
+        $sql = "SELECT COUNT(`id`) as `num`, `add_user` FROM `choc_test` GROUP BY `add_user` ORDER BY `num` DESC";
+        $query = $this->db->query($sql);
+        foreach ($query->result_array() as $row)
+        {
+            $rows[] = $row;
         }
         return $rows;
     }

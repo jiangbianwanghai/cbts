@@ -139,27 +139,30 @@
                                       <td><?php echo $value['test_flag'];?></td>
                                       <td>
                                         <?php if ($value['rank'] == 0) {?>
-                                        <button class="btn btn-default btn-xs">开发环境</button>
+                                        <button class="btn btn-default btn-xs"><i class="fa fa-coffee"></i> 开发环境</button>
                                         <?php } ?>
                                         <?php if ($value['rank'] == 1) {?>
-                                        <button class="btn btn-primary btn-xs">测试环境</button>
+                                        <button class="btn btn-primary btn-xs"><?php if ($value['state'] == 5) { ?><i class="fa fa-exclamation-circle"></i> <s>测试环境</s><?php } else {?><i class="fa fa-check-circle"></i> 测试环境<?php } ?></button>
                                         <?php } ?>
                                         <?php if ($value['rank'] == 2) {?>
-                                        <button class="btn btn-success btn-xs">生产环境</button>
+                                        <button class="btn btn-success btn-xs"><i class="fa fa-check-circle"></i> 生产环境</button>
                                         <?php } ?>
                                       </td>
                                       <td>
                                         <?php if ($value['state'] == 0) {?>
-                                        <button class="btn btn-default btn-xs">待测</button>
+                                        <button class="btn btn-default btn-xs"><i class="fa fa-coffee"></i> 待测</button>
                                         <?php } ?>
                                         <?php if ($value['state'] == 1) {?>
-                                        <button class="btn btn-primary btn-xs">测试中……</button>
+                                        <button class="btn btn-primary btn-xs"><i class="fa fa-clock-o"></i> 测试中……</button>
                                         <?php } ?>
                                         <?php if ($value['state'] == -3) {?>
-                                        <button class="btn btn-danger btn-xs">不通过</button>
+                                        <button class="btn btn-danger btn-xs"><i class="fa fa-exclamation-circle"></i> 不通过</button>
                                         <?php } ?>
                                         <?php if ($value['state'] == 3) {?>
-                                        <button class="btn btn-success btn-xs">通过</button>
+                                        <button class="btn btn-success btn-xs"><i class="fa fa-check-circle"></i> 通过</button>
+                                        <?php } ?>
+                                        <?php if ($value['state'] == 5) {?>
+                                        <button class="btn btn-success btn-xs"><i class="fa fa-exclamation-circle"></i> 已被后续版本覆盖</button>
                                         <?php } ?>
                                       </td>
                                       <td><?php echo $value['add_user'] ? $users[$value['add_user']]['realname'] : '-';?></td>
@@ -167,8 +170,9 @@
                                       <td class="table-action">
                                         <?php if ($value['tice'] == 0 && $row['status'] == 1) {?><button class="btn btn-success btn-xs tice"  id="tice-<?php echo $value['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-send"></i> 提测</button><?php }?>
                                         <?php if ($value['tice'] == -1 ) {?><button class="btn btn-warning btn-xs tice" id="tice-<?php echo $value['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-exclamation-circle"></i> 提测失败,请再提测</button><?php }?>
-                                        <?php if ($value['tice'] == 3 ) {?><button class="btn btn-white btn-xs" testid="<?php echo $value['id'];?>" disabled><i class="fa fa-exclamation-circle"></i> 提测中……</button><?php }?>
-                                        <?php if ($value['state'] == 3 && $value['rank'] == 1 && $this->input->cookie('uids') == 1) {?><button class="btn btn-success btn-xs cap_production"  id="cap_production-<?php echo $value['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-send"></i> 发布到生产环境</button><?php }?>
+                                        <?php if ($value['tice'] == 3 ) {?><button class="btn btn-white btn-xs" testid="<?php echo $value['id'];?>" disabled><img src="/static/images/loaders/loader3.gif" alt="" /> 提测中……</button><?php }?>
+                                        <?php if ($value['state'] == 3 && $value['rank'] == 1 && $value['tice'] < 5 && $users[$value['accept_user']]['role'] == 1) {?><button class="btn btn-success btn-xs cap_production"  id="cap_production-<?php echo $value['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-send"></i> 发布到生产环境</button><?php }?>
+                                        <?php if ($value['tice'] == 5 ) {?><button class="btn btn-white btn-xs" disabled><img src="/static/images/loaders/loader3.gif" alt="" /> 发布中……</button><?php }?>
                                         <?php if ($row['status'] == 1) {?>
                                         <?php if ($value['tice'] < 1) {?>
                                         <a class="btn btn-white btn-xs" href="/test/edit/<?php echo $row['id'];?>/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 编辑</a>
@@ -183,8 +187,8 @@
                                             <span class="sr-only">Toggle Dropdown</span>
                                           </button>
                                           <ul class="dropdown-menu" role="menu">
-                                            <li><a href="javascript:;" id="success" testid="<?php echo $value['id'];?>">通过</a></li>
-                                            <li><a href="javascript:;" id="fail" testid="<?php echo $value['id'];?>">不通过</a></li>
+                                            <li><a href="javascript:;" class="success" testid="<?php echo $value['id'];?>">通过</a></li>
+                                            <li><a href="javascript:;" class="fail" testid="<?php echo $value['id'];?>">不通过</a></li>
                                           </ul>
                                         </div><!-- btn-group -->
                                         <?php }?>
@@ -315,12 +319,76 @@
     $("#resolve").click(
       changeIssueStatus('#resolve','resolve','确认要解决吗？')
     );
-    $("#success").click(
-      changeTestStatus('#success','success','确认要通过吗？')
-    );
-    $("#fail").click(
-      changeTestStatus('#fail','fail','确认要不通过，驳回吗？')
-    );
+    $(".success").click(function(){
+      var c = confirm('确认要通过吗？');
+      if(c) {
+        id = $(this).attr("testid");
+        $.ajax({
+          type: "GET",
+          url: "/test/success/"+id,
+          dataType: "JSON",
+          success: function(data){
+            if (data.status) {
+              jQuery.gritter.add({
+                title: '提醒',
+                text: data.message,
+                  class_name: 'growl-success',
+                  image: '/static/images/screen.png',
+                sticky: false,
+                time: ''
+              });
+              setTimeout(function(){
+                location.href = data.url;
+              }, 2000);
+            } else {
+              jQuery.gritter.add({
+                title: '提醒',
+                text: data.message,
+                  class_name: 'growl-danger',
+                  image: '/static/images/screen.png',
+                sticky: false,
+                time: ''
+              });
+            };
+          }
+        });
+      }
+    });
+    $(".fail").click(function(){
+      var c = confirm('确认要不通过，驳回吗？');
+      if(c) {
+        id = $(this).attr("testid");
+        $.ajax({
+          type: "GET",
+          url: "/test/fail/"+id,
+          dataType: "JSON",
+          success: function(data){
+            if (data.status) {
+              jQuery.gritter.add({
+                title: '提醒',
+                text: data.message,
+                  class_name: 'growl-success',
+                  image: '/static/images/screen.png',
+                sticky: false,
+                time: ''
+              });
+              setTimeout(function(){
+                location.href = data.url;
+              }, 2000);
+            } else {
+              jQuery.gritter.add({
+                title: '提醒',
+                text: data.message,
+                  class_name: 'growl-danger',
+                  image: '/static/images/screen.png',
+                sticky: false,
+                time: ''
+              });
+            };
+          }
+        });
+      }
+    });
 
     $(".tice").click(function(){
       $(this).attr("disabled", true);

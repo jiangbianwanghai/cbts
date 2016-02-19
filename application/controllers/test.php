@@ -339,7 +339,19 @@ class test extends CI_Controller {
      */
     public function analytics() {
         $data['PAGE_TITLE'] = '测试统计';
-        $this->load->view('issue_analytics', $data);
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+            $data['users'] = $users;
+        }
+        $this->load->model('Model_test', 'test', TRUE);
+        $data['pie'] = $this->test->analytics();
+        $data['all_tice'] = 0;
+        if ($data['pie']) {
+            foreach ($data['pie'] as $key => $value) {
+                $data['all_tice'] += $value['num'];
+            }
+        }
+        $this->load->view('test_analytics', $data);
     }
 
     /**
@@ -597,6 +609,29 @@ class test extends CI_Controller {
             exit();
         }
 
+        //不是受理本人不能操作
+        if ($row['accept_user'] != $this->input->cookie('uids')) {
+            $callBack = array(
+                'status' => false,
+                'message' => '不是受理人本人没有权限操作',
+                'url' => '/issue/view/'.$row['issue_id']
+            );
+            echo json_encode($callBack);
+            exit();
+        }
+
+        //验证后续的样式是否提测，如果提测通过就不能再发当前这个版本，并标记，已覆盖
+        $over_flag = $this->test->checkOver($row['id'], $row['repos_id'], $row['test_flag']);
+        if ($over_flag) {
+            $callBack = array(
+                'status' => false,
+                'message' => '后续版本已经上线，此版本已被覆盖',
+                'url' => '/issue/view/'.$row['issue_id']
+            );
+            echo json_encode($callBack);
+            exit();
+        }
+
         //获取该版本库的前面的一个提测任务
         $prevRow = $this->test->prev($row['repos_id'], $row['test_flag']);
         if ($prevRow) {
@@ -628,6 +663,8 @@ class test extends CI_Controller {
         $pid = 0;
         if ($con_arr['status']) {
             $pid = $con_arr['pid'];
+            //更改状态为发布中
+            $this->test->cap($row['id']);
         }
         if ($pid) {
             //打队列
