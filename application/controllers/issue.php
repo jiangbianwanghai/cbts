@@ -349,13 +349,33 @@ class issue extends CI_Controller {
         $this->load->view('issue_analytics', $data);
     }
 
+    public function change_accept() {
+        $id = $this->uri->segment(3, 0);
+        $uid = $this->input->post("value");
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+        }
+
+
+        $this->load->model('Model_issue', 'issue', TRUE);
+        $this->issue->update_accept($id, $uid);
+
+        $username =  $users[$uid]['username'];
+        $this->config->load('extension', TRUE);
+        $home = $this->config->item('home', 'extension');
+        $url = $home."/issue/view/".$id;
+        $subject = $users[$this->input->cookie('uids')]['realname']."指派了一个任务给你";
+        $this->rtx($username,$url,$subject);
+        echo 1;
+    }
+
     private function rtx($toList,$url,$subject)
     {
         $subject = str_replace(array('#', '&', ' '), '', $subject);
         $pushInfo = array(
             'to' => $toList,
             'title' => '提测请求',     
-            'msg' => '[' . $subject . '|' . $url . ']',
+            'msg' => $subject . '[' . $url . '|' . $url . ']',
             'delaytime' => '',                                                                                                                                                               
         );
         $receiver        = iconv("utf-8","gbk//IGNORE", $pushInfo['to']);

@@ -281,6 +281,13 @@ class Model_test extends CI_Model {
     }
 
     /**
+     * 更改受理
+     */
+    public function update_accept($id, $uid) {
+        return $this->db->update('test', array('last_time' => time(), 'last_user' => $uid, 'accept_user' => $uid, 'accept_time' => time()), array('id' => $id));
+    }
+
+    /**
      * 提测失败回执提测状态
      */
     public function returntice($id) {

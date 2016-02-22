@@ -681,13 +681,36 @@ class test extends CI_Controller {
         echo json_encode($callBack);
     }
 
+    public function change_accept() {
+        $name = $this->input->post("name");
+        $name_arr = explode('-', $name);
+        $issue_id = $name_arr[1];
+        $test_id = $name_arr[2];
+        $uid = $this->input->post("value");
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+        }
+
+
+        $this->load->model('Model_test', 'test', TRUE);
+        $this->test->update_accept($test_id, $uid);
+
+        $username =  $users[$uid]['username'];
+        $this->config->load('extension', TRUE);
+        $home = $this->config->item('home', 'extension');
+        $url = $home."/issue/view/".$issue_id;
+        $subject = $users[$this->input->cookie('uids')]['realname']."指派了一个提测给你";
+        $this->rtx($username,$url,$subject);
+        echo 1;
+    }
+
     private function rtx($toList,$url,$subject)
     {
         $subject = str_replace(array('#', '&', ' '), '', $subject);
         $pushInfo = array(
             'to' => $toList,
             'title' => '提测请求',     
-            'msg' => '[' . $subject . '|' . $url . ']',
+            'msg' => $subject . '[' . $url . '|' . $url . ']',
             'delaytime' => '',                                                                                                                                                               
         );
         $receiver        = iconv("utf-8","gbk//IGNORE", $pushInfo['to']);

@@ -50,11 +50,11 @@
                             </div>
                             <div class="row">
                                 <div class="col-xs-6">最后修改人</div>
-                                <div class="col-xs-6"><?php echo $row['add_user'] ? '<a href="/conf/profile/'.$row['last_user'].'">'.$users[$row['last_user']]['realname'].'</a>' : '-';?></div>
+                                <div class="col-xs-6"><?php echo $row['last_user'] ? '<a href="/conf/profile/'.$row['last_user'].'">'.$users[$row['last_user']]['realname'].'</a>' : '-';?></div>
                             </div>
                             <div class="row">
                                 <div class="col-xs-6">受理人</div>
-                                <div class="col-xs-6"><?php echo $row['add_user'] ? '<a href="/conf/profile/'.$row['accept_user'].'">'.$users[$row['accept_user']]['realname'].'</a>' : '-';?></div>
+                                <div class="col-xs-6"><a href="javascript:;" id="country" data-type="select2" data-value="<?php echo $row['accept_user'];?>" data-title="更改受理人"></a></div>
                             </div>
                             <div class="row">
                                 <div class="col-xs-6">相关链接：</div>
@@ -124,6 +124,7 @@
                                       <th>所处阶段</th>
                                       <th>提测状态</th>
                                       <th>添加人</th>
+                                      <th>受理人</th>
                                       <th>最后修改人</th>
                                       <th>&nbsp;</th>
                                     </tr>
@@ -166,6 +167,7 @@
                                         <?php } ?>
                                       </td>
                                       <td><?php echo $value['add_user'] ? '<a href="/conf/profile/'.$value['add_user'].'">'.$users[$value['add_user']]['realname'].'</a>' : '-';?></td>
+                                      <td><?php if ($value['state'] == 3 || $value['state'] == 5) {?><?php echo $value['accept_user'] ? '<a href="/conf/profile/'.$value['accept_user'].'">'.$users[$value['accept_user']]['realname'].'</a>' : '-';?><?php } else {?><a href="javascript:;" id="test-<?php echo $row['id'];?>-<?php echo $value['id'];?>" class="country" data-type="select2" data-value="<?php echo $value['accept_user'];?>" data-title="更改受理人"></a><?php }?></td>
                                       <td><?php echo $value['last_user'] ? '<a href="/conf/profile/'.$value['last_user'].'">'.$users[$value['last_user']]['realname'].'</a>' : '-';?></td>
                                       <td class="table-action">
                                         <?php if ($value['tice'] == 0 && $row['status'] == 1) {?><button class="btn btn-success btn-xs tice"  id="tice-<?php echo $value['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-send"></i> 提测</button><?php }?>
@@ -230,6 +232,10 @@
 <script src="/static/js/jquery.datatables.min.js"></script>
 <script src="/static/js/select2.min.js"></script>
 <script src="/static/js/jquery.gritter.min.js"></script>
+<script src="/static/js/select2.min.js"></script>
+<script src="/static/js/bootstrap-editable.min.js"></script>
+<script src="/static/js/bootstrap-datetimepicker.min.js"></script>
+<script src="/static/js/moment.js"></script>
 
 <script src="/static/js/custom.js"></script>
 <script>
@@ -493,6 +499,40 @@
           }
         });
       }
+    });
+
+    // Select 2 (dropdown mode)
+    var countries = [];
+    $.each({<?php foreach($users as $val) { if ($val['role'] == 1) {?>"<?php echo $val['uid'];?>": "<?php echo $val['realname'];?>",<?php } }?> }, function(k, v) {
+        countries.push({id: k, text: v});
+    });
+    
+    jQuery('#country').editable({
+        inputclass: 'sel-xs',
+        source: countries,
+        type: 'text',
+        pk: 1,
+        url: '/issue/change_accept/<?php echo $row["id"];?>',
+        send: 'always',
+        select2: {
+            width: 150,
+            placeholder: '更改受理人',
+            allowClear: true
+        },
+    });
+
+    jQuery('.country').editable({
+        inputclass: 'sel-xs',
+        source: countries,
+        type: 'text',
+        pk: 1,
+        url: '/test/change_accept',
+        send: 'always',
+        select2: {
+            width: 150,
+            placeholder: '更改受理人',
+            allowClear: true
+        },
     });
 
   });

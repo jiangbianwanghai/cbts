@@ -222,6 +222,13 @@ class Model_issue extends CI_Model {
     }
 
     /**
+     * 更改受理
+     */
+    public function update_accept($id, $uid) {
+        return $this->db->update('issue', array('last_time' => time(), 'last_user' => $uid, 'accept_user' => $uid, 'accept_time' => time()), array('id' => $id));
+    }
+
+    /**
      * 验证是否受理
      */
     public function checkAccept($id) {
