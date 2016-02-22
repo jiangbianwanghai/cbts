@@ -52,8 +52,8 @@
                             <?php if ($value['status'] == 0) {?> <span class="label label-default">已关闭</span><?php }?>
                             <?php if ($value['status'] == -1) {?> <span class="label label-warning">已删除</span><?php }?>
                           </td>
-                          <td><?php echo $value['add_user'] ? $users[$value['add_user']]['realname'] : '-';?></td>
-                          <td><?php echo $value['last_user'] ? $users[$value['last_user']]['realname'] : '-';?></td>
+                          <td><?php echo $value['add_user'] ? '<a href="/conf/profile/'.$value['add_user'].'">'.$users[$value['add_user']]['realname'].'</a>' : '-';?></td>
+                          <td><?php echo $value['last_user'] ? '<a href="/conf/profile/'.$value['last_user'].'">'.$users[$value['last_user']]['realname'].'</a>' : '-';?></td>
                           <td class="table-action"></td>
                         </tr>
                         <?php

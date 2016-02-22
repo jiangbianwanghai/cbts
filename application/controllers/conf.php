@@ -139,4 +139,40 @@ class conf extends CI_Controller {
         }
         echo json_encode($callBack);
     }
+
+    /**
+     * 个人资料面板
+     */
+    public function profile() {
+        $data['PAGE_TITLE'] = '个人资料';
+        $id = $this->uri->segment(3, 0);
+        $data['id'] = $id;
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+            if (!isset($users[$id])) {
+                exit('你查找的数据不存在');
+            }
+            $data['users'] = $users;
+        }
+
+        if (file_exists('./cache/repos.conf.php')) {
+            require './cache/repos.conf.php';
+            $data['repos'] = $repos;
+        }
+
+        //获取创建的任务列表
+        $id = trim($this->uri->segment(3, 0));
+        $this->load->model('Model_issue', 'issue', TRUE);
+        $rows = $this->issue->profile($id, 0, 100);
+        $data['issue_total'] = $rows['total_rows'];
+        $data['issue'] = $rows['data'];
+
+        //获取创建的提测列表
+        $this->load->model('Model_test', 'test', TRUE);
+        $rows = $this->test->profile($id, 0, 100);
+        $data['test_total'] = $rows['total_rows'];
+        $data['test'] = $rows['data'];
+
+        $this->load->view('conf_users_profile', $data);
+    }
 }

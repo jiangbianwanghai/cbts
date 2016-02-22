@@ -40,7 +40,7 @@
                   <?php foreach ($pie as $key => $value) { ?>
                   <tr>
                     <td><?php echo $key + 1;?></td>
-                    <td><?php echo $users[$value['add_user']]['realname'];?></td>
+                    <td><?php echo $value['add_user'] ? '<a href="/conf/profile/'.$value['add_user'].'">'.$users[$value['add_user']]['realname'].'</a>' : '-';?></td>
                     <td><?php echo $value['num'];?></td>
                     <td>
                       <div class="progress">

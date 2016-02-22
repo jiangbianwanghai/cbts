@@ -178,6 +178,30 @@ class Model_test extends CI_Model {
     }
 
     /**
+     * 我的任务列表
+     */
+    public function profile($id, $offset = 0, $per_page = 20) {
+        $rows = array(
+            'total_rows' => 0,
+            'data' => false
+        );
+
+        //获取总数
+        $sql = "SELECT * FROM `choc_test` WHERE `add_user` = '".$id."'";
+        $query = $this->db->query($sql);
+        $rows['total_rows'] = $query->num_rows;
+
+        //获取翻页数据
+        $sql = "SELECT * FROM `choc_test` WHERE `add_user` = '".$id."' ORDER BY `id` DESC LIMIT ".$offset .", ".$per_page."";
+        $query = $this->db->query($sql);
+        foreach ($query->result_array() as $row)
+        {
+            $rows['data'][] = $row;
+        }
+        return $rows;
+    }
+
+    /**
      * 我的待测
      */
     public function todo($offset = 0, $per_page = 20) {

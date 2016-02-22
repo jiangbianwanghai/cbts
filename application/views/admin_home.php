@@ -30,7 +30,7 @@
                   foreach ($testTop10 as $value) {
                 ?>
                 <li>
-                  <small class="pull-right">提测人：<?php echo $value['add_user'] ? $users[$value['add_user']]['realname'] : '-';?></small>
+                  <small class="pull-right">提测人：<?php echo $value['add_user'] ? '<a href="/conf/profile/'.$value['add_user'].'">'.$users[$value['add_user']]['realname'].'</a>' : '-';?></small>
                   <h4 class="sender"><a href="/issue/view/<?php echo $value['issue_id'];?>"><?php echo $repos[$value['repos_id']]['repos_name'];?> #<?php echo $value['test_flag'];?></a></h4>
                   <small>
                     <div class="mb10"></div>
@@ -76,7 +76,7 @@
                   foreach ($issueTop10 as $value) {
                 ?>
                 <li>
-                  <small class="pull-right">添加人：<?php echo $value['add_user'] ? $users[$value['add_user']]['realname'] : '-';?></small>
+                  <small class="pull-right">添加人：<?php echo $value['add_user'] ? '<a href="/conf/profile/'.$value['add_user'].'">'.$users[$value['add_user']]['realname'].'</a>' : '-';?></small>
                   <h4 class="sender"><a href="/issue/view/<?php echo $value['id'];?>"><?php echo $value['issue_name'];?></a></h4>
                   <small>
                     <div class="mb10"></div>

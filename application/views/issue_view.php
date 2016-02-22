@@ -46,15 +46,15 @@
                           <div class="col-sm-6">
                             <div class="row">
                                 <div class="col-xs-6">提交人</div>
-                                <div class="col-xs-6"><?php echo $row['add_user'] ? $users[$row['add_user']]['realname'] : '-';?></div>
+                                <div class="col-xs-6"><?php echo $row['add_user'] ? '<a href="/conf/profile/'.$row['add_user'].'">'.$users[$row['add_user']]['realname'].'</a>' : '-';?></div>
                             </div>
                             <div class="row">
                                 <div class="col-xs-6">最后修改人</div>
-                                <div class="col-xs-6"><?php echo $row['last_user'] ? $users[$row['last_user']]['realname'] : '-';?></div>
+                                <div class="col-xs-6"><?php echo $row['add_user'] ? '<a href="/conf/profile/'.$row['last_user'].'">'.$users[$row['last_user']]['realname'].'</a>' : '-';?></div>
                             </div>
                             <div class="row">
                                 <div class="col-xs-6">受理人</div>
-                                <div class="col-xs-6"><?php echo $row['accept_user'] ? $users[$row['accept_user']]['realname'] : '-';?></div>
+                                <div class="col-xs-6"><?php echo $row['add_user'] ? '<a href="/conf/profile/'.$row['accept_user'].'">'.$users[$row['accept_user']]['realname'].'</a>' : '-';?></div>
                             </div>
                             <div class="row">
                                 <div class="col-xs-6">相关链接：</div>
@@ -88,7 +88,7 @@
                                   <?php 
                                   if ($shareUsers) {
                                     foreach($shareUsers as $val) {
-                                      echo $users[$val]['realname']." ";
+                                      echo '<a href="/conf/profile/'.$val.'">'.$users[$val]['realname'].'</a> ';
                                   ?> 
                                   <?php 
                                     }
@@ -165,8 +165,8 @@
                                         <button class="btn btn-success btn-xs"><i class="fa fa-exclamation-circle"></i> 已被后续版本覆盖</button>
                                         <?php } ?>
                                       </td>
-                                      <td><?php echo $value['add_user'] ? $users[$value['add_user']]['realname'] : '-';?></td>
-                                      <td><?php echo $value['last_user'] ? $users[$value['last_user']]['realname'] : '-';?></td>
+                                      <td><?php echo $value['add_user'] ? '<a href="/conf/profile/'.$value['add_user'].'">'.$users[$value['add_user']]['realname'].'</a>' : '-';?></td>
+                                      <td><?php echo $value['last_user'] ? '<a href="/conf/profile/'.$value['last_user'].'">'.$users[$value['last_user']]['realname'].'</a>' : '-';?></td>
                                       <td class="table-action">
                                         <?php if ($value['tice'] == 0 && $row['status'] == 1) {?><button class="btn btn-success btn-xs tice"  id="tice-<?php echo $value['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-send"></i> 提测</button><?php }?>
                                         <?php if ($value['tice'] == -1 ) {?><button class="btn btn-warning btn-xs tice" id="tice-<?php echo $value['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-exclamation-circle"></i> 提测失败,请再提测</button><?php }?>
@@ -179,7 +179,7 @@
                                         <a class="btn btn-white btn-xs delete-row" href="javascript:;" issueid="<?php echo $row['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-trash-o"></i> 删除</a>
                                         <?php }?>
                                         <?php }?>
-                                        <?php if ($value['tice'] == 1 && $value['state'] != 3) {?>
+                                        <?php if ($value['tice'] == 1 && $value['state'] == 1 && $value['rank'] == 1) {?>
                                         <div class="btn-group">
                                           <button type="button" class="btn btn-xs btn-primary">更改测试状态</button>
                                           <button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown">
