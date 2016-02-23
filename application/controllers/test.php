@@ -244,7 +244,7 @@ class test extends CI_Controller {
         $id = $this->uri->segment(3, 0);
         $this->load->model('Model_test', 'test', TRUE);
         $row = $this->test->fetchOne($id);
-        echo '<p>'.$row['test_summary'].'</p>';
+        echo '<p>'.nl2br($row['test_summary']).'</p>';
     }
 
     /**

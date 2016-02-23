@@ -103,7 +103,7 @@
                       
                       <br /><br />
                       <h5 class="subtitle subtitle-lined">描述</h5>
-                      <p><?php echo $row['issue_summary'];?></p>
+                      <p><?php echo nl2br($row['issue_summary']);?></p>
                       
                       <div class="panel panel-dark panel-alt">
                         <div class="panel-heading">
@@ -136,7 +136,7 @@
                                     ?>
                                     <tr id="tr-<?php echo $value['id'];?>">
                                       <td><?php echo $value['id'];?></td>
-                                      <td><a href="/test/repos/<?php echo $value['repos_id'];?>"><?php echo $repos[$value['repos_id']]['repos_name'];?></a></td>
+                                      <td><a href="/test/repos/<?php echo $value['repos_id'];?>"><?php echo $repos[$value['repos_id']]['repos_name'];?></a> <?php if ($value['test_summary']) {?><a href="javascript:;" class="btn btn-info btn-xs view" testid="<?php echo $value['id'];?>" data-toggle="modal" data-target=".bs-example-modal">有说明</a><?php } ?></td>
                                       <td><?php echo $value['test_flag'];?></td>
                                       <td>
                                         <?php if ($value['rank'] == 0) {?>
@@ -219,6 +219,18 @@
   </div><!-- mainpanel -->
   
 </section>
+
+<div class="modal fade bs-example-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
+            <h4 class="modal-title">提测详情</h4>
+        </div>
+        <div class="modal-body">...</div>
+    </div>
+  </div>
+</div>
 
 <script src="/static/js/jquery-1.11.1.min.js"></script>
 <script src="/static/js/jquery-migrate-1.2.1.min.js"></script>
@@ -533,6 +545,17 @@
             placeholder: '更改受理人',
             allowClear: true
         },
+    });
+
+    $(".view").click(function(){
+      id = $(this).attr("testid");
+        $.ajax({
+          type: "GET",
+          url: "/test/view/"+id,
+          success: function(data){
+            $(".modal-body").html(data);
+          }
+        });
     });
 
   });
