@@ -17,7 +17,7 @@
         
         <div class="col-md-12">
           <div class="table-responsive">
-          <table class="table table-hidaction table-hover mb30">
+          <table class="table table-hidaction table-hover">
             <thead>
               <tr>
                 <th>#</th>

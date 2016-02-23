@@ -212,6 +212,7 @@ class issue extends CI_Controller {
 
         $this->config->load('extension', TRUE);
         $home = $this->config->item('home', 'extension');
+        $home = $home."/issue/view/".$id;
 
         $feedback = $this->issue->close($id);
         $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：[".$row['issue_name']."]他给关闭了";
@@ -267,6 +268,7 @@ class issue extends CI_Controller {
 
         $this->config->load('extension', TRUE);
         $home = $this->config->item('home', 'extension');
+        $home = $home."/issue/view/".$id;
         $feedback = $this->issue->resolve($id);
         $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：[".$row['issue_name']."]已经解决并关闭了";
         $this->rtx($users[$row['add_user']]['username'],$home,$subject);

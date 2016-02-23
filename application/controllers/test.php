@@ -75,6 +75,7 @@ class test extends CI_Controller {
             }
             $this->config->load('extension', TRUE);
             $home = $this->config->item('home', 'extension');
+            $home = $home."/issue/view/".$this->input->post('issue_id');
 
             $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：".$repos[$this->input->post('repos_id')]['repos_name']."(".$this->input->post('test_flag').")请求提测";
             $this->rtx($users[$this->input->post('accept_user')]['username'],$home,$subject);
@@ -299,7 +300,7 @@ class test extends CI_Controller {
         $this->load->library('pagination');
         $config['total_rows'] = $rows['total_rows'];
         $config['cur_page'] = $offset;
-        $config['base_url'] = '/test/repos';
+        $config['base_url'] = '/test/repos/'.$repos_id;
         $this->pagination->initialize($config);
         $data['pages'] = $this->pagination->create_links();
         $this->load->view('test_repos', $data);

@@ -115,7 +115,7 @@
                         </div><!-- panel-heading -->
                         <div class="panel-body panel-table">
                             <div class="table-responsive">
-                            <table class="table">
+                            <table class="table table-hover">
                                 <thead>
                                     <tr class="table-head-alt">
                                       <th>#</th>

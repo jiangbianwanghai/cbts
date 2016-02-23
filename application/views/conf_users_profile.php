@@ -35,7 +35,7 @@
           <div class="panel panel-dark panel-alt">
               <div class="panel-body panel-table">
                 <div class="table-responsive">
-                  <table class="table">
+                  <table class="table table-hover">
                     <thead>
                       <tr class="table-head-alt">
                         <th>#</th>
@@ -96,7 +96,7 @@
           <div class="panel panel-dark panel-alt">
             <div class="panel-body panel-table">
                 <div class="table-responsive">
-                <table class="table">
+                <table class="table table-hover">
                   <thead>
                     <tr>
                       <th>#</th>
