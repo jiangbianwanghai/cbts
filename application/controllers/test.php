@@ -429,7 +429,7 @@ class test extends CI_Controller {
 
                 //打队列，数据顺序：test_id[提测任务ID]|add_user[提测任务添加人]|repos_id[代码ID]|oldversion[测试任务前一个标识]|curr_flag[当前标识]
                 $sqs_url = $sqs."/?name=mergev2&opt=put&data=";
-                $sqs_url .= $row['id']."|".$row['add_user']."|".$row['repos_id']."|".$oldversion."|".$row['test_flag']."|".$reason."&auth=mypass123";
+                $sqs_url .= $row['id']."|".$row['add_user']."|".$row['repos_id']."|".$oldversion."|".$row['test_flag']."|".$reason."|".$row['issue_id']."|".$row['accept_user']."&auth=mypass123";
                 file_get_contents($sqs_url);
             } else {
                 //获取该版本库的前面的一个提测任务
@@ -467,7 +467,7 @@ class test extends CI_Controller {
                 if ($pid) {
                     //打队列
                     $sqs_url = $sqs."/?name=stateupdatev2&opt=put&data=";
-                    $sqs_url .= $row['id']."|".$pid."|".$row['add_user']."|".$row['test_flag']."&auth=mypass123";
+                    $sqs_url .= $row['id']."|".$pid."|".$row['add_user']."|".$row['test_flag']."|".$row['issue_id']."|".$row['accept_user']."&auth=mypass123";
                     file_get_contents($sqs_url);
                 }
             }
@@ -654,7 +654,7 @@ class test extends CI_Controller {
         $sqs = $this->config->item('sqs', 'extension');
 
         //组合发布API参数
-        $cap_url = $cap."/pub/deployapi/?oldversion=".$oldversion."&newversion=".$row['trunk_flag']."&appname=".$repos[$row['repos_id']]['repos_name_other']."&reason=".$users[$row['accept_user']]['realname']."上线"."&environment=formal&secret=7232275";
+        $cap_url = $cap."/pub/deployapi/?oldversion=".$oldversion."&newversion=".$row['trunk_flag']."&appname=".$repos[$row['repos_id']]['repos_name_other']."&reason=".$users[$row['accept_user']]['realname']."上线&environment=formal&secret=7232275";
         //echo $cap_url;
         $con = file_get_contents($cap_url);
         //echo $con;
@@ -670,7 +670,7 @@ class test extends CI_Controller {
         if ($pid) {
             //打队列
             $sqs_url = $sqs."/?name=capproduction&opt=put&data=";
-            $sqs_url .= $row['id']."|".$pid."|".$row['add_user']."|".$row['trunk_flag']."&auth=mypass123";
+            $sqs_url .= $row['id']."|".$pid."|".$row['add_user']."|".$row['trunk_flag']."|".$row['issue_id']."|".$row['accept_user']."&auth=mypass123";
             file_get_contents($sqs_url);
         }
 

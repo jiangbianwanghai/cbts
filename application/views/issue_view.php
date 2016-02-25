@@ -175,6 +175,7 @@
                                         <?php if ($value['tice'] == 3 ) {?><button class="btn btn-white btn-xs" testid="<?php echo $value['id'];?>" disabled><img src="/static/images/loaders/loader3.gif" alt="" /> 提测中……</button><?php }?>
                                         <?php if ($value['state'] == 3 && $value['rank'] == 1 && $value['tice'] < 5 && $users[$value['accept_user']]['role'] == 1) {?><button class="btn btn-success btn-xs cap_production"  id="cap_production-<?php echo $value['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-send"></i> 发布到生产环境</button><?php }?>
                                         <?php if ($value['tice'] == 5 ) {?><button class="btn btn-white btn-xs" disabled><img src="/static/images/loaders/loader3.gif" alt="" /> 发布中……</button><?php }?>
+                                        <?php if ($value['tice'] == '-7' ) {?><button class="btn btn-warning btn-xs cap_production" id="cap_production-<?php echo $value['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-exclamation-circle"></i> 发布失败,请再发布</button><?php }?>
                                         <?php if ($row['status'] == 1) {?>
                                         <?php if ($value['tice'] < 1) {?>
                                         <a class="btn btn-white btn-xs" href="/test/edit/<?php echo $row['id'];?>/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 编辑</a>

@@ -98,7 +98,7 @@ class Model_test extends CI_Model {
      * 根据版本库ID获取前面一个任务的信息
      */
     public function prev($repos_id, $test_flag) {
-        $sql = "SELECT * FROM `choc_test` WHERE `repos_id` = '".$repos_id."' AND `test_flag` < '".$test_flag."' ORDER BY `id` DESC LIMIT 1";
+        $sql = "SELECT * FROM `choc_test` WHERE `repos_id` = '".$repos_id."' AND `test_flag` < '".$test_flag."' AND `status` = 1 ORDER BY `id` DESC LIMIT 1";
         $query = $this->db->query($sql);
         if ($query->num_rows()) {
             $row = $query->row_array();

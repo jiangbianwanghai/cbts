@@ -47,7 +47,7 @@
                         ?>
                         <tr id="tr-<?php echo $value['id'];?>">
                           <td><?php echo $value['id'];?></td>
-                          <td><a href="/test/repos/<?php echo $value['repos_id'];?>"><?php echo $repos[$value['repos_id']]['repos_name'];?></a></td>
+                          <td><?php if ($value['status'] == '-1') { echo '<s><a href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a></s>'; } else { echo '<a href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a>'; }?><?php if ($value['status'] == '-1') {?> <span class="label label-warning">已删除</span><?php } ?></td>
                           <td><?php echo $value['test_flag'];?></td>
                           <td><a href="/issue/view/<?php echo $value['issue_id'];?>">ISSUE-<?php echo $value['issue_id'];?></a></td>
                           <td>
