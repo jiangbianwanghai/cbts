@@ -573,11 +573,6 @@ class test extends CI_Controller {
         $cap = $this->config->item('cap', 'extension');
         $home = $this->config->item('home', 'extension');
 
-        //组合发布API参数
-        $cap_url = $cap."/pub/deployapi/?oldversion=".$oldversion."&newversion=".$row['test_flag']."&appname=".$repos[$row['repos_id']]['repos_name_other']."&reason=".$users[$row['add_user']]['realname']."提交代码".$users[$this->input->cookie('uids')]['realname']."测试"."&secret=7232275";
-        //echo $cap_url;
-        $con = file_get_contents($cap_url);
-
         $cap_url = $cap."/pub/vertifyapi/?appname=".$repos[$row['repos_id']]['repos_name_other']."&version=".$row['trunk_flag']."&operate=2&secret=7232275";
         file_get_contents($cap_url);
         $this->test->changestat($row['id'], '-3');
