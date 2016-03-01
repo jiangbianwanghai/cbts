@@ -63,9 +63,9 @@ class Model_test extends CI_Model {
     /**
      * 列表
      */
-    public function listByIssue($id) {
+    public function listByIssueId($id) {
         $rows = false;
-        $sql = "SELECT * FROM `choc_test` WHERE `issue_id` = '".$id."' AND `status` = 1 ORDER BY `id` DESC";
+        $sql = "SELECT * FROM `choc_test` WHERE `issue_id` = '".$id."' ORDER BY `id` DESC";
         $query = $this->db->query($sql);
         foreach ($query->result_array() as $row)
         {
@@ -79,6 +79,17 @@ class Model_test extends CI_Model {
      */
     public function del($id) {
         return $this->db->update('test', array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'status' => '-1'), array('id' => $id));
+    }
+
+    /**
+     * 根据任务ID删除相关提测记录
+     */
+    public function delByIssueID($id) {
+        $query = $this->db->get_where('test', array('issue_id' => $id));
+        if ($query->num_rows()) {
+            return $this->db->update('test', array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'status' => '-1'), array('issue_id' => $id));
+        }
+        return true;
     }
 
     /**

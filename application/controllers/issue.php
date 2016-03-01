@@ -42,11 +42,17 @@ class issue extends CI_Controller {
      */
     public function view() {
         $id = $this->uri->segment(3, 0);
+
+        //获取任务详情
         $this->load->model('Model_issue', 'issue', TRUE);
         $data['row'] = $this->issue->fetchOne($id);
         $data['PAGE_TITLE'] = 'ISSUE-'.$data['row']['id'].' - '.$data['row']['issue_name'].' - 任务详情';
+
+        //获取相关提测记录
         $this->load->model('Model_test', 'test', TRUE);
-        $data['test'] = $this->test->listByIssue($id);
+        $data['test'] = $this->test->listByIssueId($id);
+
+        //载入文件缓存
         if (file_exists('./cache/repos.conf.php')) {
             require './cache/repos.conf.php';
             $data['repos'] = $repos;
@@ -55,6 +61,7 @@ class issue extends CI_Controller {
             require './cache/users.conf.php';
             $data['users'] = $users;
         }
+
         //获取贡献代码的用户信息
         $data['shareUsers'] = $this->test->shareUsers($id);
         $this->load->view('issue_view', $data);
@@ -138,6 +145,7 @@ class issue extends CI_Controller {
     public function del() {
         $id = $this->uri->segment(3, 0);
         $this->load->model('Model_issue', 'issue', TRUE);
+
         //已经解决的任务自动归档不能删除了
         $resolve = $this->issue->checkResolve($id);
         if ($resolve) {
@@ -149,6 +157,7 @@ class issue extends CI_Controller {
             echo json_encode($callBack);
             exit(); 
         }
+
         //已经受理并且受理人不是自己是没有办法删除的
         $accpetUser = $this->issue->checkAccept($id);
         if (!empty($accpetUser) && $accpetUser != $this->input->cookie('uids')) {
@@ -161,19 +170,24 @@ class issue extends CI_Controller {
             exit(); 
         }
 
-        $feedback = $this->issue->del($id);
-        if ($feedback) {
-            $callBack = array(
-                'status' => true,
-                'message' => '删除成功',
-                'url' => '/issue/view/'.$id
-            );
+        //任务删除后相关的提测信息也需要删除
+        $issue_flag = $this->issue->del($id);
+        $callBack['url'] = '/issue/view/'.$id;
+        if ($issue_flag) {
+            $callBack['message'] = '任务删除成功';
+            //删除相关的提测任务
+            $this->load->model('Model_test', 'test', TRUE);
+            $test_flag = $this->test->delByIssueID($id);
+            if ($test_flag) {
+                $callBack['status'] = true;
+                $callBack['message'] .= '，相关提测也已经删除成功';
+            } else {
+                $callBack['status'] = false;
+                $callBack['message'] .= '，相关提测删除失败';
+            }
         } else {
-            $callBack = array(
-                'status' => false,
-                'message' => '删除失败',
-                'url' => '/issue/view/'.$id
-            );
+            $callBack['status'] = false;
+            $callBack['message'] = '任务删除失败';
         }
         echo json_encode($callBack);
     }
