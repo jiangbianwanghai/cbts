@@ -28,6 +28,18 @@
               </div>
               <div class="panel-body">
                 <div class="form-group">
+                  <label class="col-sm-3 control-label">请选择优先级 <span class="asterisk">*</span></label>
+                  <div class="col-sm-9">
+                    <select id="level" name="level" class="select2" data-placeholder="请选择优先级" required>
+                      <option value=""></option>
+                      <option value="4">[!!!!]非常紧急</option>
+                      <option value="3">[!!!]优先处理</option>
+                      <option value="2">[!!]正常迭代</option>
+                      <option value="1">[!]抽空处理</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
                   <label class="col-sm-3 control-label">名称 <span class="asterisk">*</span></label>
                   <div class="col-sm-9">
                     <input type="text" id="issue_name" name="issue_name" class="form-control" placeholder="请输入任务名称" required />
@@ -81,6 +93,8 @@
 <script src="/static/js/jquery.validate.min.js"></script>
 <script src="/static/js/jquery.form.js"></script>
 <script src="/static/js/jquery.gritter.min.js"></script>
+
+<script src="/static/js/select2.min.js"></script>
 
 <script src="/static/js/custom.js"></script>
 
@@ -138,6 +152,10 @@ jQuery(document).ready(function(){
     success: function(element) {
       jQuery(element).closest('.form-group').removeClass('has-error');
     },
+  });
+
+  jQuery(".select2").select2({
+      width: '150'
   });
 
 });
