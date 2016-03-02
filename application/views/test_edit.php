@@ -16,7 +16,7 @@
       <div class="row">
         
         <div class="col-md-12">
-          <form method="POST" id="basicForm" action="/conf/repos_add" class="form-horizontal">
+          <form method="POST" id="basicForm" action="/test/edit_ajax" class="form-horizontal">
           <div class="panel panel-default">
               <div class="panel-heading">
                 <div class="panel-btns">
@@ -107,6 +107,10 @@
 
 <script src="/static/js/custom.js"></script>
 
+<script type="text/javascript" src="/static/simditor-2.3.6/scripts/module.js"></script>
+<script type="text/javascript" src="/static/simditor-2.3.6/scripts/hotkeys.js"></script>
+<script type="text/javascript" src="/static/simditor-2.3.6/scripts/simditor.js"></script>
+
 <script>
 function validForm(formData,jqForm,options){
   return $("#basicForm").valid();
@@ -167,6 +171,11 @@ jQuery(document).ready(function(){
       width: '100%'
   });
 
+});
+
+var editor = new Simditor({
+  textarea: $('#test_summary')
+  //optional options
 });
 </script>
 

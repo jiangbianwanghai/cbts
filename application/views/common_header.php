@@ -13,6 +13,7 @@
   <link href="/static/css/jquery.gritter.css" rel="stylesheet">
   <link href="/static/css/morris.css" rel="stylesheet">
   <link href="/static/css/bootstrap-editable.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="/static/simditor-2.3.6/styles/simditor.css" />
 
   <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!--[if lt IE 9]>

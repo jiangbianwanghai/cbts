@@ -77,7 +77,7 @@
                 ?>
                 <li>
                   <small class="pull-right">添加人：<?php echo $value['add_user'] ? '<a href="/conf/profile/'.$value['add_user'].'">'.$users[$value['add_user']]['realname'].'</a>' : '-';?></small>
-                  <h4 class="sender"><a href="/issue/view/<?php echo $value['id'];?>"><?php echo $value['issue_name'];?></a></h4>
+                  <h4 class="sender"><?php if ($value['level']) { $level = array(1=>'!',2=>'!!',3=>'!!!',4=>'!!!!');?><?php echo "<strong style='color:#ff0000;'>".$level[$value['level']]."</strong> ";?><?php } ?> <a href="/issue/view/<?php echo $value['id'];?>"><?php echo $value['issue_name'];?></a></h4>
                   <small>
                     <div class="mb10"></div>
                     <?php if ($value['resolve']) { ?> <span class="label label-success">已解决</span><?php } else {?> <span class="label label-info">未解决</span><?php } ?>

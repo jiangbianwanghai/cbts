@@ -106,6 +106,10 @@
 
 <script src="/static/js/custom.js"></script>
 
+<script type="text/javascript" src="/static/simditor-2.3.6/scripts/module.js"></script>
+<script type="text/javascript" src="/static/simditor-2.3.6/scripts/hotkeys.js"></script>
+<script type="text/javascript" src="/static/simditor-2.3.6/scripts/simditor.js"></script>
+
 <script>
 function validForm(formData,jqForm,options){
   return $("#basicForm").valid();
@@ -162,6 +166,11 @@ jQuery(document).ready(function(){
     },
   });
 
+});
+
+var editor = new Simditor({
+  textarea: $('#repos_summary')
+  //optional options
 });
 </script>
 

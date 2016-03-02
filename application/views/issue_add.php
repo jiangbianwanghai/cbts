@@ -16,7 +16,7 @@
       <div class="row">
         
         <div class="col-md-12">
-          <form method="POST" id="basicForm" action="/conf/repos_add" class="form-horizontal">
+          <form method="POST" id="basicForm" action="/issue/add_ajax" class="form-horizontal">
           <div class="panel panel-default">
               <div class="panel-heading">
                 <div class="panel-btns">
@@ -46,9 +46,9 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-sm-3 control-label">说明 <span class="asterisk">*</span></label>
+                  <label class="col-sm-3 control-label">说明</label>
                   <div class="col-sm-9">
-                    <textarea id="issue_summary" name="issue_summary" rows="5" class="form-control" placeholder="请简要说明提测的注意事项" required></textarea>
+                    <textarea id="issue_summary" name="issue_summary" rows="3" class="form-control" placeholder="请输入任务描述"></textarea>
                   </div>
                 </div>
                 <div class="form-group">
@@ -98,7 +98,12 @@
 
 <script src="/static/js/custom.js"></script>
 
+<script type="text/javascript" src="/static/simditor-2.3.6/scripts/module.js"></script>
+<script type="text/javascript" src="/static/simditor-2.3.6/scripts/hotkeys.js"></script>
+<script type="text/javascript" src="/static/simditor-2.3.6/scripts/simditor.js"></script>
+
 <script>
+
 function validForm(formData,jqForm,options){
   return $("#basicForm").valid();
 }
@@ -158,6 +163,11 @@ jQuery(document).ready(function(){
       width: '150'
   });
 
+});
+
+var editor = new Simditor({
+  textarea: $('#issue_summary')
+  //optional options
 });
 </script>
 

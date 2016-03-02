@@ -21,7 +21,7 @@
       <div class="panel">
           <div class="panel-heading">
               <h5 class="bug-key-title">ISSUE-<?php echo $row['id'];?></h5>
-              <div class="panel-title"><?php if ($row['status'] == '-1') { ?><s><?php echo $row['issue_name'];?></s><?php } else { ?><?php echo $row['issue_name'];?><?php } ?> <?php if ($row['resolve']) { ?> <span class="label label-success">已解决</span><?php }?> <?php if ($row['status'] == 0) {?> <span class="label label-default">已关闭</span><?php }?></div>
+              <div class="panel-title"><?php if ($row['level']) { $level = array(1=>'!',2=>'!!',3=>'!!!',4=>'!!!!');?><?php echo "<strong style='color:#ff0000;'>".$level[$row['level']]."</strong> ";?><?php } ?><?php if ($row['status'] == '-1') { ?><s><?php echo $row['issue_name'];?></s><?php } else { ?><?php echo $row['issue_name'];?><?php } ?> <?php if ($row['resolve']) { ?> <span class="label label-success">已解决</span><?php }?> <?php if ($row['status'] == 0) {?> <span class="label label-default">已关闭</span><?php }?></div>
           </div><!-- panel-heading-->
           <div class="panel-body">
               <?php if ($row['status'] == 1 && $row['resolve'] == 0) { ?>

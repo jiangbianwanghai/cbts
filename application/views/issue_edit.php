@@ -16,7 +16,7 @@
       <div class="row">
         
         <div class="col-md-12">
-          <form method="POST" id="basicForm" action="/conf/repos_add" class="form-horizontal">
+          <form method="POST" id="basicForm" action="/issue/edit_ajax" class="form-horizontal">
           <div class="panel panel-default">
               <div class="panel-heading">
                 <div class="panel-btns">
@@ -28,15 +28,27 @@
               </div>
               <div class="panel-body">
                 <div class="form-group">
+                  <label class="col-sm-3 control-label">请选择优先级 <span class="asterisk">*</span></label>
+                  <div class="col-sm-9">
+                    <select id="level" name="level" class="select2" data-placeholder="请选择优先级" required>
+                      <option value=""></option>
+                      <option value="4"<?php if ($row['level'] == 4) { echo " selected=\"selected\"";}?>>[!!!!]非常紧急</option>
+                      <option value="3"<?php if ($row['level'] == 3) { echo " selected=\"selected\"";}?>>[!!!]优先处理</option>
+                      <option value="2"<?php if ($row['level'] == 2) { echo " selected=\"selected\"";}?>>[!!]正常迭代</option>
+                      <option value="1"<?php if ($row['level'] == 1) { echo " selected=\"selected\"";}?>>[!]抽空处理</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
                   <label class="col-sm-3 control-label">名称 <span class="asterisk">*</span></label>
                   <div class="col-sm-9">
                     <input type="text" id="issue_name" name="issue_name" value="<?php echo $row['issue_name'];?>" class="form-control" placeholder="请输入任务名称" required />
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-sm-3 control-label">说明 <span class="asterisk">*</span></label>
+                  <label class="col-sm-3 control-label">说明</label>
                   <div class="col-sm-9">
-                    <textarea id="issue_summary" name="issue_summary" rows="5" class="form-control" placeholder="请简要说明提测的注意事项" required><?php echo $row['issue_summary'];?></textarea>
+                    <textarea id="issue_summary" name="issue_summary" rows="5" class="form-control" placeholder="请输入任务描述"><?php echo $row['issue_summary'];?></textarea>
                   </div>
                 </div>
                 <div class="form-group">
@@ -83,7 +95,13 @@
 <script src="/static/js/jquery.form.js"></script>
 <script src="/static/js/jquery.gritter.min.js"></script>
 
+<script src="/static/js/select2.min.js"></script>
+
 <script src="/static/js/custom.js"></script>
+
+<script type="text/javascript" src="/static/simditor-2.3.6/scripts/module.js"></script>
+<script type="text/javascript" src="/static/simditor-2.3.6/scripts/hotkeys.js"></script>
+<script type="text/javascript" src="/static/simditor-2.3.6/scripts/simditor.js"></script>
 
 <script>
 function validForm(formData,jqForm,options){
@@ -141,6 +159,15 @@ jQuery(document).ready(function(){
     },
   });
 
+  jQuery(".select2").select2({
+      width: '150'
+  });
+
+});
+
+var editor = new Simditor({
+  textarea: $('#issue_summary')
+  //optional options
 });
 </script>
 
