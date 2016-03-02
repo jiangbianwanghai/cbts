@@ -250,6 +250,61 @@ class issue extends CI_Controller {
     }
 
     /**
+     * 任务关闭
+     */
+    public function open() {
+        $id = $this->uri->segment(3, 0);
+        $this->load->model('Model_issue', 'issue', TRUE);
+        $row = $this->issue->fetchOne($id);
+        if (!$row) {
+            $callBack = array(
+                'status' => false,
+                'message' => '数据错误',
+                'url' => '/'
+            );
+            echo json_encode($callBack);
+            exit();
+        }
+
+        if ($this->input->cookie('uids') == $row['add_user'] || $this->input->cookie('uids') == $row['accept_user']) {
+            if (file_exists('./cache/users.conf.php')) {
+                require './cache/users.conf.php';
+            }
+
+            $this->config->load('extension', TRUE);
+            $home = $this->config->item('home', 'extension');
+            $home = $home."/issue/view/".$id;
+
+            $feedback = $this->issue->open($id);
+            $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：[".$row['issue_name']."]重新开启了";
+            $this->rtx($users[$row['add_user']]['username'],$home,$subject);
+
+            if ($feedback) {
+                $callBack = array(
+                    'status' => true,
+                    'message' => '关闭成功',
+                    'url' => '/issue/view/'.$id
+                );
+            } else {
+                $callBack = array(
+                    'status' => false,
+                    'message' => '关闭失败',
+                    'url' => '/issue/view/'.$id
+                );
+            }
+            echo json_encode($callBack);
+        } else {
+            $callBack = array(
+                'status' => false,
+                'message' => '非发布人或受理人不能进行此操作',
+                'url' => '/issue/view/'.$id
+            );
+            echo json_encode($callBack);
+            exit(); 
+        }
+    }
+
+    /**
      * 任务已解决
      */
     public function resolve() {

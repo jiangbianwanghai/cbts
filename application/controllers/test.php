@@ -359,124 +359,132 @@ class test extends CI_Controller {
      * 提测
      */
     public function tice() {
-        //需要先标记受理权
+
+        //获取提测id
         $id = $this->uri->segment(3, 0);
-        $callBack = array(
-            'status' => false,
-            'message' => '数据错误',
-            'url' => '/issue/view/'.$id
-        );
+
+        //根据id验证记录是否存在
         $this->load->model('Model_test', 'test', TRUE);
         $row = $this->test->fetchOne($id);
-        if ($row) {
-            $this->load->model('Model_issue', 'issue', TRUE);
-            $flag = $this->issue->checkAccept($row['issue_id']);
-            if (!$flag) {
-                //进行受理
-                $this->issue->accept($row['issue_id']);
-                $callBack = array(
-                    'status' => true,
-                    'message' => '受理成功',
-                    'url' => '/issue/view/'.$row['issue_id']
-                );
-            } else {
-                if ($flag != $this->input->cookie('uids')) {
+
+        //不存在则直接返回数据错误
+        if (!$row) {
+            $callBack = array(
+                'status' => false,
+                'message' => '数据错误',
+                'url' => '/'
+            );
+            echo json_encode($callBack);
+            exit();
+        }
+
+        $callBack['url'] = '/issue/view/'.$row['issue_id'];
+
+        //验证是否有权限提测
+        if ($row['accept_user'] != $this->input->cookie('uids')) {
+            $callBack = array(
+                'status' => false,
+                'message' => '非受理人不能提测'
+            );
+            echo json_encode($callBack);
+            exit();
+        }
+
+        //验证提测所属的任务是否被受理
+        $this->load->model('Model_issue', 'issue', TRUE);
+        $flag = $this->issue->checkAccept($row['issue_id']);
+        if (!$flag) {
+            //对提测所属的任务标记标记梳理人，谁第一个提测，谁就是该提测所属任务的受理人
+            $this->issue->accept($row['issue_id']);
+        }
+
+        //提测标记受理
+        $this->test->accept($id);
+
+        //验证是否需要合并后提测
+        if (file_exists('./cache/repos.conf.php')) {
+            require './cache/repos.conf.php';
+        }
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+        }
+
+        $this->config->load('extension', TRUE);
+        $sqs = $this->config->item('sqs', 'extension');
+        $cap = $this->config->item('cap', 'extension');
+
+        if ($repos[$row['repos_id']]['merge']) {
+            //需要合并
+            //获取该版本库的前面的一个提测任务
+            $prevRow = $this->test->prev($row['repos_id'], $row['test_flag']);
+            if ($prevRow) {
+                if ($prevRow['state'] == 0 || $prevRow['state'] == 1) {
                     $callBack = array(
-                        'status' => false,
-                        'message' => '已经被别人受理了',
+                        'status' => true,
+                        'message' => '前面有测试任务正在进行，请稍后',
                         'url' => '/issue/view/'.$row['issue_id']
                     );
-                }
-            }
-
-            //标记提测受理
-            $this->test->accept($id);
-
-            //验证是否需要合并后提测
-            if (file_exists('./cache/repos.conf.php')) {
-                require './cache/repos.conf.php';
-            }
-            if (file_exists('./cache/users.conf.php')) {
-                require './cache/users.conf.php';
-            }
-
-            $this->config->load('extension', TRUE);
-            $sqs = $this->config->item('sqs', 'extension');
-            $cap = $this->config->item('cap', 'extension');
-
-            if ($repos[$row['repos_id']]['merge']) {
-                //需要合并
-                //获取该版本库的前面的一个提测任务
-                $prevRow = $this->test->prev($row['repos_id'], $row['test_flag']);
-                if ($prevRow) {
-                    if ($prevRow['state'] == 0 || $prevRow['state'] == 1) {
-                        $callBack = array(
-                            'status' => true,
-                            'message' => '前面有测试任务正在进行，请稍后',
-                            'url' => '/issue/view/'.$row['issue_id']
-                        );
-                        $this->test->returntice($id);
-                        echo json_encode($callBack);
-                        exit();
-                    }
-                    $oldversion = $prevRow['trunk_flag'];
-                } else {
-                    $oldversion = 1;
-                }
-
-                $reason = $users[$row['add_user']]['realname']."提测，并由".$users[$this->input->cookie('uids')]['realname']."进行测试，解决的问题是ISSUE-".$row['issue_id'];
-                
-
-                //打队列，数据顺序：test_id[提测任务ID]|add_user[提测任务添加人]|repos_id[代码ID]|oldversion[测试任务前一个标识]|curr_flag[当前标识]
-                $sqs_url = $sqs."/?name=mergev2&opt=put&data=";
-                $sqs_url .= $row['id']."|".$row['add_user']."|".$row['repos_id']."|".$oldversion."|".$row['test_flag']."|".$reason."|".$row['issue_id']."|".$row['accept_user']."&auth=mypass123";
-                file_get_contents($sqs_url);
-            } else {
-                //获取该版本库的前面的一个提测任务
-                $prevRow = $this->test->prev($row['repos_id'], $row['test_flag']);
-                if ($prevRow) {
-                    if ($prevRow['state'] == 0 || $prevRow['state'] == 1) {
-                        $callBack = array(
-                            'status' => true,
-                            'message' => '前面有测试任务正在进行，请稍后',
-                            'url' => '/issue/view/'.$row['issue_id']
-                        );
-                        $this->test->returntice($id);
-                        echo json_encode($callBack);
-                        exit();
-                    }
-                    $oldversion = $prevRow['test_flag'];
-                } else {
-                    $oldversion = 1;
-                }
-
-                //组合发布API参数
-                $cap_url = $cap."/pub/deployapi/?oldversion=".$oldversion."&newversion=".$row['test_flag']."&appname=".$repos[$row['repos_id']]['repos_name_other']."&reason=".$users[$row['add_user']]['realname']."提交代码".$users[$this->input->cookie('uids')]['realname']."测试"."&secret=7232275";
-                //echo $cap_url;
-                $con = file_get_contents($cap_url);
-                //echo $con;
-                $con_arr = json_decode($con, true);
-
-                //获取PID
-                $pid = 0;
-                if ($con_arr['status']) {
-                    $pid = $con_arr['pid'];
-                } else {
                     $this->test->returntice($id);
+                    echo json_encode($callBack);
+                    exit();
                 }
-                if ($pid) {
-                    //打队列
-                    $sqs_url = $sqs."/?name=stateupdatev2&opt=put&data=";
-                    $sqs_url .= $row['id']."|".$pid."|".$row['add_user']."|".$row['test_flag']."|".$row['issue_id']."|".$row['accept_user']."&auth=mypass123";
-                    file_get_contents($sqs_url);
-                }
+                $oldversion = $prevRow['trunk_flag'];
+            } else {
+                $oldversion = 1;
             }
-            $callBack = array(
-                'status' => true,
-                'message' => '提测中……',
-                'url' => '/issue/view/'.$row['issue_id']
-            );
-        } 
+
+            $reason = $users[$row['add_user']]['realname']."提测，并由".$users[$this->input->cookie('uids')]['realname']."进行测试，解决的问题是ISSUE-".$row['issue_id'];
+            
+
+            //打队列，数据顺序：test_id[提测任务ID]|add_user[提测任务添加人]|repos_id[代码ID]|oldversion[测试任务前一个标识]|curr_flag[当前标识]
+            $sqs_url = $sqs."/?name=mergev2&opt=put&data=";
+            $sqs_url .= $row['id']."|".$row['add_user']."|".$row['repos_id']."|".$oldversion."|".$row['test_flag']."|".$reason."|".$row['issue_id']."|".$row['accept_user']."&auth=mypass123";
+            file_get_contents($sqs_url);
+        } else {
+            //获取该版本库的前面的一个提测任务
+            $prevRow = $this->test->prev($row['repos_id'], $row['test_flag']);
+            if ($prevRow) {
+                if ($prevRow['state'] == 0 || $prevRow['state'] == 1) {
+                    $callBack = array(
+                        'status' => true,
+                        'message' => '前面有测试任务正在进行，请稍后',
+                        'url' => '/issue/view/'.$row['issue_id']
+                    );
+                    $this->test->returntice($id);
+                    echo json_encode($callBack);
+                    exit();
+                }
+                $oldversion = $prevRow['test_flag'];
+            } else {
+                $oldversion = 1;
+            }
+
+            //组合发布API参数
+            $cap_url = $cap."/pub/deployapi/?oldversion=".$oldversion."&newversion=".$row['test_flag']."&appname=".$repos[$row['repos_id']]['repos_name_other']."&reason=".$users[$row['add_user']]['realname']."提交代码".$users[$this->input->cookie('uids')]['realname']."测试"."&secret=7232275";
+            //echo $cap_url;
+            $con = file_get_contents($cap_url);
+            //echo $con;
+            $con_arr = json_decode($con, true);
+
+            //获取PID
+            $pid = 0;
+            if ($con_arr['status']) {
+                $pid = $con_arr['pid'];
+            } else {
+                $this->test->returntice($id);
+            }
+            if ($pid) {
+                //打队列
+                $sqs_url = $sqs."/?name=stateupdatev2&opt=put&data=";
+                $sqs_url .= $row['id']."|".$pid."|".$row['add_user']."|".$row['test_flag']."|".$row['issue_id']."|".$row['accept_user']."&auth=mypass123";
+                file_get_contents($sqs_url);
+            }
+        }
+
+        $callBack = array(
+            'status' => true,
+            'message' => '提测中……',
+        );
         echo json_encode($callBack);
     }
 
@@ -519,6 +527,7 @@ class test extends CI_Controller {
         $this->config->load('extension', TRUE);
         $cap = $this->config->item('cap', 'extension');
         $home = $this->config->item('home', 'extension');
+        $home .= '/issue/view/'.$row['issue_id'];
 
         $cap_url = $cap."/pub/vertifyapi/?appname=".$repos[$row['repos_id']]['repos_name_other']."&version=".$row['trunk_flag']."&operate=4&secret=7232275";
         file_get_contents($cap_url);
@@ -572,6 +581,7 @@ class test extends CI_Controller {
         $this->config->load('extension', TRUE);
         $cap = $this->config->item('cap', 'extension');
         $home = $this->config->item('home', 'extension');
+        $home .= '/issue/view/'.$row['issue_id'];
 
         $cap_url = $cap."/pub/vertifyapi/?appname=".$repos[$row['repos_id']]['repos_name_other']."&version=".$row['trunk_flag']."&operate=2&secret=7232275";
         file_get_contents($cap_url);

@@ -75,6 +75,13 @@ class Model_issue extends CI_Model {
     }
 
     /**
+     * 关闭
+     */
+    public function open($id) {
+        return $this->db->update('issue', array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'status' => '1', 'resolve' => '0'), array('id' => $id));
+    }
+
+    /**
      * 已解决
      */
     public function resolve($id) {
