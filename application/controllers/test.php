@@ -671,7 +671,7 @@ class test extends CI_Controller {
         if ($pid) {
             //打队列
             $sqs_url = $sqs."/?name=capproduction&opt=put&data=";
-            $sqs_url .= $row['id']."|".$pid."|".$row['add_user']."|".$row['trunk_flag']."|".$row['issue_id']."|".$row['accept_user']."&auth=mypass123";
+            $sqs_url .= $row['id']."|".$pid."|".$row['add_user']."|".$row['trunk_flag']."|".$row['issue_id']."|".$row['accept_user']."|".$row['repos_id']."&auth=mypass123";
             file_get_contents($sqs_url);
         }
 

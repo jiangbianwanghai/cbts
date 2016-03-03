@@ -22,7 +22,7 @@
                     <a href="" class="panel-close">&times;</a>
                     <a href="" class="minimize">&minus;</a>
                 </div><!-- panel-btns -->
-                <h5 class="panel-title">任务列表</h5>
+                <h5 class="panel-title">提测列表</h5>
             </div><!-- panel-heading -->
             <div class="panel-body panel-table">
                 <div class="table-responsive">
