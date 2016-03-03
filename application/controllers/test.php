@@ -382,10 +382,8 @@ class test extends CI_Controller {
 
         //验证是否有权限提测
         if ($row['accept_user'] != $this->input->cookie('uids')) {
-            $callBack = array(
-                'status' => false,
-                'message' => '非受理人不能提测'
-            );
+            $callBack['status'] = false;
+            $callBack['message'] = '非受理人不能提测';
             echo json_encode($callBack);
             exit();
         }
@@ -481,10 +479,8 @@ class test extends CI_Controller {
             }
         }
 
-        $callBack = array(
-            'status' => true,
-            'message' => '提测中……',
-        );
+        $callBack['status'] = true;
+        $callBack['message'] = '提测中……';
         echo json_encode($callBack);
     }
 
