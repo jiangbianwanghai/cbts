@@ -28,8 +28,8 @@
 
   <div class="leftpanel">
 
-    <div class="logopanel">
-        <h1>巧克力提测系统</h1>
+    <div class="logopanel" align="center">
+        <strong style="font-family: Arial, Helvetica; ">CBTS-巧克力任务跟踪系统</strong> <sup><a target="_blank" href="http://192.168.8.91/markdown/" title="点击查看版本更新日志"><span class="badge badge-info">2.0.1</span></a></sup>
     </div><!-- logopanel -->
 
     <div class="leftpanelinner">
