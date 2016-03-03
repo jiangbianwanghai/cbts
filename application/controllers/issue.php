@@ -391,6 +391,7 @@ class issue extends CI_Controller {
         $this->load->model('Model_issue', 'issue', TRUE);
         $post = array(
             'id' => $this->input->post('id'),
+            'level' => $this->input->post('level'),
             'issue_name' => $this->input->post('issue_name'),
             'url' => $this->input->post('issue_url'),
             'issue_summary' => $this->input->post('issue_summary')
