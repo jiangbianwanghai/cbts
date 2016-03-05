@@ -259,6 +259,7 @@ class test extends CI_Controller {
         $this->load->model('Model_test', 'test', TRUE);
         $rows = $this->test->plaza($offset, $config['per_page']);
         $data['rows'] = $rows['data'];
+        $data['total_rows'] = $rows['total_rows'];
         if (file_exists('./cache/repos.conf.php')) {
             require './cache/repos.conf.php';
             $data['repos'] = $repos;

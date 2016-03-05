@@ -12,7 +12,23 @@
     </div>
     
     <div class="contentpanel">
-
+      <div class="row">
+        <div class="col-md-3">
+          <p>受理进度</p>
+          <div class="btn-group">
+            <a href="#" class="btn btn-primary">未解决</a>
+            <a href="#" type="button" class="btn btn-primary">已解决</a>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <p>状态筛选</p>
+          <div class="btn-group">
+            <a href="#" class="btn btn-primary">正常</a>
+            <a href="#" type="button" class="btn btn-primary">关闭</a>
+            <a href="#" type="button" class="btn btn-primary">删除</a>
+          </div>
+        </div>
+      </div>
       <div class="row">
         <div class="col-md-12">
             
@@ -22,7 +38,7 @@
                         <a href="" class="panel-close">&times;</a>
                         <a href="" class="minimize">&minus;</a>
                     </div><!-- panel-btns -->
-                    <h5 class="panel-title">任务列表</h5>
+                    <h5 class="panel-title">任务列表 <span class="badge badge-success"><?php echo $total_rows;?></span></h5>
                 </div><!-- panel-heading -->
                 <div class="panel-body panel-table">
                     <div class="table-responsive">

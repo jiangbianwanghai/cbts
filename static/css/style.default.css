@@ -4602,3 +4602,7 @@ div.error label.error:before {
     }
 
 }
+
+.badge {
+    font-family: verdana,arial,helvetica,sans-serif;;
+}

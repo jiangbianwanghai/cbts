@@ -127,6 +127,7 @@ class issue extends CI_Controller {
         $this->load->model('Model_issue', 'issue', TRUE);
         $rows = $this->issue->plaza($offset, $config['per_page']);
         $data['rows'] = $rows['data'];
+        $data['total_rows'] = $rows['total_rows'];
         if (file_exists('./cache/users.conf.php')) {
             require './cache/users.conf.php';
             $data['users'] = $users;
