@@ -5,7 +5,7 @@
         <span class="label">你的位置:</span>
         <ol class="breadcrumb">
           <li><a href="/">我的控制台</a></li>
-          <li><a href="/issue/plaza">提测广场</a></li>
+          <li><a href="/test/plaza">提测广场</a></li>
           <li class="active">提测列表</li>
         </ol>
       </div>
@@ -13,49 +13,61 @@
     
     <div class="contentpanel">
       <div class="row">
-        <div class="col-md-3">
-          <p>提测状态筛选</p>
+        <div class="col-sm-4 col-md-3">
+          <h4 class="subtitle mb5">按申请角色筛选</h4>
           <div class="btn-group">
-            <a href="#" class="btn btn-primary">待测</a>
-            <a href="#" type="button" class="btn btn-primary">不通过</a>
-            <a href="#" type="button" class="btn btn-primary">通过</a>
+            <a href="/test/plaza/dev/wait/all" class="btn btn-sm btn-<?php if ($add_user == 'all') { echo 'primary'; } else { echo 'default'; }?>">全体人员</a>
+            <a href="/test/plaza/dev/wait/my" type="button" class="btn btn-sm btn-<?php if ($add_user == 'my') { echo 'primary'; } else { echo 'default'; }?>">我的</a>
           </div>
-        </div>
-        <div class="col-md-3">
-          <p>代码所处阶段筛选</p>
-          <div class="btn-group">
-            <a href="#" class="btn btn-primary">开发环境</a>
-            <a href="#" type="button" class="btn btn-primary">测试环境</a>
-            <a href="#" type="button" class="btn btn-primary">生产环境</a>
-          </div>
-        </div>
-      </div>
 
-      <div class="row">
-        <div class="col-md-12">
-            
-            <div class="panel panel-dark panel-alt">
+          <div class="mb20"></div>
+
+          <h4 class="subtitle mb5">按受理角色筛选</h4>
+          <div class="btn-group">
+            <a href="/test/plaza/dev/wait/all/all" class="btn btn-sm btn-<?php if ($accept_user == 'all') { echo 'primary'; } else { echo 'default'; }?>">全体人员</a>
+            <a href="/test/plaza/dev/wait/all/my" type="button" class="btn btn-sm btn-<?php if ($accept_user == 'my') { echo 'primary'; } else { echo 'default'; }?>">我的</a>
+          </div>
+
+          <div class="mb20"></div>
+
+          <h4 class="subtitle mb5">按受理进度筛选</h4>
+          <div class="btn-group">
+            <a href="/test/plaza/dev/<?php echo $state;?>/<?php echo $add_user;?>/<?php echo $accept_user;?>" class="btn btn-sm btn-<?php if ($rank == 'dev') { echo 'primary'; } else { echo 'default'; }?>">开发环境</a>
+            <a href="/test/plaza/test/doing/<?php echo $add_user;?>/<?php echo $accept_user;?>" type="button" class="btn btn-sm btn-<?php if ($rank == 'test') { echo 'primary'; } else { echo 'default'; }?>">测试环境</a>
+            <a href="/test/plaza/product/yes/<?php echo $add_user;?>/<?php echo $accept_user;?>" type="button" class="btn btn-sm btn-<?php if ($rank == 'product') { echo 'primary'; } else { echo 'default'; }?>">生产环境</a>
+          </div>
+          
+          <div class="mb20"></div>
+          
+          <h4 class="subtitle mb5">按状态筛选</h4>
+          <div class="btn-group">
+            <a href="/test/plaza/<?php echo $rank;?>/wait/<?php echo $add_user;?>/<?php echo $accept_user;?>" class="btn btn-sm btn-<?php if ($state == 'wait') { echo 'primary'; } else { echo 'default'; }?>">待测</a>
+            <a href="/test/plaza/test/doing/<?php echo $add_user;?>/<?php echo $accept_user;?>" type="button" class="btn btn-sm btn-<?php if ($state == 'doing') { echo 'primary'; } else { echo 'default'; }?>">测试中</a>
+            <a href="/test/plaza/test/no/<?php echo $add_user;?>/<?php echo $accept_user;?>" type="button" class="btn btn-sm btn-<?php if ($state == 'no') { echo 'primary'; } else { echo 'default'; }?>">不通过</a>
+            <a href="/test/plaza/test/cover/<?php echo $add_user;?>/<?php echo $accept_user;?>" type="button" class="btn btn-sm btn-<?php if ($state == 'cover') { echo 'primary'; } else { echo 'default'; }?>">已覆盖</a>
+            <a href="/test/plaza/test/yes/<?php echo $add_user;?>/<?php echo $accept_user;?>" type="button" class="btn btn-sm btn-<?php if ($state == 'yes') { echo 'primary'; } else { echo 'default'; }?>">通过</a>
+          </div>
+          
+          <div class="mb20"></div>
+        </div><!-- col-sm-4 -->
+        <div class="col-sm-8 col-md-9">
+            <div class="panel panel-default">
                 <div class="panel-heading">
-                    <div class="panel-btns">
-                        <a href="" class="panel-close">&times;</a>
-                        <a href="" class="minimize">&minus;</a>
-                    </div><!-- panel-btns -->
-                    <h5 class="panel-title">提测列表 <span class="badge badge-success"><?php echo $total_rows;?></span></h5>
+                    <?php echo $pages;?>
+                    <h4 class="panel-title">筛选结果</h4>
+                    <p>总计 <?php echo $total_rows;?> 条记录 </p>
                 </div><!-- panel-heading -->
-                <div class="panel-body panel-table">
+                <div class="panel-body">
                   <div class="table-responsive">
                     <table class="table table-hover">
                       <thead>
                         <tr>
-                          <th>#</th>
-                          <th>版本库</th>
+                          <th width="50px">#</th>
+                          <th width="200px">版本库</th>
                           <th>版本标识</th>
-                          <th>相关任务</th>
-                          <th>所处阶段</th>
-                          <th>提测状态</th>
-                          <th>添加人</th>
-                          <th>最后修改人</th>
-                          <th></th>
+                          <th width="140px">相关任务</th>
+                          <th width="80px">添加人</th>
+                          <th width="80px">最后修改</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -65,40 +77,11 @@
                         ?>
                         <tr id="tr-<?php echo $value['id'];?>">
                           <td><?php echo $value['id'];?></td>
-                          <td><?php if ($value['status'] == '-1') { echo '<s><a href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a></s>'; } else { echo '<a href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a>'; }?><?php if ($value['status'] == '-1') {?> <span class="label label-warning">已删除</span><?php } ?></td>
-                          <td><?php echo $value['test_flag'];?></td>
+                          <td><?php if ($value['status'] == '-1') { echo '<s><a href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a></s>'; } else { echo '<a href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a>'; }?> <?php if ($value['test_summary']) {?><a href="javascript:;" class="view label label-warning" testid="<?php echo $value['id'];?>" data-toggle="modal" data-target=".bs-example-modal">有说明</a><?php } ?></td>
+                          <td>#<?php echo $value['test_flag'];?></td>
                           <td><a href="/issue/view/<?php echo $value['issue_id'];?>">ISSUE-<?php echo $value['issue_id'];?></a></td>
-                          <td>
-                            <?php if ($value['rank'] == 0) {?>
-                            <button class="btn btn-default btn-xs"><i class="fa fa-coffee"></i> 开发环境</button>
-                            <?php } ?>
-                            <?php if ($value['rank'] == 1) {?>
-                            <button class="btn btn-primary btn-xs"><?php if ($value['state'] == 5) { ?><i class="fa fa-exclamation-circle"></i> <s>测试环境</s><?php } else {?><i class="fa fa-check-circle"></i> 测试环境<?php } ?></button>
-                            <?php } ?>
-                            <?php if ($value['rank'] == 2) {?>
-                            <button class="btn btn-success btn-xs"><i class="fa fa-check-circle"></i> 生产环境</button>
-                            <?php } ?>
-                          </td>
-                          <td>
-                            <?php if ($value['state'] == 0) {?>
-                            <button class="btn btn-default btn-xs"><i class="fa fa-coffee"></i> 待测</button>
-                            <?php } ?>
-                            <?php if ($value['state'] == 1) {?>
-                            <button class="btn btn-primary btn-xs"><i class="fa fa-clock-o"></i> 测试中……</button>
-                            <?php } ?>
-                            <?php if ($value['state'] == -3) {?>
-                            <button class="btn btn-danger btn-xs"><i class="fa fa-exclamation-circle"></i> 不通过</button>
-                            <?php } ?>
-                            <?php if ($value['state'] == 3) {?>
-                            <button class="btn btn-success btn-xs"><i class="fa fa-check-circle"></i> 通过</button>
-                            <?php } ?>
-                            <?php if ($value['state'] == 5) {?>
-                            <button class="btn btn-success btn-xs"><i class="fa fa-exclamation-circle"></i> 已被后续版本覆盖</button>
-                            <?php } ?>
-                          </td>
                           <td><?php echo $value['add_user'] ? '<a href="/conf/profile/'.$value['add_user'].'">'.$users[$value['add_user']]['realname'].'</a>' : '-';?></td>
                           <td><?php echo $value['last_user'] ? '<a href="/conf/profile/'.$value['last_user'].'">'.$users[$value['last_user']]['realname'].'</a>' : '-';?></td>
-                          <td><?php if ($value['test_summary']) {?><a href="javascript:;" class="view" testid="<?php echo $value['id'];?>" data-toggle="modal" data-target=".bs-example-modal">有说明</a><?php } ?></td>
                         </tr>
                         <?php
                             }
@@ -108,11 +91,8 @@
                     </table>
                   </div><!-- table-responsive -->
                 </div><!-- panel-body -->
-                <?php echo $pages;?>
             </div><!-- panel -->
-            
-        </div><!-- col-md-6 -->
-                        
+        </div><!-- col-sm-8 -->
       </div><!-- row -->
       
     </div><!-- contentpanel -->

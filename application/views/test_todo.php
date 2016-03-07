@@ -13,25 +13,6 @@
     
     <div class="contentpanel">
       <div class="row">
-        <div class="col-md-3">
-          <p>提测状态筛选</p>
-          <div class="btn-group">
-            <a href="#" class="btn btn-primary">待测</a>
-            <a href="#" type="button" class="btn btn-primary">不通过</a>
-            <a href="#" type="button" class="btn btn-primary">通过</a>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <p>代码所处阶段筛选</p>
-          <div class="btn-group">
-            <a href="#" class="btn btn-primary">开发环境</a>
-            <a href="#" type="button" class="btn btn-primary">测试环境</a>
-            <a href="#" type="button" class="btn btn-primary">生产环境</a>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        
         <div class="col-md-12">
           <div class="panel panel-dark panel-alt">
             <div class="panel-heading">

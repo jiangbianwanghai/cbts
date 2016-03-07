@@ -13,6 +13,8 @@ jQuery(document).ready(function() {
 
    "use strict";
 
+   jQuery("body").addClass('leftpanel-collapsed');
+
    // Toggle Left Menu
    jQuery('.leftpanel .nav-parent > a').live('click', function() {
 
@@ -150,13 +152,13 @@ jQuery(document).ready(function() {
             body.addClass('leftpanel-collapsed');
             jQuery('.nav-bracket ul').attr('style','');
 
-            jQuery(this).addClass('menu-collapsed');
+            jQuery(this).removeClass('menu-collapsed');
 
          } else {
             body.removeClass('leftpanel-collapsed chat-view');
             jQuery('.nav-bracket li.active ul').css({display: 'block'});
 
-            jQuery(this).removeClass('menu-collapsed');
+            jQuery(this).addClass('menu-collapsed');
 
          }
       } else {

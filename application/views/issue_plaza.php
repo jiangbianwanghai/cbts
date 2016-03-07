@@ -13,45 +13,56 @@
     
     <div class="contentpanel">
       <div class="row">
-        <div class="col-md-3">
-          <p>受理进度</p>
+        <div class="col-sm-3 col-md-2">
+          <h4 class="subtitle mb5">按申请角色筛选</h4>
           <div class="btn-group">
-            <a href="#" class="btn btn-primary">未解决</a>
-            <a href="#" type="button" class="btn btn-primary">已解决</a>
+            <a href="/issue/plaza/able/able/all" class="btn btn-sm btn-<?php if ($add_user == 'all') { echo 'primary'; } else { echo 'default'; }?>">全体人员</a>
+            <a href="/issue/plaza/able/able/my" type="button" class="btn btn-sm btn-<?php if ($add_user == 'my') { echo 'primary'; } else { echo 'default'; }?>">我的</a>
           </div>
-        </div>
-        <div class="col-md-3">
-          <p>状态筛选</p>
+
+          <div class="mb20"></div>
+
+          <h4 class="subtitle mb5">按受理角色筛选</h4>
           <div class="btn-group">
-            <a href="#" class="btn btn-primary">正常</a>
-            <a href="#" type="button" class="btn btn-primary">关闭</a>
-            <a href="#" type="button" class="btn btn-primary">删除</a>
+            <a href="/issue/plaza/able/able/all/all" class="btn btn-sm btn-<?php if ($accept_user == 'all') { echo 'primary'; } else { echo 'default'; }?>">全体人员</a>
+            <a href="/issue/plaza/able/able/all/my" type="button" class="btn btn-sm btn-<?php if ($accept_user == 'my') { echo 'primary'; } else { echo 'default'; }?>">我的</a>
           </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-            
-            <div class="panel panel-dark panel-alt">
+
+          <div class="mb20"></div>
+
+          <h4 class="subtitle mb5">按受理进度筛选</h4>
+          <div class="btn-group">
+            <a href="/issue/plaza/able/<?php echo $status;?>/<?php echo $add_user;?>/<?php echo $accept_user;?>" class="btn btn-sm btn-<?php if ($resolve == 'able') { echo 'primary'; } else { echo 'default'; }?>">未解决</a>
+            <a href="/issue/plaza/disable/close/<?php echo $add_user;?>/<?php echo $accept_user;?>" type="button" class="btn btn-sm btn-<?php if ($resolve == 'disable') { echo 'primary'; } else { echo 'default'; }?>">已解决</a>
+          </div>
+          
+          <div class="mb20"></div>
+          
+          <h4 class="subtitle mb5">按状态筛选</h4>
+          <div class="btn-group">
+            <a href="/issue/plaza/<?php echo $resolve;?>/able/<?php echo $add_user;?>/<?php echo $accept_user;?>" class="btn btn-sm btn-<?php if ($status == 'able') { echo 'primary'; } else { echo 'default'; }?>">正常</a>
+            <a href="/issue/plaza/<?php echo $resolve;?>/close/<?php echo $add_user;?>/<?php echo $accept_user;?>" type="button" class="btn btn-sm btn-<?php if ($status == 'close') { echo 'primary'; } else { echo 'default'; }?>">关闭</a>
+            <a href="/issue/plaza/<?php echo $resolve;?>/delete/<?php echo $add_user;?>/<?php echo $accept_user;?>" type="button" class="btn btn-sm btn-<?php if ($status == 'delete') { echo 'primary'; } else { echo 'default'; }?>">已删除</a>
+          </div>
+          
+          <div class="mb20"></div>
+        </div><!-- col-sm-4 -->
+        <div class="col-sm-9 col-md-10">
+            <div class="panel panel-default">
                 <div class="panel-heading">
-                    <div class="panel-btns">
-                        <a href="" class="panel-close">&times;</a>
-                        <a href="" class="minimize">&minus;</a>
-                    </div><!-- panel-btns -->
-                    <h5 class="panel-title">任务列表 <span class="badge badge-success"><?php echo $total_rows;?></span></h5>
+                    <?php echo $pages;?>
+                    <h4 class="panel-title">筛选结果</h4>
+                    <p>总计 <?php echo $total_rows;?> 条记录 </p>
                 </div><!-- panel-heading -->
-                <div class="panel-body panel-table">
-                    <div class="table-responsive">
+                <div class="panel-body">
+                  <div class="table-responsive">
                     <table class="table table-hover">
                       <thead>
                         <tr class="table-head-alt">
-                          <th>#</th>
+                          <th width="50px">#</th>
                           <th>名称</th>
-                          <th>受理进度</th>
-                          <th>状态</th>
-                          <th>添加人</th>
-                          <th>最后修改</th>
-                          <th>&nbsp;</th>
+                          <th width="80px">添加人</th>
+                          <th width="80px">最后修改</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -61,38 +72,29 @@
                         ?>
                         <tr id="tr-<?php echo $value['id'];?>">
                           <td><?php echo $value['id'];?></td>
-                          <td><?php if ($value['level']) { $level = array(1=>'!',2=>'!!',3=>'!!!',4=>'!!!!');?><?php echo "<strong style='color:#ff0000;'>".$level[$value['level']]."</strong> ";?><?php } ?><?php if ($value['status'] == '-1') { echo '<s><a href="/issue/view/'.$value['id'].'">'.$value['issue_name'].'</a></s>'; } else { echo '<a href="/issue/view/'.$value['id'].'">'.$value['issue_name'].'</a>'; }?></td>
-                          <td><?php if ($value['resolve']) { ?> <span class="label label-success">已解决</span><?php } else {?> <span class="label label-info">未解决</span><?php } ?></td>
-                          <td>
-                            <?php if ($value['status'] == 1) {?> <span class="label label-primary">正常</span><?php }?>
-                            <?php if ($value['status'] == 0) {?> <span class="label label-default">已关闭</span><?php }?>
-                            <?php if ($value['status'] == -1) {?> <span class="label label-warning">已删除</span><?php }?>
+                          <td><?php if ($value['level']) { $level = array(1=>'!',2=>'!!',3=>'!!!',4=>'!!!!');?><?php echo "<strong style='color:#ff0000;'>".$level[$value['level']]."</strong> ";?><?php } ?><?php if ($value['status'] == '-1') { echo '<s><a href="/issue/view/'.$value['id'].'">'.$value['issue_name'].'</a></s>'; } else { echo '<a href="/issue/view/'.$value['id'].'">'.$value['issue_name'].'</a>'; }?>
                           </td>
-                          <td><?php echo $value['add_user'] ? '<a href="/conf/profile/'.$value['add_user'].'">'.$users[$value['add_user']]['realname'].'</a>' : '-';?></td>
-                          <td><?php echo $value['last_user'] ? '<a href="/conf/profile/'.$value['last_user'].'">'.$users[$value['last_user']]['realname'].'</a>' : '-';?></td>
-                          <td class="table-action"></td>
+                          <td><?php echo $value['add_user'] ? '<a href="/conf/profile/'.$value['add_user'].'">'.$users[$value['add_user']]['realname'].'</a>' : '-';?>
+                          </td>
+                          <td><?php echo $value['last_user'] ? '<a href="/conf/profile/'.$value['last_user'].'">'.$users[$value['last_user']]['realname'].'</a>' : '-';?>
+                          </td>
                         </tr>
                         <?php
                             }
                           } else {
                         ?>
-                          <tr><td colspan="7" align="center">任务列表为空~,<a href="/issue/add">赶紧添加吧</a></td></tr>
+                          <tr><td colspan="7" align="center">筛选结果为空~</td></tr>
                         <?php
                           }
                         ?>
                       </tbody>
                     </table>
-                    </div><!-- table-responsive -->
+                  </div><!-- table-responsive -->
                 </div><!-- panel-body -->
-                <?php echo $pages;?>
             </div><!-- panel -->
-            
-        </div><!-- col-md-6 -->
-                        
+        </div><!-- col-sm-8 -->
       </div><!-- row -->
-      
     </div><!-- contentpanel -->
-    
   </div><!-- mainpanel -->
   
 </section>

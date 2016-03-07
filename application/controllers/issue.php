@@ -121,13 +121,33 @@ class issue extends CI_Controller {
      */
     public function plaza() {
         $data['PAGE_TITLE'] = '任务广场列表';
+
         $this->config->load('extension', TRUE);
         $config = $this->config->item('pages', 'extension');
-        $offset = trim($this->uri->segment(3, 0));
+
+        //页码
+        $offset = $this->uri->segment(7, 0);
+
+        //处理进度
+        $resolve = $this->uri->segment(3, 'able');
+
+        //任务状态
+        $status = $this->uri->segment(4, 'able');
+
+        //申请角色
+        $add_user = $this->uri->segment(5, 'all');
+
+        //受理角色
+        $accept_user = $this->uri->segment(6, 'all');
+        
+        //读取数据
         $this->load->model('Model_issue', 'issue', TRUE);
-        $rows = $this->issue->plaza($offset, $config['per_page']);
+
+        $rows = $this->issue->plaza($add_user, $accept_user, $status, $resolve, $offset, $config['per_page']);
         $data['rows'] = $rows['data'];
         $data['total_rows'] = $rows['total_rows'];
+
+
         if (file_exists('./cache/users.conf.php')) {
             require './cache/users.conf.php';
             $data['users'] = $users;
@@ -135,9 +155,16 @@ class issue extends CI_Controller {
         $this->load->library('pagination');
         $config['total_rows'] = $rows['total_rows'];
         $config['cur_page'] = $offset;
-        $config['base_url'] = '/issue/plaza';
+        $config['base_url'] = '/issue/plaza/'.$resolve.'/'.$status.'/'.$add_user.'/'.$accept_user;
         $this->pagination->initialize($config);
         $data['pages'] = $this->pagination->create_links();
+
+        $data['offset'] = $offset;
+        $data['resolve'] = $resolve;
+        $data['status'] = $status;
+        $data['add_user'] = $add_user;
+        $data['accept_user'] = $accept_user;
+
         $this->load->view('issue_plaza', $data);
     }
 

@@ -2,6 +2,17 @@
 
 class Model_issue extends CI_Model {
 
+    public $resolveArr = array(
+        'disable' => '1', 
+        'able' => '0'
+    );
+
+    public $statusArr = array(
+        'able' => '1',
+        'close' => '0',
+        'delete' => '-1'
+    );
+
     function __construct()
     {
         parent::__construct();
@@ -200,19 +211,28 @@ class Model_issue extends CI_Model {
     /**
      * 任务广场列表
      */
-    public function plaza($offset = 0, $per_page = 20) {
+    public function plaza($add_user, $accept_user, $status, $resolve, $offset = 0, $per_page = 20) {
         $rows = array(
             'total_rows' => 0,
             'data' => false
         );
 
+        $addUserStr = $acceptUserStr = "";
+
+        if ($add_user == 'my') {
+            $addUserStr = "`add_user` = '".$this->input->cookie('uids')."' AND ";
+        }
+        if ($accept_user == 'my') {
+            $acceptUserStr = "`accept_user` = '".$this->input->cookie('uids')."' AND ";
+        }
+
         //获取总数
-        $sql = "SELECT * FROM `choc_issue`";
+        $sql = "SELECT * FROM `choc_issue` WHERE ".$addUserStr.$acceptUserStr."`status` = '".$this->statusArr[$status]."' AND `resolve` = '".$this->resolveArr[$resolve]."'";
         $query = $this->db->query($sql);
         $rows['total_rows'] = $query->num_rows;
 
         //获取翻页数据
-        $sql = "SELECT * FROM `choc_issue` ORDER BY `id` DESC LIMIT ".$offset .", ".$per_page."";
+        $sql = "SELECT * FROM `choc_issue` WHERE ".$addUserStr.$acceptUserStr."`status` = '".$this->statusArr[$status]."' AND `resolve` = '".$this->resolveArr[$resolve]."' ORDER BY `id` DESC LIMIT ".$offset .", ".$per_page."";
         $query = $this->db->query($sql);
         foreach ($query->result_array() as $row)
         {

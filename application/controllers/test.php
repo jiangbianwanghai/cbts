@@ -253,13 +253,32 @@ class test extends CI_Controller {
      */
     public function plaza() {
         $data['PAGE_TITLE'] = '提测广场列表';
+
         $this->config->load('extension', TRUE);
         $config = $this->config->item('pages', 'extension');
-        $offset = trim($this->uri->segment(3, 0));
+
+        //页码
+        $offset = $this->uri->segment(7, 0);
+
+        //阶段
+        $rank = $this->uri->segment(3, 'dev');
+
+        //任务状态
+        $state = $this->uri->segment(4, 'wait');
+
+        //申请角色
+        $add_user = $this->uri->segment(5, 'all');
+
+        //受理角色
+        $accept_user = $this->uri->segment(6, 'all');
+
+        //读取数据
         $this->load->model('Model_test', 'test', TRUE);
-        $rows = $this->test->plaza($offset, $config['per_page']);
+
+        $rows = $this->test->plaza($add_user, $accept_user, $rank, $state, $offset, $config['per_page']);
         $data['rows'] = $rows['data'];
         $data['total_rows'] = $rows['total_rows'];
+
         if (file_exists('./cache/repos.conf.php')) {
             require './cache/repos.conf.php';
             $data['repos'] = $repos;
@@ -271,9 +290,16 @@ class test extends CI_Controller {
         $this->load->library('pagination');
         $config['total_rows'] = $rows['total_rows'];
         $config['cur_page'] = $offset;
-        $config['base_url'] = '/test/plaza';
+        $config['base_url'] = '/test/plaza/'.$rank.'/'.$state.'/'.$add_user.'/'.$accept_user;
         $this->pagination->initialize($config);
         $data['pages'] = $this->pagination->create_links();
+
+        $data['offset'] = $offset;
+        $data['rank'] = $rank;
+        $data['state'] = $state;
+        $data['add_user'] = $add_user;
+        $data['accept_user'] = $accept_user;
+
         $this->load->view('test_plaza', $data);
     }
 
