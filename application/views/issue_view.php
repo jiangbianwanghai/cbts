@@ -128,7 +128,6 @@
                                       <th>提测状态</th>
                                       <th>添加人</th>
                                       <th>受理人</th>
-                                      <th>最后修改人</th>
                                       <th>&nbsp;</th>
                                     </tr>
                                 </thead>
@@ -140,7 +139,7 @@
                                     <tr id="tr-<?php echo $value['id'];?>">
                                       <td><?php echo $value['id'];?></td>
                                       <td><?php if ($value['status'] == '-1') { echo '<s><a href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a></s>'; } else { echo '<a href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a>'; }?><?php if ($value['status'] == '-1') {?> <span class="label label-warning">已删除</span><?php } ?> <?php if ($value['test_summary']) {?><a href="javascript:;" class="btn btn-info btn-xs view" testid="<?php echo $value['id'];?>" data-toggle="modal" data-target=".bs-example-modal">有说明</a><?php } ?></td>
-                                      <td><?php echo $value['test_flag'];?></td>
+                                      <td><?php echo $value['test_flag'];?> (<a href="javascript:;" class="log" testid="<?php echo $value['id'];?>" data-toggle="modal" data-target=".bs-example-modal">查看版本差异</a>)</td>
                                       <td>
                                         <?php if ($value['rank'] == 0) {?>
                                         <button class="btn btn-default btn-xs"><i class="fa fa-coffee"></i> 开发环境</button>
@@ -171,7 +170,7 @@
                                       </td>
                                       <td><?php echo $value['add_user'] ? '<a href="/conf/profile/'.$value['add_user'].'">'.$users[$value['add_user']]['realname'].'</a>' : '-';?></td>
                                       <td><?php if ($value['state'] == 3 || $value['state'] == 5) {?><?php echo $value['accept_user'] ? '<a href="/conf/profile/'.$value['accept_user'].'">'.$users[$value['accept_user']]['realname'].'</a>' : '-';?><?php } else {?><a href="javascript:;" id="test-<?php echo $row['id'];?>-<?php echo $value['id'];?>" class="country" data-type="select2" data-value="<?php echo $value['accept_user'];?>" data-title="更改受理人"></a><?php }?></td>
-                                      <td><?php echo $value['last_user'] ? '<a href="/conf/profile/'.$value['last_user'].'">'.$users[$value['last_user']]['realname'].'</a>' : '-';?></td>
+                                      
                                       <td class="table-action">
                                         <?php if ($value['status'] == 1) {?>
                                         <?php if ($value['tice'] == 0 && $row['status'] == 1) {?><button class="btn btn-success btn-xs tice"  id="tice-<?php echo $value['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-send"></i> 提测</button><?php }?>
@@ -233,7 +232,7 @@
             <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
             <h4 class="modal-title">提测详情</h4>
         </div>
-        <div class="modal-body">...</div>
+        <div class="modal-body"><div class="modal-body-inner"></div></div>
     </div>
   </div>
 </div>
@@ -595,7 +594,22 @@
           type: "GET",
           url: "/test/view/"+id,
           success: function(data){
-            $(".modal-body").html(data);
+            $(".modal-title").text('提测说明');
+            $(".modal-body-inner").removeClass('height300');
+            $(".modal-body-inner").html(data);
+          }
+        });
+    });
+
+    $(".log").click(function(){
+      id = $(this).attr("testid");
+        $.ajax({
+          type: "GET",
+          url: "/test/log/"+id,
+          success: function(data){
+            $(".modal-title").text('更新日志');
+            $(".modal-body-inner").addClass('height300');
+            $(".modal-body-inner").html(data);
           }
         });
     });

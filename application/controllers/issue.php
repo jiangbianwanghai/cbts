@@ -31,7 +31,7 @@ class issue extends CI_Controller {
         } else {
             $callBack = array(
                 'status' => false,
-                'message' => '提交失败',
+                'message' => '提交失败'.$feedback['message'],
                 'url' => '/issue/add'
             );
         }
@@ -475,8 +475,8 @@ class issue extends CI_Controller {
         $subject = str_replace(array('#', '&', ' '), '', $subject);
         $pushInfo = array(
             'to' => $toList,
-            'title' => '提测请求',     
-            'msg' => $subject . '[' . $url . '|' . $url . ']',
+            'title' => 'CBTS提醒你：',     
+            'msg' => $subject . $url,
             'delaytime' => '',                                                                                                                                                               
         );
         $receiver        = iconv("utf-8","gbk//IGNORE", $pushInfo['to']);

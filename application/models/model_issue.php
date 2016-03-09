@@ -45,6 +45,7 @@ class Model_issue extends CI_Model {
         $sql = "SELECT `id` FROM `choc_issue` WHERE `issue_name` = '".$data['issue_name']."'";
         $query = $this->db->query($sql);
         if ($query->num_rows()) {
+            $feedback['message'] = "此任务已经存在";
             return $feedback;
         }
         $res = $this->db->insert('issue', $data);

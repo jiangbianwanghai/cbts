@@ -108,7 +108,7 @@
             <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
             <h4 class="modal-title">提测详情</h4>
         </div>
-        <div class="modal-body">...</div>
+        <div class="modal-body"><div class="modal-body-inner">...</div></div>
     </div>
   </div>
 </div>
@@ -166,6 +166,7 @@
           type: "GET",
           url: "/test/view/"+id,
           success: function(data){
+            $(".modal-title").text('提测说明');
             $(".modal-body").html(data);
           }
         });

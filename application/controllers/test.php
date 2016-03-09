@@ -249,6 +249,47 @@ class test extends CI_Controller {
     }
 
     /**
+     * 读取当前版本与上一个版本的日志
+     */
+    public function log() {
+        $id = $this->uri->segment(3, 0);
+        $this->load->model('Model_test', 'test', TRUE);
+        $row = $this->test->fetchOne($id);
+        $file = '/usr/local/nginx/html/cbts/cache/test_log_'.$row['id'].'.log';
+        if (file_exists($file)) {
+            $content = file_get_contents('/usr/local/nginx/html/cbts/cache/test_log_'.$row['id'].'.log');
+            echo nl2br($content);
+        } else {
+            //获取上一个任务
+            $prevRow = $this->test->prev($row['repos_id'], $row['test_flag']);
+            if ($prevRow) {
+                $prev_flag = $prevRow['test_flag'];
+            } else {
+                $prev_flag = $row['test_flag'] - 5;
+            }
+            $this->config->load('extension', TRUE);
+            $sqs = $this->config->item('sqs', 'extension');
+            //打队列
+            $sqs_url = $sqs."/?name=logdiff&opt=put&data=";
+            $sqs_url .= $row['id']."|".$row['repos_id']."|".$prev_flag."|".$row['test_flag']."&auth=mypass123";
+            file_get_contents($sqs_url);
+            echo '请关闭窗口等候2秒，再点击就有了';
+        }
+        
+    }
+
+    /**
+     * 读取当前版本与上一个版本的文件差异
+     */
+    public function diff() {
+        $id = $this->uri->segment(3, 0);
+        $this->load->model('Model_test', 'test', TRUE);
+        $row = $this->test->fetchOne($id);
+        $content = file_get_contents('/usr/local/nginx/html/cbts/cache/test_diff_'.$row['id'].'.log');
+        echo nl2br($content);
+    }
+
+    /**
      * 提测广场列表
      */
     public function plaza() {
@@ -738,8 +779,8 @@ class test extends CI_Controller {
         $subject = str_replace(array('#', '&', ' '), '', $subject);
         $pushInfo = array(
             'to' => $toList,
-            'title' => '提测请求',     
-            'msg' => $subject . '[' . $url . '|' . $url . ']',
+            'title' => 'CBTS提醒你：',     
+            'msg' => $subject . $url,
             'delaytime' => '',                                                                                                                                                               
         );
         $receiver        = iconv("utf-8","gbk//IGNORE", $pushInfo['to']);
