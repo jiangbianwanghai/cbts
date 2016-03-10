@@ -18,19 +18,70 @@
             <div class="panel-body">
               <div class="row">
                 <div class="col-md-6">
-                  <h5 class="subtitle mb5">我的任务提交量统计</h5>
-                  <p class="mb15">统计最近30天的任务提交量(正常量/关闭量)</p>
+                  <h5 class="subtitle mb5"><?php if ($role == 1) {?>我受理的任务量统计<?php } ?><?php if ($role == 2) {?>我提交的任务量统计<?php } ?></h5>
+                  <p class="mb15"><?php if ($role == 1) {?>最近30天受理的任务量统计(正常量/关闭量)<?php } ?><?php if ($role == 2) {?>最近30天提交的任务量(正常量/关闭量)<?php } ?></p>
                   <div id="stacked-chart_issue_my" class="body-chart">暂无数据</div>
                 </div><!-- col-md-6 -->
                 <div class="col-md-6">
-                  <h5 class="subtitle mb5">我的提测量统计</h5>
-                  <p class="mb15">统计最近30天的提测量(不通过量/其他状态[待测,在测试,通过,已覆盖])</p>
+                  <h5 class="subtitle mb5"><?php if ($role == 1) {?>我受理的提测量统计<?php } ?><?php if ($role == 2) {?>我申请的提交量统计<?php } ?></h5>
+                  <p class="mb15"><?php if ($role == 1) {?>最近30天受理的提测量统计(待测+测试中/其他状态[不通过,通过,已覆盖])<?php } ?><?php if ($role == 2) {?>最近30天申请的提测量(不通过量/其他状态[待测,在测试,通过,已覆盖])<?php } ?></p>
                   <div id="stacked-chart_test_my" class="body-chart">暂无数据</div>
                 </div><!-- col-md-6 -->
               </div><!-- row -->
             </div><!-- panel-body -->
           </div><!-- panel -->
         </div><!-- col-sm-12 -->
+      </div><!-- row -->
+      <div class="row">
+
+        <div class="col-sm-4 col-md-3">
+
+          <div class="panel panel-default">
+            <div class="panel-body">
+            <h5 class="subtitle mb5">添加任务最多的TA们</h5>
+            <p class="mb15">显示提测最多的前5个人</p>
+            <div id="donut-chart2" class="ex-donut-chart"></div>
+            </div><!-- panel-body -->
+          </div><!-- panel -->
+
+        </div><!-- col-sm-3 -->
+        
+        <div class="col-sm-4 col-md-3">
+
+          <div class="panel panel-default">
+            <div class="panel-body">
+            <h5 class="subtitle mb5">提测最多的TA们</h5>
+            <p class="mb15">显示提测最多的前5个人</p>
+            <div id="donut-chart1" class="ex-donut-chart"></div>
+            </div><!-- panel-body -->
+          </div><!-- panel -->
+
+        </div><!-- col-sm-3 -->
+
+        <div class="col-sm-4 col-md-3">
+
+          <div class="panel panel-default">
+            <div class="panel-body">
+            <h5 class="subtitle mb5">不通过最多的TA们</h5>
+            <p class="mb15">显示提测最多的前5个人</p>
+            <div id="donut-chart3" class="ex-donut-chart"></div>
+            </div><!-- panel-body -->
+          </div><!-- panel -->
+
+        </div><!-- col-sm-3 -->
+
+        <div class="col-sm-4 col-md-3">
+
+          <div class="panel panel-default">
+            <div class="panel-body">
+            <h5 class="subtitle mb5">受理测试最多的TA们</h5>
+            <p class="mb15">显示提测最多的前5个人</p>
+            <div id="donut-chart4" class="ex-donut-chart"></div>
+            </div><!-- panel-body -->
+          </div><!-- panel -->
+
+        </div><!-- col-sm-3 -->
+
       </div><!-- row -->
       <div class="row">
         <div class="col-sm-12 col-md-12">
@@ -124,7 +175,7 @@ jQuery(document).ready(function() {
         data: <?php echo $stackedMyTestStr;?>,
         xkey: 'y',
         ykeys: ['a', 'b'],
-        labels: ['其他状态', '不通过'],
+        labels: ['其他状态', '<?php if ($role == 1) {?>待测+测试中<?php } ?><?php if ($role == 2) {?>不通过<?php } ?>'],
         barColors: ['#F0AD4E', '#D9534F'],
         lineWidth: '1px',
         fillOpacity: 0.8,
@@ -151,12 +202,40 @@ jQuery(document).ready(function() {
   });
   <?php } ?>
 
+  var m5 = new Morris.Donut({
+      element: 'donut-chart1',
+      data: <?php echo $topUserStr;?>,
+      colors: ['#D9534F','#1CAF9A','#428BCA','#5BC0DE','#428BCA']
+  });
+
+  var m6 = new Morris.Donut({
+      element: 'donut-chart2',
+      data: <?php echo $topUserIssueStr;?>,
+      colors: ['#D9534F','#1CAF9A','#428BCA','#5BC0DE','#428BCA']
+  });
+
+  var m7 = new Morris.Donut({
+      element: 'donut-chart3',
+      data: <?php echo $topPassUserStr;?>,
+      colors: ['#D9534F','#1CAF9A','#428BCA','#5BC0DE','#428BCA']
+  });
+
+  var m8 = new Morris.Donut({
+      element: 'donut-chart4',
+      data: <?php echo $topAcceptUserStr;?>,
+      colors: ['#D9534F','#1CAF9A','#428BCA','#5BC0DE','#428BCA']
+  });
+
   jQuery(window).resize(function() {
     delay(function() {
       <?php if ($stacked) { ?>m1.redraw();<?php } ?>
       <?php if ($stacked_test) { ?>m2.redraw();<?php } ?>
       <?php if ($stackedMyTestStr) { ?>m3.redraw();<?php } ?>
       <?php if ($stackedMyIssueStr) { ?>m4.redraw();<?php } ?>
+      m5.redraw();
+      m6.redraw();
+      m7.redraw();
+      m8.redraw();
     }, 200);
   }).trigger('resize');
   

@@ -10,8 +10,71 @@ class admin extends CI_Controller {
             redirect('/admin/signin', 'location');
         } else {
             $stacked_str = $stacked_test_str = $stackedMyIssueStr = $stackedMyTestStr = '';
-            //按天统计任务量
+
+            $data['stacked_str'] = '';
+            $data['stacked_test_str'] = '';
+            $data['stackedMyIssueStr'] = '';
+            $data['stackedMyTestStr'] = '';
+
+            if (file_exists('./cache/users.conf.php')) {
+                require './cache/users.conf.php';
+            }
+
+            $data['role'] = $users[$this->input->cookie('uids')]['role'];
+
             $this->load->model('Model_issue', 'issue', TRUE);
+            $this->load->model('Model_test', 'test', TRUE);
+
+            if ($users[$this->input->cookie('uids')]['role'] == 1) {
+                //我的按天统计任务量
+                $stackedMyIssue = $this->issue->stackedByQa($this->input->cookie('uids'));
+                if ($stackedMyIssue) {
+                    $stackedMyIssueStr = "[";
+                    foreach ($stackedMyIssue as $key => $value) {
+                        $stackedMyIssueStr .= "{ y: '".$value['perday']."', a: ".$value['close'].", b: ".$value['able']." },";
+                    }
+                    $stackedMyIssueStr .= "]";
+                }
+                $data['stackedMyIssueStr'] = $stackedMyIssueStr;
+
+                //我的按天统计提测量
+                $stackedMyTest = $this->test->stackedByQa($this->input->cookie('uids'));
+                if ($stackedMyTest) {
+                    $stackedMyTestStr = "[";
+                    foreach ($stackedMyTest as $key => $value) {
+                        $stackedMyTestStr .= "{ y: '".$value['perday']."', a: ".$value['other'].", b: ".$value['no']." },";
+                    }
+                    $stackedMyTestStr .= "]";
+                }
+                $data['stackedMyTestStr'] = $stackedMyTestStr;
+            }
+
+            if ($users[$this->input->cookie('uids')]['role'] == 2) {
+                //我的按天统计任务量
+                $stackedMyIssue = $this->issue->stacked($this->input->cookie('uids'));
+                if ($stackedMyIssue) {
+                    $stackedMyIssueStr = "[";
+                    foreach ($stackedMyIssue as $key => $value) {
+                        $stackedMyIssueStr .= "{ y: '".$value['perday']."', a: ".$value['close'].", b: ".$value['able']." },";
+                    }
+                    $stackedMyIssueStr .= "]";
+                }
+                $data['stackedMyIssueStr'] = $stackedMyIssueStr;
+
+                //我的按天统计提测量
+                $stackedMyTest = $this->test->stacked($this->input->cookie('uids'));
+                if ($stackedMyTest) {
+                    $stackedMyTestStr = "[";
+                    foreach ($stackedMyTest as $key => $value) {
+                        $stackedMyTestStr .= "{ y: '".$value['perday']."', a: ".$value['other'].", b: ".$value['no']." },";
+                    }
+                    $stackedMyTestStr .= "]";
+                }
+                $data['stackedMyTestStr'] = $stackedMyTestStr;
+            }
+
+            //按天统计任务量
+            
             $stacked = $this->issue->stacked();
             if ($stacked) {
                 $stacked_str = "[";
@@ -23,7 +86,7 @@ class admin extends CI_Controller {
             $data['stacked'] = $stacked_str;
 
             //按天统计提测量
-            $this->load->model('Model_test', 'test', TRUE);
+            
             $stackedTest = $this->test->stacked();
             if ($stackedTest) {
                 $stacked_test_str = "[";
@@ -34,27 +97,57 @@ class admin extends CI_Controller {
             }
             $data['stacked_test'] = $stacked_test_str;
 
-            //我的按天统计任务量
-            $stackedMyIssue = $this->issue->stacked($this->input->cookie('uids'));
-            if ($stackedMyIssue) {
-                $stackedMyIssueStr = "[";
-                foreach ($stackedMyIssue as $key => $value) {
-                    $stackedMyIssueStr .= "{ y: '".$value['perday']."', a: ".$value['close'].", b: ".$value['able']." },";
-                }
-                $stackedMyIssueStr .= "]";
-            }
-            $data['stackedMyIssueStr'] = $stackedMyIssueStr;
+            
 
-            //我的按天统计提测量
-            $stackedMyTest = $this->test->stacked($this->input->cookie('uids'));
-            if ($stackedMyTest) {
-                $stackedMyTestStr = "[";
-                foreach ($stackedMyTest as $key => $value) {
-                    $stackedMyTestStr .= "{ y: '".$value['perday']."', a: ".$value['other'].", b: ".$value['no']." },";
+            $topUserStr = '';
+
+            $topUser = $this->test->topUser();
+            $topUserStr = '[';
+            if ($topUser) {
+                foreach ($topUser as $key => $value) {
+                    $topUserStr .= "{ label: '".$users[$value['add_user']]['realname']."', value: ".$value['num']."},";
                 }
-                $stackedMyTestStr .= "]";
             }
-            $data['stackedMyTestStr'] = $stackedMyTestStr;
+            $topUserStr .= ']';
+            $data['topUserStr'] = $topUserStr;
+
+
+            $topPassUserStr = '';
+
+            $topPassUser = $this->test->topPassUser();
+            $topPassUserStr = '[';
+            if ($topPassUser) {
+                foreach ($topPassUser as $key => $value) {
+                    $topPassUserStr .= "{ label: '".$users[$value['add_user']]['realname']."', value: ".$value['num']."},";
+                }
+            }
+            $topPassUserStr .= ']';
+            $data['topPassUserStr'] = $topPassUserStr;
+
+
+            $topAcceptUserStr = '';
+
+            $topAcceptUser = $this->test->topAcceptUser();
+            $topAcceptUserStr = '[';
+            if ($topAcceptUser) {
+                foreach ($topAcceptUser as $key => $value) {
+                    $topAcceptUserStr .= "{ label: '".$users[$value['accept_user']]['realname']."', value: ".$value['num']."},";
+                }
+            }
+            $topAcceptUserStr .= ']';
+            $data['topAcceptUserStr'] = $topAcceptUserStr;
+
+            $topUserIssueStr = '';
+
+            $topUserIssue = $this->issue->topUser();
+            $topUserIssueStr = '[';
+            if ($topUserIssue) {
+                foreach ($topUserIssue as $key => $value) {
+                    $topUserIssueStr .= "{ label: '".$users[$value['add_user']]['realname']."', value: ".$value['num']."},";
+                }
+            }
+            $topUserIssueStr .= ']';
+            $data['topUserIssueStr'] = $topUserIssueStr;
 
 
             $this->load->view('admin_home', $data);

@@ -271,9 +271,9 @@ class Model_issue extends CI_Model {
 
     public function stacked($userId = 0) {
         $rows = false;
-        $where = '';
+        $where = 'WHERE `status` >=0';
         if ($userId) {
-            $where = "WHERE `add_user` = '".$userId."'";
+            $where .= " AND `add_user` = '".$userId."'";
         }
         //正常状态的
         $sql = "SELECT FROM_UNIXTIME(`add_time`,'%Y-%m-%d') AS `perday`, SUM(`status` = 1)  AS `count` FROM `choc_issue` ".$where." GROUP BY FROM_UNIXTIME(`add_time`,'%Y-%m-%d')";
@@ -290,5 +290,34 @@ class Model_issue extends CI_Model {
             $rows[$key]['close'] = $row2[$key]['count'];
         }
         return $rows;
+    }
+
+    public function stackedByQa($userId = 0) {
+        $rows = false;
+        $where = 'WHERE `status` >=0';
+        if ($userId) {
+            $where .= " AND `accept_user` = '".$userId."'";
+        }
+        //正常状态的
+        $sql = "SELECT FROM_UNIXTIME(`accept_time`,'%Y-%m-%d') AS `perday`, SUM(`status` = 1)  AS `count` FROM `choc_issue` ".$where." GROUP BY FROM_UNIXTIME(`accept_time`,'%Y-%m-%d')";
+        $query = $this->db->query($sql);
+        $row1 = $query->result_array();
+        //关闭状态
+        $sql = "SELECT FROM_UNIXTIME(`accept_time`,'%Y-%m-%d') AS `perday`, SUM(`status` = 0)  AS `count` FROM `choc_issue` ".$where." GROUP BY FROM_UNIXTIME(`accept_time`,'%Y-%m-%d')";
+        $query = $this->db->query($sql);
+        $row2 = $query->result_array();
+        foreach ($row1 as $key=>$value)
+        {
+            $rows[$key]['perday'] = $value['perday'];
+            $rows[$key]['able'] = $value['count'];
+            $rows[$key]['close'] = $row2[$key]['count'];
+        }
+        return $rows;
+    }
+
+    public function topUser() {
+        $sql = "SELECT COUNT(1) AS `num`, `add_user` FROM `choc_issue` WHERE `status` >=0 GROUP BY `add_user` ORDER BY `num` DESC LIMIT 5";
+        $query = $this->db->query($sql);
+        return $query->result_array();
     }
 }
