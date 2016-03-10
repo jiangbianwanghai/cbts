@@ -9,18 +9,54 @@ class admin extends CI_Controller {
         if (!$this->input->cookie('uids')) {
             redirect('/admin/signin', 'location');
         } else {
+            $stacked_str = $stacked_test_str = $stackedMyIssueStr = $stackedMyTestStr = '';
+            //按天统计任务量
             $this->load->model('Model_issue', 'issue', TRUE);
+            $stacked = $this->issue->stacked();
+            if ($stacked) {
+                $stacked_str = "[";
+                foreach ($stacked as $key => $value) {
+                    $stacked_str .= "{ y: '".$value['perday']."', a: ".$value['close'].", b: ".$value['able']." },";
+                }
+                $stacked_str .= "]";
+            }
+            $data['stacked'] = $stacked_str;
+
+            //按天统计提测量
             $this->load->model('Model_test', 'test', TRUE);
-            $data['issueTop10'] = $this->issue->top10();
-            $data['testTop10'] = $this->test->top10();
-            if (file_exists('./cache/repos.conf.php')) {
-                require './cache/repos.conf.php';
-                $data['repos'] = $repos;
+            $stackedTest = $this->test->stacked();
+            if ($stackedTest) {
+                $stacked_test_str = "[";
+                foreach ($stackedTest as $key => $value) {
+                    $stacked_test_str .= "{ y: '".$value['perday']."', a: ".$value['other'].", b: ".$value['no']." },";
+                }
+                $stacked_test_str .= "]";
             }
-            if (file_exists('./cache/users.conf.php')) {
-                require './cache/users.conf.php';
-                $data['users'] = $users;
+            $data['stacked_test'] = $stacked_test_str;
+
+            //我的按天统计任务量
+            $stackedMyIssue = $this->issue->stacked($this->input->cookie('uids'));
+            if ($stackedMyIssue) {
+                $stackedMyIssueStr = "[";
+                foreach ($stackedMyIssue as $key => $value) {
+                    $stackedMyIssueStr .= "{ y: '".$value['perday']."', a: ".$value['close'].", b: ".$value['able']." },";
+                }
+                $stackedMyIssueStr .= "]";
             }
+            $data['stackedMyIssueStr'] = $stackedMyIssueStr;
+
+            //我的按天统计提测量
+            $stackedMyTest = $this->test->stacked($this->input->cookie('uids'));
+            if ($stackedMyTest) {
+                $stackedMyTestStr = "[";
+                foreach ($stackedMyTest as $key => $value) {
+                    $stackedMyTestStr .= "{ y: '".$value['perday']."', a: ".$value['other'].", b: ".$value['no']." },";
+                }
+                $stackedMyTestStr .= "]";
+            }
+            $data['stackedMyTestStr'] = $stackedMyTestStr;
+
+
             $this->load->view('admin_home', $data);
         }
     }

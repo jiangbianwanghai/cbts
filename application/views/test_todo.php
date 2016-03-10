@@ -34,7 +34,7 @@
                       <th>所处阶段</th>
                       <th>提测状态</th>
                       <th>添加人</th>
-                      <th>最后修改人</th>
+                      <th>受理人</th>
                       <th></th>
                     </tr>
                   </thead>
@@ -77,7 +77,7 @@
                         <?php } ?>
                       </td>
                       <td><?php echo $value['add_user'] ? '<a href="/conf/profile/'.$value['add_user'].'">'.$users[$value['add_user']]['realname'].'</a>' : '-';?></td>
-                      <td><?php echo $value['last_user'] ? '<a href="/conf/profile/'.$value['last_user'].'">'.$users[$value['last_user']]['realname'].'</a>' : '-';?></td>
+                      <td><?php echo $value['accept_user'] ? '<a href="/conf/profile/'.$value['accept_user'].'">'.$users[$value['accept_user']]['realname'].'</a>' : '-';?></td>
                       <td><?php if ($value['test_summary']) {?><a href="javascript:;" class="view" testid="<?php echo $value['id'];?>" data-toggle="modal" data-target=".bs-example-modal">有说明</a><?php } ?></td>
                     </tr>
                     <?php

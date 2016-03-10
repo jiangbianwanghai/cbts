@@ -29,7 +29,7 @@
               <div class="col-md-6 mb30">
                 <h5 class="subtitle mb5">任务提交量</h5>
                 <p class="mb15">统计最近30天的任务提交量</p>
-                <div id="barchart" style="width: 100%; height: 300px"></div>
+                <div id="stacked-chart" class="body-chart"></div>
               </div><!-- col-md-6 -->
               <div class="col-md-6 mb30">
                 <h5 class="subtitle mb5">任务统计占比</h5>
@@ -72,34 +72,19 @@ jQuery(document).ready(function() {
   
   "use strict";
 
-    /***** BAR CHART *****/
-    
-    var bardata = [ ["Jan", 10], ["Feb", 23], ["Mar", 18], ["Apr", 13], ["May", 17], ["Jun", 30], ["Jul", 26], ["Aug", 16], ["Sep", 17], ["Oct", 5], ["Nov", 8], ["Dec", 15] ];
-
-   jQuery.plot("#barchart", [ bardata ], {
-      series: {
-            lines: {
-              lineWidth: 1  
-            },
-        bars: {
-          show: true,
-          barWidth: 0.5,
-          align: "center",
-               lineWidth: 0,
-               fillColor: "#428BCA"
-        }
-      },
-        grid: {
-            borderColor: '#ddd',
-            borderWidth: 1,
-            labelMargin: 10
-      },
-      xaxis: {
-        mode: "categories",
-        tickLength: 0
-      }
-   });
-    
+  var m4 = new Morris.Bar({
+        element: 'stacked-chart',
+        data: <?php echo $stacked;?>,
+        xkey: 'y',
+        ykeys: ['a', 'b'],
+        labels: ['关闭', '正常'],
+        barColors: ['#428BCA', '#1CAF9A'],
+        lineWidth: '1px',
+        fillOpacity: 0.8,
+        smooth: false,
+        stacked: true,
+        hideHover: true
+  });
     
     /***** PIE CHART *****/
     
@@ -133,6 +118,12 @@ jQuery(document).ready(function() {
     function labelFormatter(label, series) {
     return "<div style='font-size:8pt; text-align:center; padding:2px; color:white;'>" + label + "<br/>" + Math.round(series.percent) + "%</div>";
   }
+
+  jQuery(window).resize(function() {
+    delay(function() {
+      m4.redraw();
+  }, 200);
+   }).trigger('resize');
   
 });
 

@@ -365,4 +365,27 @@ class Model_test extends CI_Model {
         }
         return $rows;
     }
+
+    public function stacked($userId = 0) {
+        $rows = false;
+        $where = '';
+        if ($userId) {
+            $where = "WHERE `add_user` = '".$userId."'";
+        }
+        //不通过量
+        $sql = "SELECT FROM_UNIXTIME(`add_time`,'%Y-%m-%d') AS `perday`, SUM(`state` = -3)  AS `count` FROM `choc_test` ".$where." GROUP BY FROM_UNIXTIME(`add_time`,'%Y-%m-%d')";
+        $query = $this->db->query($sql);
+        $row1 = $query->result_array();
+        //其他状态
+        $sql = "SELECT FROM_UNIXTIME(`add_time`,'%Y-%m-%d') AS `perday`, SUM(`status` IN (0,1,3,5))  AS `count` FROM `choc_test` ".$where." GROUP BY FROM_UNIXTIME(`add_time`,'%Y-%m-%d')";
+        $query = $this->db->query($sql);
+        $row2 = $query->result_array();
+        foreach ($row1 as $key=>$value)
+        {
+            $rows[$key]['perday'] = $value['perday'];
+            $rows[$key]['no'] = $value['count'];
+            $rows[$key]['other'] = $row2[$key]['count'];
+        }
+        return $rows;
+    }
 }

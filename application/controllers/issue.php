@@ -447,6 +447,17 @@ class issue extends CI_Controller {
      */
     public function analytics() {
         $data['PAGE_TITLE'] = '任务统计';
+        //按天统计任务统计量（未解决，已经解决）
+        $this->load->model('Model_issue', 'issue', TRUE);
+        $stacked = $this->issue->stacked();
+        if ($stacked) {
+            $stacked_str = "[";
+            foreach ($stacked as $key => $value) {
+                $stacked_str .= "{ y: '".$value['perday']."', a: ".$value['close'].", b: ".$value['able']." },";
+            }
+            $stacked_str .= "]";
+        }
+        $data['stacked'] = $stacked_str;
         $this->load->view('issue_analytics', $data);
     }
 

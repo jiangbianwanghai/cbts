@@ -173,6 +173,28 @@ class conf extends CI_Controller {
         $data['test_total'] = $rows['total_rows'];
         $data['test'] = $rows['data'];
 
+        //我的按天统计任务量
+        $stackedMyIssue = $this->issue->stacked($id);
+        if ($stackedMyIssue) {
+            $stackedMyIssueStr = "[";
+            foreach ($stackedMyIssue as $key => $value) {
+                $stackedMyIssueStr .= "{ y: '".$value['perday']."', a: ".$value['close'].", b: ".$value['able']." },";
+            }
+            $stackedMyIssueStr .= "]";
+        }
+        $data['stackedMyIssueStr'] = $stackedMyIssueStr;
+
+        //我的按天统计提测量
+        $stackedMyTest = $this->test->stacked($id);
+        if ($stackedMyTest) {
+            $stackedMyTestStr = "[";
+            foreach ($stackedMyTest as $key => $value) {
+                $stackedMyTestStr .= "{ y: '".$value['perday']."', a: ".$value['other'].", b: ".$value['no']." },";
+            }
+            $stackedMyTestStr .= "]";
+        }
+        $data['stackedMyTestStr'] = $stackedMyTestStr;
+
         $this->load->view('conf_users_profile', $data);
     }
 }

@@ -268,4 +268,27 @@ class Model_issue extends CI_Model {
         }
         return false;
     }
+
+    public function stacked($userId = 0) {
+        $rows = false;
+        $where = '';
+        if ($userId) {
+            $where = "WHERE `add_user` = '".$userId."'";
+        }
+        //正常状态的
+        $sql = "SELECT FROM_UNIXTIME(`add_time`,'%Y-%m-%d') AS `perday`, SUM(`status` = 1)  AS `count` FROM `choc_issue` ".$where." GROUP BY FROM_UNIXTIME(`add_time`,'%Y-%m-%d')";
+        $query = $this->db->query($sql);
+        $row1 = $query->result_array();
+        //关闭状态
+        $sql = "SELECT FROM_UNIXTIME(`add_time`,'%Y-%m-%d') AS `perday`, SUM(`status` = 0)  AS `count` FROM `choc_issue` ".$where." GROUP BY FROM_UNIXTIME(`add_time`,'%Y-%m-%d')";
+        $query = $this->db->query($sql);
+        $row2 = $query->result_array();
+        foreach ($row1 as $key=>$value)
+        {
+            $rows[$key]['perday'] = $value['perday'];
+            $rows[$key]['able'] = $value['count'];
+            $rows[$key]['close'] = $row2[$key]['count'];
+        }
+        return $rows;
+    }
 }
