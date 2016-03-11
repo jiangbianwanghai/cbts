@@ -350,8 +350,8 @@ class test extends CI_Controller {
     public function repos() {
         $this->config->load('extension', TRUE);
         $config = $this->config->item('pages', 'extension');
-        $repos_id = trim($this->uri->segment(3, 0));
-        $offset = trim($this->uri->segment(4, 0));
+        $repos_id = $this->uri->segment(3, 0);
+        $offset = $this->uri->segment(4, 0);
         $this->load->model('Model_test', 'test', TRUE);
         $rows = $this->test->repos($repos_id, $offset, $config['per_page']);
         $data['rows'] = $rows['data'];
@@ -366,11 +366,14 @@ class test extends CI_Controller {
         $data['PAGE_TITLE'] = $repos[$repos_id]['repos_name'].'的提测历史';
 
         $this->load->library('pagination');
+        $config['uri_segment'] = 4;
         $config['total_rows'] = $rows['total_rows'];
         $config['cur_page'] = $offset;
         $config['base_url'] = '/test/repos/'.$repos_id;
         $this->pagination->initialize($config);
+        $data['offset'] = $offset;
         $data['pages'] = $this->pagination->create_links();
+
         $this->load->view('test_repos', $data);
     }
 

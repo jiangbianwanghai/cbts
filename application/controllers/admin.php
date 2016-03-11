@@ -15,9 +15,11 @@ class admin extends CI_Controller {
             $data['stacked_test_str'] = '';
             $data['stackedMyIssueStr'] = '';
             $data['stackedMyTestStr'] = '';
+            $data['users'] = '';
 
             if (file_exists('./cache/users.conf.php')) {
                 require './cache/users.conf.php';
+                $data['users'] = $users;
             }
 
             $data['role'] = $users[$this->input->cookie('uids')]['role'];
