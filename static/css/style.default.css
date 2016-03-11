@@ -4612,3 +4612,25 @@ div.error label.error:before {
     overflow-y:auto;
     overflow-x:hidden;
 }
+
+.table .fa,.panel-heading .fa {
+    cursor: pointer;    
+}
+
+.table .fa-bug,.panel-heading .fa-bug {
+    color: #D9534F;
+}
+
+.table .fa-magic,.panel-heading .fa-magic {
+    color: #1CAF9A;
+}
+
+.face img {
+    vertical-align: middle;
+    margin-right: 5px;
+    width: 26px;
+    -moz-border-radius: 50px;
+    -webkit-border-radius: 50px;
+    border-radius: 50px;
+    float: left;
+}

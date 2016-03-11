@@ -28,7 +28,8 @@
                     <table class="table table-hover">
                       <thead>
                         <tr class="table-head-alt">
-                          <th>#</th>
+                          <th width="50px;">#</th>
+                          <th width="50px;">类型</th>
                           <th>名称</th>
                           <th>受理进度</th>
                           <th>状态</th>
@@ -44,6 +45,7 @@
                         ?>
                         <tr id="tr-<?php echo $value['id'];?>">
                           <td><?php echo $value['id'];?></td>
+                          <td><?php if ($value['type'] == 2) {?><i class="fa fa-bug tooltips" data-toggle="tooltip" title="BUG"></i><?php } ?><?php if ($value['type'] == 1) {?><i class="fa fa-magic tooltips" data-toggle="tooltip" title="TASK"></i><?php } ?></td>
                           <td><?php if ($value['level']) { $level = array(1=>'!',2=>'!!',3=>'!!!',4=>'!!!!');?><?php echo "<strong style='color:#ff0000;'>".$level[$value['level']]."</strong> ";?><?php } ?><?php if ($value['status'] == '-1') { echo '<s><a href="/issue/view/'.$value['id'].'">'.$value['issue_name'].'</a></s>'; } else { echo '<a href="/issue/view/'.$value['id'].'">'.$value['issue_name'].'</a>'; }?></td>
                           <td><?php if ($value['resolve']) { ?> <span class="label label-success">已解决</span><?php } else {?> <span class="label label-info">未解决</span><?php } ?></td>
                           <td>

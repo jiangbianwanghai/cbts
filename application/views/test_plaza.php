@@ -66,8 +66,8 @@
                           <th width="200px">版本库</th>
                           <th>版本标识</th>
                           <th width="140px">相关任务</th>
-                          <th width="80px">添加人</th>
-                          <th width="80px">受理人</th>
+                          <th width="100px">添加人</th>
+                          <th width="100px">受理人</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -80,8 +80,8 @@
                           <td><?php if ($value['status'] == '-1') { echo '<s><a href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a></s>'; } else { echo '<a href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a>'; }?> <?php if ($value['test_summary']) {?><a href="javascript:;" class="view label label-warning" testid="<?php echo $value['id'];?>" data-toggle="modal" data-target=".bs-example-modal">有说明</a><?php } ?></td>
                           <td>#<?php echo $value['test_flag'];?></td>
                           <td><a href="/issue/view/<?php echo $value['issue_id'];?>">ISSUE-<?php echo $value['issue_id'];?></a></td>
-                          <td><?php echo $value['add_user'] ? '<a href="/conf/profile/'.$value['add_user'].'">'.$users[$value['add_user']]['realname'].'</a>' : '-';?></td>
-                          <td><?php echo $value['accept_user'] ? '<a href="/conf/profile/'.$value['accept_user'].'">'.$users[$value['accept_user']]['realname'].'</a>' : '-';?></td>
+                          <td><?php echo $value['add_user'] ? '<div class="face"><img alt="" src="/static/images/photos/loggeduser.png" align="absmiddle"></div><a href="/conf/profile/'.$value['add_user'].'">'.$users[$value['add_user']]['realname'].'</a>' : '-';?></td>
+                          <td><?php echo $value['accept_user'] ? '<div class="face"><img alt="" src="/static/images/photos/loggeduser.png" align="absmiddle"></div><a href="/conf/profile/'.$value['accept_user'].'">'.$users[$value['accept_user']]['realname'].'</a>' : '-';?></td>
                         </tr>
                         <?php
                             }

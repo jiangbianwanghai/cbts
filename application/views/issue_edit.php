@@ -28,6 +28,16 @@
               </div>
               <div class="panel-body">
                 <div class="form-group">
+                  <label class="col-sm-3 control-label">请选择类型 <span class="asterisk">*</span></label>
+                  <div class="col-sm-9">
+                    <select id="type" name="type" class="select2" data-placeholder="请选择类型" required>
+                      <option value=""></option>
+                      <option value="2"<?php if ($row['type'] == 2) { echo " selected=\"selected\"";}?>>BUG</option>
+                      <option value="1"<?php if ($row['type'] == 1) { echo " selected=\"selected\"";}?>>TASK</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
                   <label class="col-sm-3 control-label">请选择优先级 <span class="asterisk">*</span></label>
                   <div class="col-sm-9">
                     <select id="level" name="level" class="select2" data-placeholder="请选择优先级" required>
@@ -160,7 +170,8 @@ jQuery(document).ready(function(){
   });
 
   jQuery(".select2").select2({
-      width: '150'
+      width: '150',
+      minimumResultsForSearch: -1
   });
 
 });
