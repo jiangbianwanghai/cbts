@@ -206,19 +206,27 @@ class Model_test extends CI_Model {
     /**
      * 我的任务列表
      */
-    public function profile($id, $offset = 0, $per_page = 20) {
+    public function profile($id, $role, $offset = 0, $per_page = 20) {
         $rows = array(
             'total_rows' => 0,
             'data' => false
         );
 
+        $user = 'add_user';
+        if ($role == 1) {
+            $user = 'accept_user';
+        }
+        if ($role == 2) {
+            $user = 'add_user';
+        }
+
         //获取总数
-        $sql = "SELECT * FROM `choc_test` WHERE `add_user` = '".$id."'";
+        $sql = "SELECT * FROM `choc_test` WHERE `".$user."` = '".$id."'";
         $query = $this->db->query($sql);
         $rows['total_rows'] = $query->num_rows;
 
         //获取翻页数据
-        $sql = "SELECT * FROM `choc_test` WHERE `add_user` = '".$id."' ORDER BY `id` DESC LIMIT ".$offset .", ".$per_page."";
+        $sql = "SELECT * FROM `choc_test` WHERE `".$user."` = '".$id."' ORDER BY `id` DESC LIMIT ".$offset .", ".$per_page."";
         $query = $this->db->query($sql);
         foreach ($query->result_array() as $row)
         {

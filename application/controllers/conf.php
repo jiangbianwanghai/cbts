@@ -160,40 +160,68 @@ class conf extends CI_Controller {
             $data['repos'] = $repos;
         }
 
+        $data['role'] = $users[$id]['role'];
+
         //获取创建的任务列表
         $id = trim($this->uri->segment(3, 0));
         $this->load->model('Model_issue', 'issue', TRUE);
-        $rows = $this->issue->profile($id, 0, 100);
+        $rows = $this->issue->profile($id, $data['role'], 0, 100);
         $data['issue_total'] = $rows['total_rows'];
         $data['issue'] = $rows['data'];
 
         //获取创建的提测列表
         $this->load->model('Model_test', 'test', TRUE);
-        $rows = $this->test->profile($id, 0, 100);
+        $rows = $this->test->profile($id, $data['role'], 0, 100);
         $data['test_total'] = $rows['total_rows'];
         $data['test'] = $rows['data'];
 
-        //我的按天统计任务量
-        $stackedMyIssue = $this->issue->stacked($id);
-        if ($stackedMyIssue) {
-            $stackedMyIssueStr = "[";
-            foreach ($stackedMyIssue as $key => $value) {
-                $stackedMyIssueStr .= "{ y: '".$value['perday']."', a: ".$value['close'].", b: ".$value['able']." },";
+        if ($users[$id]['role'] == 1) {
+            //我的按天统计任务量
+            $stackedMyIssue = $this->issue->stackedByQa($this->input->cookie('uids'));
+            if ($stackedMyIssue) {
+                $stackedMyIssueStr = "[";
+                foreach ($stackedMyIssue as $key => $value) {
+                    $stackedMyIssueStr .= "{ y: '".$value['perday']."', a: ".$value['close'].", b: ".$value['able']." },";
+                }
+                $stackedMyIssueStr .= "]";
             }
-            $stackedMyIssueStr .= "]";
-        }
-        $data['stackedMyIssueStr'] = $stackedMyIssueStr;
+            $data['stackedMyIssueStr'] = $stackedMyIssueStr;
 
-        //我的按天统计提测量
-        $stackedMyTest = $this->test->stacked($id);
-        if ($stackedMyTest) {
-            $stackedMyTestStr = "[";
-            foreach ($stackedMyTest as $key => $value) {
-                $stackedMyTestStr .= "{ y: '".$value['perday']."', a: ".$value['other'].", b: ".$value['no']." },";
+            //我的按天统计提测量
+            $stackedMyTest = $this->test->stackedByQa($this->input->cookie('uids'));
+            if ($stackedMyTest) {
+                $stackedMyTestStr = "[";
+                foreach ($stackedMyTest as $key => $value) {
+                    $stackedMyTestStr .= "{ y: '".$value['perday']."', a: ".$value['other'].", b: ".$value['no']." },";
+                }
+                $stackedMyTestStr .= "]";
             }
-            $stackedMyTestStr .= "]";
+            $data['stackedMyTestStr'] = $stackedMyTestStr;
         }
-        $data['stackedMyTestStr'] = $stackedMyTestStr;
+
+        if ($users[$id]['role'] == 2) {
+            //我的按天统计任务量
+            $stackedMyIssue = $this->issue->stacked($id);
+            if ($stackedMyIssue) {
+                $stackedMyIssueStr = "[";
+                foreach ($stackedMyIssue as $key => $value) {
+                    $stackedMyIssueStr .= "{ y: '".$value['perday']."', a: ".$value['close'].", b: ".$value['able']." },";
+                }
+                $stackedMyIssueStr .= "]";
+            }
+            $data['stackedMyIssueStr'] = $stackedMyIssueStr;
+
+            //我的按天统计提测量
+            $stackedMyTest = $this->test->stacked($id);
+            if ($stackedMyTest) {
+                $stackedMyTestStr = "[";
+                foreach ($stackedMyTest as $key => $value) {
+                    $stackedMyTestStr .= "{ y: '".$value['perday']."', a: ".$value['other'].", b: ".$value['no']." },";
+                }
+                $stackedMyTestStr .= "]";
+            }
+            $data['stackedMyTestStr'] = $stackedMyTestStr;
+        }
 
         $this->load->view('conf_users_profile', $data);
     }

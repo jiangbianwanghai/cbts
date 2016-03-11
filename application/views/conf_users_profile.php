@@ -27,13 +27,13 @@
                 <div class="panel-body">
                   <div class="row">
                     <div class="col-md-6">
-                      <h5 class="subtitle mb5">TA的任务提交量统计</h5>
-                      <p class="mb15">统计最近30天的任务提交量(正常量/关闭量)</p>
+                      <h5 class="subtitle mb5"><?php if ($role == 1) {?>TA受理的任务量统计<?php } ?><?php if ($role == 2) {?>TA提交的任务量统计<?php } ?></h5>
+                      <p class="mb15"><?php if ($role == 1) {?>最近30天受理的任务量统计(正常量/关闭量)<?php } ?><?php if ($role == 2) {?>最近30天提交的任务量(正常量/关闭量)<?php } ?></p>
                       <div id="stacked-chart_issue_my" class="body-chart">暂无数据</div>
                     </div><!-- col-md-6 -->
                     <div class="col-md-6">
-                      <h5 class="subtitle mb5">TA的提测量统计</h5>
-                      <p class="mb15">统计最近30天的提测量(不通过量/其他状态[待测,在测试,通过,已覆盖])</p>
+                      <h5 class="subtitle mb5"><?php if ($role == 1) {?>TA受理的提测量统计<?php } ?><?php if ($role == 2) {?>TA申请的提交量统计<?php } ?></h5>
+                      <p class="mb15"><?php if ($role == 1) {?>最近30天受理的提测量统计(待测+测试中/其他状态[不通过,通过,已覆盖])<?php } ?><?php if ($role == 2) {?>最近30天申请的提测量(不通过量/其他状态[待测,在测试,通过,已覆盖])<?php } ?></p>
                       <div id="stacked-chart_test_my" class="body-chart">暂无数据</div>
                     </div><!-- col-md-6 -->
                   </div><!-- row -->
@@ -44,8 +44,8 @@
           
           <!-- Nav tabs -->
         <ul class="nav nav-tabs nav-justified nav-profile">
-          <li class="active"><a href="#activities" data-toggle="tab"><strong>任务记录(<?php echo $issue_total;?>)</strong></a></li>
-          <li><a href="#followers" data-toggle="tab"><strong>提测记录(<?php echo $test_total;?>)</strong></a></li>
+          <li class="active"><a href="#activities" data-toggle="tab"><strong><?php if ($role == 1) {?>TA受理的任务记录<?php } ?><?php if ($role == 2) {?>TA提交的任务记录<?php } ?>(<?php echo $issue_total;?>)</strong></a></li>
+          <li><a href="#followers" data-toggle="tab"><strong><?php if ($role == 1) {?>TA受理的提测记录<?php } ?><?php if ($role == 2) {?>TA提交的提测记录<?php } ?>(<?php echo $test_total;?>)</strong></a></li>
         </ul>
         
         <!-- Tab panes -->
