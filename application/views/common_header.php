@@ -71,10 +71,6 @@
 
       <a class="menutoggle"><i class="fa fa-bars"></i></a>
 
-      <form class="searchform" action="index.html" method="post">
-        <input type="text" class="form-control" name="keyword" placeholder="Search here..." />
-      </form>
-
       <div class="header-right">
         <ul class="headermenu">
           <li>

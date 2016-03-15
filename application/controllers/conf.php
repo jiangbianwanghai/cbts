@@ -177,7 +177,7 @@ class conf extends CI_Controller {
 
         if ($users[$id]['role'] == 1) {
             //我的按天统计任务量
-            $stackedMyIssue = $this->issue->stackedByQa($this->input->cookie('uids'));
+            $stackedMyIssue = $this->issue->stackedByQa($id);
             if ($stackedMyIssue) {
                 $stackedMyIssueStr = "[";
                 foreach ($stackedMyIssue as $key => $value) {
@@ -188,7 +188,7 @@ class conf extends CI_Controller {
             $data['stackedMyIssueStr'] = $stackedMyIssueStr;
 
             //我的按天统计提测量
-            $stackedMyTest = $this->test->stackedByQa($this->input->cookie('uids'));
+            $stackedMyTest = $this->test->stackedByQa($id);
             if ($stackedMyTest) {
                 $stackedMyTestStr = "[";
                 foreach ($stackedMyTest as $key => $value) {

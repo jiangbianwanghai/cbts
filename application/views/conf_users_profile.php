@@ -233,7 +233,7 @@ jQuery(document).ready(function() {
         data: <?php echo $stackedMyTestStr;?>,
         xkey: 'y',
         ykeys: ['a', 'b'],
-        labels: ['其他状态', '不通过'],
+        labels: ['其他状态', '<?php if ($role == 1) {?>待测+测试中<?php } ?><?php if ($role == 2) {?>不通过<?php } ?>'],
         barColors: ['#F0AD4E', '#D9534F'],
         lineWidth: '1px',
         fillOpacity: 0.8,
