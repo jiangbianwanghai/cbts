@@ -370,8 +370,24 @@ class Model_test extends CI_Model {
         return $rows;
     }
 
-    public function analytics() {
-        $sql = "SELECT COUNT(`id`) as `num`, `add_user` FROM `choc_test` GROUP BY `add_user` ORDER BY `num` DESC";
+    /**
+     * 统计开发人员提测量排行
+     */
+    public function rankByUsers($leftTime, $rightTime) {
+        $sql = "SELECT COUNT(`id`) as `num`, `add_user` FROM `choc_test` WHERE `add_time` >= '".$leftTime."' AND `add_time` < '".$rightTime."' GROUP BY `add_user` ORDER BY `num` DESC";
+        $query = $this->db->query($sql);
+        foreach ($query->result_array() as $row)
+        {
+            $rows[] = $row;
+        }
+        return $rows;
+    }
+
+    /**
+     * 统计代码库提测量排行
+     */
+    public function rankByRepos($leftTime, $rightTime) {
+        $sql = "SELECT COUNT(`id`) as `num`, `repos_id` FROM `choc_test` WHERE `add_time` >= '".$leftTime."' AND `add_time` < '".$rightTime."' GROUP BY `repos_id` ORDER BY `num` DESC";
         $query = $this->db->query($sql);
         foreach ($query->result_array() as $row)
         {

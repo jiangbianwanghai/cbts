@@ -410,19 +410,63 @@ class test extends CI_Controller {
      * 分析
      */
     public function analytics() {
+
+        $data = array(
+            'PAGE_TITLE' => '', //页面标题
+            'users' => array(), //用户缓存文件
+            'repos' => array(), //代码库缓存文件
+            'rankByUsers' => array(), //提测量人员排行
+            'rankByUsersTotalNum' => 0, //提测量人员排行总记录数
+            'rankByRepos' => array(), //提测量代码库排行
+            'rankByReposTotalNum' => 0, //提测量代码库排行总记录数
+            'day' => 0 //筛选天数
+        );
+
+        $leftTime = $data['leftTime'] = strtotime(date("Y-m-d", time()));
+        $rightTime = $data['rightTime'] = strtotime(date("Y-m-d", strtotime("+1 day")));
+
+        $picker = $this->input->get('picker', TRUE);
+        if ($picker) {
+            $pickerArr = explode(' - ', $picker);
+            if (count($pickerArr) == 2) {
+                $leftTime = strtotime($pickerArr[0]);
+                $rightTime = strtotime($pickerArr[1]);
+                $data['day'] = round(($rightTime - $leftTime)/86400)-1;
+                $data['leftTime'] = $leftTime;
+                $data['rightTime'] = $rightTime;
+            }
+        }
+        
         $data['PAGE_TITLE'] = '测试统计';
+
         if (file_exists('./cache/users.conf.php')) {
             require './cache/users.conf.php';
             $data['users'] = $users;
         }
+
+        if (file_exists('./cache/repos.conf.php')) {
+            require './cache/repos.conf.php';
+            $data['repos'] = $repos;
+        }
+
         $this->load->model('Model_test', 'test', TRUE);
-        $data['pie'] = $this->test->analytics();
-        $data['all_tice'] = 0;
-        if ($data['pie']) {
-            foreach ($data['pie'] as $key => $value) {
-                $data['all_tice'] += $value['num'];
+
+        //提测量人员排行总记录数
+        $data['rankByUsers'] = $this->test->rankByUsers($leftTime, $rightTime);
+        if ($data['rankByUsers']) {
+            foreach ($data['rankByUsers'] as $key => $value) {
+                $data['rankByUsersTotalNum'] += $value['num'];
             }
         }
+
+        //统计代码库提测量排行
+        $data['rankByRepos'] = $this->test->rankByRepos($leftTime, $rightTime);
+        if ($data['rankByRepos']) {
+            foreach ($data['rankByRepos'] as $key => $value) {
+                $data['rankByReposTotalNum'] += $value['num'];
+            }
+        }
+
         $this->load->view('test_analytics', $data);
     }
 
@@ -708,7 +752,7 @@ class test extends CI_Controller {
         //获取该版本库的前面的一个提测任务
         $prevRow = $this->test->prev($row['repos_id'], $row['test_flag']);
         if ($prevRow) {
-            $oldversion = $prevRow['test_flag'];
+            $oldversion = $prevRow['trunk_flag'];
         } else {
             $oldversion = 1;
         }
@@ -727,7 +771,7 @@ class test extends CI_Controller {
 
         //组合发布API参数
         $cap_url = $cap."/pub/deployapi/?oldversion=".$oldversion."&newversion=".$row['trunk_flag']."&appname=".$repos[$row['repos_id']]['repos_name_other']."&reason=".$users[$row['accept_user']]['realname']."上线&environment=formal&secret=7232275";
-        //echo $cap_url;
+        //echo $cap_url;exit();
         $con = file_get_contents($cap_url);
         //echo $con;
         $con_arr = json_decode($con, true);
