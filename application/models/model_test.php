@@ -79,11 +79,17 @@ class Model_test extends CI_Model {
      */
     public function listByIssueId($id) {
         $rows = false;
+
+        //获取总数
+        $sql = "SELECT * FROM `choc_test` WHERE `issue_id` = '".$id."'";
+        $query = $this->db->query($sql);
+        $rows['total_rows'] = $query->num_rows;
+
         $sql = "SELECT * FROM `choc_test` WHERE `issue_id` = '".$id."' ORDER BY `id` DESC";
         $query = $this->db->query($sql);
         foreach ($query->result_array() as $row)
         {
-            $rows[] = $row;
+            $rows['data'][] = $row;
         }
         return $rows;
     }

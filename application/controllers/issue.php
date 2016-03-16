@@ -45,6 +45,16 @@ class issue extends CI_Controller {
     public function view() {
         $id = $this->uri->segment(3, 0);
 
+        $data = array(
+            'PAGE_TITLE' => '', //页面标题
+            'row' => array(), //任务详情
+            'test' => array(), //任务相关的提测
+            'total_rows' => 0, //任务相关的提测数量
+            'repos' => array(), //代码库缓存文件
+            'users' => array(), //用户信息缓存文件
+            'shareUsers' => array() //贡献代码的用户信息
+        );
+
         //获取任务详情
         $this->load->model('Model_issue', 'issue', TRUE);
         $data['row'] = $this->issue->fetchOne($id);
@@ -52,7 +62,12 @@ class issue extends CI_Controller {
 
         //获取相关提测记录
         $this->load->model('Model_test', 'test', TRUE);
-        $data['test'] = $this->test->listByIssueId($id);
+        $rows = $this->test->listByIssueId($id);
+        if ($rows) {
+            $data['test'] = $rows['data'];
+            $data['total_rows'] = $rows['total_rows'];
+        }
+        
 
         //载入文件缓存
         if (file_exists('./cache/repos.conf.php')) {
