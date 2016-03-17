@@ -142,7 +142,7 @@ class issue extends CI_Controller {
         $config = $this->config->item('pages', 'extension');
 
         //页码
-        $offset = $this->uri->segment(7, 0);
+        $offset = $this->uri->segment(8, 0);
 
         //处理进度
         $resolve = $this->uri->segment(3, 'able');
@@ -155,11 +155,14 @@ class issue extends CI_Controller {
 
         //受理角色
         $accept_user = $this->uri->segment(6, 'all');
+
+        //任务类型
+        $issueType = $this->uri->segment(7, 'all');
         
         //读取数据
         $this->load->model('Model_issue', 'issue', TRUE);
 
-        $rows = $this->issue->plaza($add_user, $accept_user, $status, $resolve, $offset, $config['per_page']);
+        $rows = $this->issue->plaza($add_user, $accept_user, $status, $resolve, $issueType, $offset, $config['per_page']);
         $data['rows'] = $rows['data'];
         $data['total_rows'] = $rows['total_rows'];
 
@@ -171,13 +174,14 @@ class issue extends CI_Controller {
         $this->load->library('pagination');
         $config['total_rows'] = $rows['total_rows'];
         $config['cur_page'] = $offset;
-        $config['base_url'] = '/issue/plaza/'.$resolve.'/'.$status.'/'.$add_user.'/'.$accept_user;
+        $config['base_url'] = '/issue/plaza/'.$resolve.'/'.$status.'/'.$add_user.'/'.$accept_user.'/'.$issueType;
         $this->pagination->initialize($config);
         $data['pages'] = $this->pagination->create_links();
 
         $data['offset'] = $offset;
         $data['resolve'] = $resolve;
         $data['status'] = $status;
+        $data['issueType'] = $issueType;
         $data['add_user'] = $add_user;
         $data['accept_user'] = $accept_user;
 

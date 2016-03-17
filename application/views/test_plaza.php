@@ -41,7 +41,7 @@
           
           <h4 class="subtitle mb5">按状态筛选</h4>
           <div class="btn-group">
-            <a href="/test/plaza/<?php echo $rank;?>/wait/<?php echo $add_user;?>/<?php echo $accept_user;?>" class="btn btn-sm btn-<?php if ($state == 'wait') { echo 'primary'; } else { echo 'default'; }?>">待测</a>
+            <a href="/test/plaza/dev/wait/<?php echo $add_user;?>/<?php echo $accept_user;?>" class="btn btn-sm btn-<?php if ($state == 'wait') { echo 'primary'; } else { echo 'default'; }?>">待测</a>
             <a href="/test/plaza/test/doing/<?php echo $add_user;?>/<?php echo $accept_user;?>" type="button" class="btn btn-sm btn-<?php if ($state == 'doing') { echo 'primary'; } else { echo 'default'; }?>">测试中</a>
             <a href="/test/plaza/test/no/<?php echo $add_user;?>/<?php echo $accept_user;?>" type="button" class="btn btn-sm btn-<?php if ($state == 'no') { echo 'primary'; } else { echo 'default'; }?>">不通过</a>
             <a href="/test/plaza/test/cover/<?php echo $add_user;?>/<?php echo $accept_user;?>" type="button" class="btn btn-sm btn-<?php if ($state == 'cover') { echo 'primary'; } else { echo 'default'; }?>">已覆盖</a>

@@ -46,6 +46,13 @@
           </div>
           
           <div class="mb20"></div>
+
+          <h4 class="subtitle mb5">按类型筛选</h4>
+          <div class="btn-group">
+            <a href="/issue/plaza/<?php echo $resolve;?>/able/<?php echo $add_user;?>/<?php echo $accept_user;?>/all" type="button" class="btn btn-sm btn-<?php if ($issueType == 'all') { echo 'primary'; } else { echo 'default'; }?>">ALL</a>
+            <a href="/issue/plaza/<?php echo $resolve;?>/able/<?php echo $add_user;?>/<?php echo $accept_user;?>/task" class="btn btn-sm btn-<?php if ($issueType == 'task') { echo 'primary'; } else { echo 'default'; }?>">TASK</a>
+            <a href="/issue/plaza/<?php echo $resolve;?>/able/<?php echo $add_user;?>/<?php echo $accept_user;?>/bug" type="button" class="btn btn-sm btn-<?php if ($issueType == 'bug') { echo 'primary'; } else { echo 'default'; }?>">BUG</a>
+          </div>
         </div><!-- col-sm-4 -->
         <div class="col-sm-9 col-md-10">
             <div class="panel panel-default">

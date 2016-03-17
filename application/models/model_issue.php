@@ -220,13 +220,13 @@ class Model_issue extends CI_Model {
     /**
      * 任务广场列表
      */
-    public function plaza($add_user, $accept_user, $status, $resolve, $offset = 0, $per_page = 20) {
+    public function plaza($add_user, $accept_user, $status, $resolve, $issueType, $offset = 0, $per_page = 20) {
         $rows = array(
             'total_rows' => 0,
             'data' => false
         );
 
-        $addUserStr = $acceptUserStr = "";
+        $addUserStr = $acceptUserStr = $issueTypeStr = "";
 
         if ($add_user == 'my') {
             $addUserStr = "`add_user` = '".$this->input->cookie('uids')."' AND ";
@@ -235,13 +235,18 @@ class Model_issue extends CI_Model {
             $acceptUserStr = "`accept_user` = '".$this->input->cookie('uids')."' AND ";
         }
 
+        if ($issueType == 'bug' || $issueType == 'task') {
+            $array = array('task' => 1, 'bug' => 2);
+            $issueTypeStr = "`type` = '".$array[$issueType]."' AND ";
+        }
+
         //获取总数
-        $sql = "SELECT * FROM `choc_issue` WHERE ".$addUserStr.$acceptUserStr."`status` = '".$this->statusArr[$status]."' AND `resolve` = '".$this->resolveArr[$resolve]."'";
+        $sql = "SELECT * FROM `choc_issue` WHERE ".$addUserStr.$acceptUserStr.$issueTypeStr."`status` = '".$this->statusArr[$status]."' AND `resolve` = '".$this->resolveArr[$resolve]."'";
         $query = $this->db->query($sql);
         $rows['total_rows'] = $query->num_rows;
 
         //获取翻页数据
-        $sql = "SELECT * FROM `choc_issue` WHERE ".$addUserStr.$acceptUserStr."`status` = '".$this->statusArr[$status]."' AND `resolve` = '".$this->resolveArr[$resolve]."' ORDER BY `id` DESC LIMIT ".$offset .", ".$per_page."";
+        $sql = "SELECT * FROM `choc_issue` WHERE ".$addUserStr.$acceptUserStr.$issueTypeStr."`status` = '".$this->statusArr[$status]."' AND `resolve` = '".$this->resolveArr[$resolve]."' ORDER BY `id` DESC LIMIT ".$offset .", ".$per_page."";
         $query = $this->db->query($sql);
         foreach ($query->result_array() as $row)
         {
