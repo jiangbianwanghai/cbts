@@ -247,15 +247,15 @@ class admin extends CI_Controller {
         echo '1';
     }
 
-    public function email() {
+    public function email($to = '896767248@qq.com') {
         $this->load->library('email');
         $this->config->load('extension', TRUE);
         $config = $this->config->item('email', 'extension');
         $this->email->initialize($config);
 
         $this->email->from($config['smtp_user'], 'CBTS提醒服务');
-        $this->email->to('name@youdomain.com');
-        $this->email->subject('你的2016年第十周周报 From CBTS');
+        $this->email->to($to);
+        $this->email->subject('你的2016年第十一周周报 From CBTS');
         $this->email->message('这里是周报内容');
         $this->email->send();
     }
