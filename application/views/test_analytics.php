@@ -31,7 +31,7 @@
       <div class="mb20"></div>
       
       <div class="row">
-        <?php if ($rankByUsers) { ?>
+        
         <div class="col-md-6">
           <div class="panel panel-dark panel-alt">
             <div class="panel-heading">
@@ -42,6 +42,7 @@
               <h5 class="panel-title">提测量人员排行</h5>
             </div><!-- panel-heading -->
             <div class="panel-body panel-table">
+              <?php if ($rankByUsers) { ?>
               <div class="table-responsive">
               <table class="table table-hover">
                 <thead>
@@ -72,12 +73,13 @@
                 </tbody>
               </table>
               </div><!-- table-responsive -->
+              <?php  } else {echo '暂无数据';}?>
             </div><!-- panel-body -->
           </div><!-- panel -->
         </div><!-- col-md-6 -->
-        <?php  }?>
+        
 
-        <?php if ($rankByRepos) { ?>
+        
         <div class="col-md-6">
           <div class="panel panel-dark panel-alt">
             <div class="panel-heading">
@@ -88,6 +90,7 @@
               <h5 class="panel-title">提测量代码库排行</h5>
             </div><!-- panel-heading -->
             <div class="panel-body panel-table">
+              <?php if ($rankByRepos) { ?>
               <div class="table-responsive">
               <table class="table table-hover">
                 <thead>
@@ -118,10 +121,11 @@
                 </tbody>
               </table>
               </div><!-- table-responsive -->
+              <?php  } else {echo '暂无数据';}?>
             </div><!-- panel-body -->
           </div><!-- panel -->
         </div><!-- col-md-6 -->
-        <?php  }?>
+        
         
       </div><!-- row -->
             

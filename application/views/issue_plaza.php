@@ -70,7 +70,7 @@
                           <th width="50px">类型</th>
                           <th>名称</th>
                           <th width="80px">添加人</th>
-                          <th width="80px">最后修改</th>
+                          <th width="80px">受理人</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -85,7 +85,7 @@
                           </td>
                           <td><?php echo $value['add_user'] ? '<a href="/conf/profile/'.$value['add_user'].'">'.$users[$value['add_user']]['realname'].'</a>' : '-';?>
                           </td>
-                          <td><?php echo $value['last_user'] ? '<a href="/conf/profile/'.$value['last_user'].'">'.$users[$value['last_user']]['realname'].'</a>' : '-';?>
+                          <td><?php echo $value['accept_user'] ? '<a href="/conf/profile/'.$value['accept_user'].'">'.$users[$value['accept_user']]['realname'].'</a>' : '-';?>
                           </td>
                         </tr>
                         <?php
