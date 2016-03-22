@@ -20,7 +20,8 @@ class issue extends CI_Controller {
             'level' => $this->input->post('level'),
             'issue_name' => $this->input->post('issue_name'),
             'url' => $this->input->post('issue_url'),
-            'issue_summary' => $this->input->post('issue_summary')
+            'issue_summary' => $this->input->post('issue_summary'),
+            'deadline' => strtotime($this->input->post('deadline'))
         );
         $feedback = $this->issue->add($post);
         if ($feedback['status']) {
@@ -137,6 +138,8 @@ class issue extends CI_Controller {
      */
     public function plaza() {
         $data['PAGE_TITLE'] = '任务广场列表';
+
+        $this->load->helper('friendlydate');
 
         $this->config->load('extension', TRUE);
         $config = $this->config->item('pages', 'extension');

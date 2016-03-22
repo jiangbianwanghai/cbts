@@ -51,10 +51,10 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-sm-3 control-label">截至时间</label>
+                  <label class="col-sm-3 control-label">截至时间 <span class="asterisk">*</span></label>
                   <div class="col-sm-9">
-                    <div class="input-group" style="width:150px;">
-                      <input type="text" class="form-control" placeholder="mm/dd/yyyy" id="datepicker">
+                    <div class="input-group" style="width:200px;">
+                      <input type="text" class="form-control" name="deadline" placeholder="mm/dd/yyyy" id="datepicker" required>
                       <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                     </div>
                   </div>

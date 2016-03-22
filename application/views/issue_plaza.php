@@ -70,7 +70,9 @@
                           <th width="50px">类型</th>
                           <th>名称</th>
                           <th width="80px">添加人</th>
+                          <th width="120px">添加时间</th>
                           <th width="80px">受理人</th>
+                          <th width="160px" style="text-align:center"><span class="label label-danger">死线</span></th>
                         </tr>
                       </thead>
                       <tbody>
@@ -85,7 +87,11 @@
                           </td>
                           <td><?php echo $value['add_user'] ? '<a href="/conf/profile/'.$value['add_user'].'">'.$users[$value['add_user']]['realname'].'</a>' : '-';?>
                           </td>
+                          <td><?php echo friendlydate($value['add_time']);?>
+                          </td>
                           <td><?php echo $value['accept_user'] ? '<a href="/conf/profile/'.$value['accept_user'].'">'.$users[$value['accept_user']]['realname'].'</a>' : '-';?>
+                          </td>
+                          <td><?php echo $value['deadline'] ? date("Y-m-d H:i", $value['deadline']) : '-';?>
                           </td>
                         </tr>
                         <?php
