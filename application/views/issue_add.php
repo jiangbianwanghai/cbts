@@ -1,4 +1,5 @@
 <?php include('common_header.php');?>
+<link rel="stylesheet" type="text/css" href="/static/css/jquery.datetimepicker.css"/>
     <div class="pageheader">
       <h2><i class="fa fa-pencil"></i> 我的任务 <span>添加任务</span></h2>
       <div class="breadcrumb-wrapper">
@@ -50,6 +51,15 @@
                   </div>
                 </div>
                 <div class="form-group">
+                  <label class="col-sm-3 control-label">截至时间</label>
+                  <div class="col-sm-9">
+                    <div class="input-group" style="width:150px;">
+                      <input type="text" class="form-control" placeholder="mm/dd/yyyy" id="datepicker">
+                      <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
                   <label class="col-sm-3 control-label">名称 <span class="asterisk">*</span></label>
                   <div class="col-sm-9">
                     <input type="text" id="issue_name" name="issue_name" class="form-control" placeholder="请输入任务名称" required />
@@ -67,6 +77,7 @@
                     <input type="text" id="issue_url" name="issue_url" class="form-control" placeholder="请输入任务地址" />
                   </div>
                 </div>
+                
               </div><!-- panel-body -->
               <div class="panel-footer">
                 <div class="row">
@@ -96,6 +107,7 @@
 <script type="text/javascript" src="/static/simditor-2.3.6/scripts/uploader.js"></script>
 <script type="text/javascript" src="/static/simditor-2.3.6/scripts/hotkeys.js"></script>
 <script type="text/javascript" src="/static/simditor-2.3.6/scripts/simditor.js"></script>
+<script src="/static/js/jquery-ui-1.10.3.min.js"></script>
 <script src="/static/js/jquery-migrate-1.2.1.min.js"></script>
 <script src="/static/js/bootstrap.min.js"></script>
 <script src="/static/js/modernizr.min.js"></script>
@@ -109,6 +121,8 @@
 <script src="/static/js/jquery.gritter.min.js"></script>
 
 <script src="/static/js/select2.min.js"></script>
+
+<script src="/static/js/jquery.datetimepicker.full.js"></script>
 
 <script src="/static/js/custom.js"></script>
 
@@ -173,6 +187,11 @@ jQuery(document).ready(function(){
       width: '150',
       minimumResultsForSearch: -1
   });
+
+  $('#datepicker').datetimepicker({
+    minDate:'<?php echo date("Y/m/d", time());?>',
+  });
+  
 
 });
 </script>
