@@ -259,4 +259,27 @@ class admin extends CI_Controller {
         $this->email->message('这里是周报内容');
         $this->email->send();
     }
+
+    public function upload() {
+        if($_FILES['upload_file']) {
+            $dir_name = date("Ymd", time());
+            $dir = '/usr/local/nginx/html/cbts/static/upload/'.$dir_name;
+            if (!is_dir($dir)) mkdir($dir, 0777);
+            $config['upload_path'] = $dir; 
+            $config['file_name'] = 'IMG_'.time();
+            $config['overwrite'] = TRUE;
+            $config["allowed_types"] = 'jpg|jpeg|png|gif';
+            $config["max_size"] = 1024;
+            $this->load->library('upload', $config);
+
+            if(!$this->upload->do_upload('upload_file')) {               
+                $error = $this->upload->display_errors();
+                echo '{"success": false,"msg": "'.$error.'"}';
+            } else {
+                $data['upload_data']=$this->upload->data();
+                $img=$data['upload_data']['file_name'];
+                echo '{"success": true,"file_path": "'.'/static/upload/'.$dir_name.'/'.$img.'"}';                              
+            }  
+        }
+    }
 }

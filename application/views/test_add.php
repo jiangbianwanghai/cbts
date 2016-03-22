@@ -16,7 +16,7 @@
       <div class="row">
         
         <div class="col-md-12">
-          <form method="POST" id="basicForm" action="/test/add_ajax" class="form-horizontal">
+          <form method="POST" id="basicForm" enctype="multipart/form-data" action="/test/add_ajax" class="form-horizontal">
           <div class="panel panel-default">
               <div class="panel-heading">
                 <div class="panel-btns">
@@ -212,7 +212,11 @@ jQuery(document).ready(function(){
     toolbar : toolbar,  //工具栏
     defaultImage : '/static/simditor-2.3.6/images/image.png', //编辑器插入图片时使用的默认图片
     upload: {
-        url: '/upload'
+        url: '/admin/upload',
+        params: null, //键值对,指定文件上传接口的额外参数,上传的时候随文件一起提交  
+        fileKey: 'upload_file', //服务器端获取文件数据的参数名  
+        connectionCount: 3,  
+        leaveConfirm: '正在上传文件'
       }
   });
    })

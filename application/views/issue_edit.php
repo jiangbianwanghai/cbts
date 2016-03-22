@@ -93,6 +93,10 @@
 </section>
 
 <script src="/static/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="/static/simditor-2.3.6/scripts/module.js"></script>
+<script type="text/javascript" src="/static/simditor-2.3.6/scripts/uploader.js"></script>
+<script type="text/javascript" src="/static/simditor-2.3.6/scripts/hotkeys.js"></script>
+<script type="text/javascript" src="/static/simditor-2.3.6/scripts/simditor.js"></script>
 <script src="/static/js/jquery-migrate-1.2.1.min.js"></script>
 <script src="/static/js/bootstrap.min.js"></script>
 <script src="/static/js/modernizr.min.js"></script>
@@ -108,10 +112,6 @@
 <script src="/static/js/select2.min.js"></script>
 
 <script src="/static/js/custom.js"></script>
-
-<script type="text/javascript" src="/static/simditor-2.3.6/scripts/module.js"></script>
-<script type="text/javascript" src="/static/simditor-2.3.6/scripts/hotkeys.js"></script>
-<script type="text/javascript" src="/static/simditor-2.3.6/scripts/simditor.js"></script>
 
 <script>
 function validForm(formData,jqForm,options){
@@ -176,10 +176,26 @@ jQuery(document).ready(function(){
 
 });
 
-var editor = new Simditor({
-  textarea: $('#issue_summary')
-  //optional options
-});
+</script>
+<script type="text/javascript">
+   $(function(){
+  toolbar = [ 'title', 'bold', 'italic', 'underline', 'strikethrough',
+      'color', '|', 'ol', 'ul', 'blockquote', 'code', 'table', '|',
+      'link', 'image', 'hr', '|', 'indent', 'outdent' ];
+  var editor = new Simditor( {
+    textarea : $('#issue_summary'),
+    placeholder : '这里输入内容...',
+    toolbar : toolbar,  //工具栏
+    defaultImage : '/static/simditor-2.3.6/images/image.png', //编辑器插入图片时使用的默认图片
+    upload: {
+        url: '/admin/upload',
+        params: null, //键值对,指定文件上传接口的额外参数,上传的时候随文件一起提交  
+        fileKey: 'upload_file', //服务器端获取文件数据的参数名  
+        connectionCount: 3,  
+        leaveConfirm: '正在上传文件'
+      }
+  });
+   })
 </script>
 
 </body>
