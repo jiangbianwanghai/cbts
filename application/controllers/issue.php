@@ -46,6 +46,8 @@ class issue extends CI_Controller {
     public function view() {
         $id = $this->uri->segment(3, 0);
 
+        $this->load->helper('friendlydate');
+
         $data = array(
             'PAGE_TITLE' => '', //页面标题
             'row' => array(), //任务详情
@@ -53,7 +55,9 @@ class issue extends CI_Controller {
             'total_rows' => 0, //任务相关的提测数量
             'repos' => array(), //代码库缓存文件
             'users' => array(), //用户信息缓存文件
-            'shareUsers' => array() //贡献代码的用户信息
+            'shareUsers' => array(), //贡献代码的用户信息
+            'bug' => array(),
+            'bug_total_rows' => 0
         );
 
         //获取任务详情
@@ -67,6 +71,14 @@ class issue extends CI_Controller {
         if ($rows) {
             $data['test'] = $rows['data'];
             $data['total_rows'] = $rows['total_rows'];
+        }
+
+        //获取相关BUG记录
+        $this->load->model('Model_bug', 'bug', TRUE);
+        $rows = $this->bug->listByIssueId($id);
+        if ($rows['total_rows']) {
+            $data['bug'] = $rows['data'];
+            $data['bug_total_rows'] = $rows['total_rows'];
         }
         
 

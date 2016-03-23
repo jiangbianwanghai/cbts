@@ -1,12 +1,12 @@
 <?php include('common_header.php');?>
     <div class="pageheader">
-      <h2><i class="fa fa-pencil"></i> 提测管理 <span>提交代码</span></h2>
+      <h2><i class="fa fa-pencil"></i> BUG管理 <span>提交BUG</span></h2>
       <div class="breadcrumb-wrapper">
         <span class="label">你的位置:</span>
         <ol class="breadcrumb">
           <li><a href="/">我的控制台</a></li>
-          <li><a href="/test/my">提测管理</a></li>
-          <li class="active">提交代码</li>
+          <li><a href="/bug/my">BUG管理</a></li>
+          <li class="active">提交BUG</li>
         </ol>
       </div>
     </div>
@@ -16,84 +16,47 @@
       <div class="row">
         
         <div class="col-md-12">
-          <form method="POST" id="basicForm" enctype="multipart/form-data" action="/test/add_ajax" class="form-horizontal">
+          <form method="POST" id="basicForm" enctype="multipart/form-data" action="/bug/add_ajax" class="form-horizontal">
           <div class="panel panel-default">
               <div class="panel-heading">
                 <div class="panel-btns">
                   <a href="" class="panel-close">&times;</a>
                   <a href="" class="minimize">&minus;</a>
                 </div>
-                <h4 class="panel-title">提交代码</h4>
-                <p>请认真填写下面的选项。如果没有分支可以不填写，分支名字相对与branches下的目录名，比如branches/abc，只需要输入abc即可。</p>
+                <h4 class="panel-title">反馈BUG</h4>
+                <p>请认真填写下面的选项</p>
               </div>
               <div class="panel-body">
                 <div class="form-group">
                   <label class="col-sm-3 control-label">相关任务 <span class="asterisk">*</span></label>
                   <div class="col-sm-9">
-                    <input type="text" id="issue_name" name="issue_name" class="form-control" value="<?php echo $row['issue_name']?>" disabled="" />
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <label class="col-sm-3 control-label">代码库 <span class="asterisk">*</span></label>
-                  <div class="col-sm-9">
-                    <select id="repos_id" name="repos_id" class="select2-2" data-placeholder="请选择代码库" required>
-                      <option value=""></option>
-                      <?php
-                      if (isset($repos) && $repos) {
-                        foreach ($repos as $value) {
-                      ?>
-                      <option value="<?php echo $value['id'];?>"><?php echo $value['repos_name_other'];?></option>
-                      <?php
-                        }
-                      }
-                      ?>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <label class="col-sm-3 control-label">分支名称</label>
-                  <div class="col-sm-9">
-                    <input type="text" id="br" name="br" class="form-control" placeholder="请输入分支名字" />
+                    <input type="text" id="issue_id" name="issue_id" class="form-control" value="<?php echo $row['issue_name']?>#<?php echo $row['issue_id']?>" disabled="" />
                   </div>
                 </div>
                 
                 <div class="form-group">
-                  <label class="col-sm-3 control-label">版本号 <span class="asterisk">*</span></label>
+                  <label class="col-sm-3 control-label">代码库及版本号 <span class="asterisk">*</span></label>
                   <div class="col-sm-9">
-                    <input type="text" id="test_flag" name="test_flag" class="form-control" placeholder="请输入版本号" required />
+                    <input type="text" id="repos_id" name="repos_id" class="form-control" value="<?php echo $repos[$row['repos_id']]['repos_name']?>#<?php echo $row['test_flag'];?>" disabled="" />
                   </div>
                 </div>
 
                 <div class="form-group">
-                  <label class="col-sm-3 control-label">让谁受理你的请求 <span class="asterisk">*</span></label>
+                  <label class="col-sm-3 control-label">BUG标题 <span class="asterisk">*</span></label>
                   <div class="col-sm-9">
-                    <select id="accept_user" name="accept_user" class="select2" data-placeholder="请选择受理人" required>
-                      <option value=""></option>
-                      <?php
-                      if (isset($users) && $users) {
-                        foreach ($users as $value) {
-                          if ($value['role'] == 1) {
-                      ?>
-                      <option value="<?php echo $value['uid'];?>"><?php echo $value['realname'];?></option>
-                      <?php
-                          }
-                        }
-                      }
-                      ?>
-                    </select>
+                    <input type="text" id="subject" name="subject" class="form-control"  placeholder="请填写BUG标题" required/>
                   </div>
                 </div>
 
                 <div class="form-group">
-                  <label class="col-sm-3 control-label">说明 </label>
+                  <label class="col-sm-3 control-label">描述 <span class="asterisk">*</span></label>
                   <div class="col-sm-9">
-                    <textarea id="test_summary" name="test_summary" rows="5" class="form-control" placeholder="请简要说明提测时需要注意的事项"></textarea>
+                    <textarea id="content" name="content" rows="3" class="form-control">[相关帐号]<br /><br />[描述]<br />[截图]<br /></textarea>
                   </div>
                 </div>
               </div><!-- panel-body -->
-              <input type="hidden" value="<?php echo $row['id'];?>" id="issue_id" name="issue_id">
+              <input type="hidden" value="<?php echo $row['issue_id'];?>" id="issue_id" name="issue_id">
+              <input type="hidden" value="<?php echo $row['id'];?>" id="test_id" name="test_id">
               <div class="panel-footer">
                 <div class="row">
                   <div class="col-sm-9 col-sm-offset-3">
@@ -138,9 +101,6 @@
 
 <script src="/static/js/custom.js"></script>
 
-
-
-
 <script>
 function validForm(formData,jqForm,options){
   return $("#basicForm").valid();
@@ -180,7 +140,7 @@ jQuery(document).ready(function(){
   $("#basicForm").submit(function(){
     $(this).ajaxSubmit({
       type:"post",
-      url: "/test/add_ajax",
+      url: "/bug/add_ajax",
       dataType: "JSON",
       beforeSubmit:validForm,
       success:callBack
@@ -197,13 +157,6 @@ jQuery(document).ready(function(){
     },
   });
 
-  jQuery(".select2-2").select2({
-      width: '100%'
-  });
-
-  jQuery(".select2").select2({
-      width: '100%'
-  });
 
 });
 
@@ -214,8 +167,7 @@ jQuery(document).ready(function(){
       'color', '|', 'ol', 'ul', 'blockquote', 'code', 'table', '|',
       'link', 'image', 'hr', '|', 'indent', 'outdent' ];
   var editor = new Simditor( {
-    textarea : $('#test_summary'),
-    placeholder : '这里输入内容...',
+    textarea : $('#content'),
     toolbar : toolbar,  //工具栏
     defaultImage : '/static/simditor-2.3.6/images/image.png', //编辑器插入图片时使用的默认图片
     upload: {

@@ -72,7 +72,7 @@
                           <th width="80px">添加人</th>
                           <th width="120px">添加时间</th>
                           <th width="80px">受理人</th>
-                          <th width="160px" style="text-align:center"><span class="label label-danger">死线</span></th>
+                          <th width="160px" style="text-align:center"><span class="label label-danger">距离上线时间</span></th>
                         </tr>
                       </thead>
                       <tbody>
@@ -91,8 +91,19 @@
                           </td>
                           <td><?php echo $value['accept_user'] ? '<a href="/conf/profile/'.$value['accept_user'].'">'.$users[$value['accept_user']]['realname'].'</a>' : '-';?>
                           </td>
-                          <td><?php echo $value['deadline'] ? date("Y-m-d H:i", $value['deadline']) : '-';?>
-                          </td>
+                          <?php if ($value['deadline']) {?>
+                          <td style="text-align:center">
+                            <?php 
+                            $remaining = $value['deadline'] - time();  
+                            if ($remaining>0) {
+                              echo floor($remaining / 86400).' 天'.floor(($remaining % 86400) / 3600).' 小时'.floor(($remaining % 86400) % 3600 % 60).' 秒';
+                            } else {
+                              echo '已过期';
+                            }?></td>
+                          <?php } else {?>
+                          <td>-</td>
+                          <?php } ?>
+                          
                         </tr>
                         <?php
                             }
@@ -113,6 +124,7 @@
   </div><!-- mainpanel -->
   
 </section>
+<div id="getting-started"></div>
 
 <script src="/static/js/jquery-1.11.1.min.js"></script>
 <script src="/static/js/jquery-migrate-1.2.1.min.js"></script>
@@ -160,8 +172,8 @@
         });
       }
     });
+
   });
 </script>
-
 </body>
 </html>

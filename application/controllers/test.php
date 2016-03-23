@@ -59,6 +59,7 @@ class test extends CI_Controller {
         $post = array(
             'issue_id' => $this->input->post('issue_id'),
             'repos_id' => $this->input->post('repos_id'),
+            'br' => $this->input->post('br'),
             'test_flag' => $this->input->post('test_flag'),
             'test_summary' => $this->input->post('test_summary'),
             'accept_user' => $this->input->post('accept_user'),

@@ -67,6 +67,10 @@
                                 <div class="col-xs-6">所属产品版本</div>
                                 <div class="col-xs-6">-</div>
                             </div>
+                            <div class="row">
+                                <div class="col-xs-6">距离上线日期</div>
+                                <div class="col-xs-6" id="deadline"></div>
+                            </div>
                           </div><!-- col-sm-6 -->
                           <div class="col-sm-6">
                             <div class="row">
@@ -199,6 +203,9 @@
                                         </div><!-- btn-group -->
                                         <?php }?>
                                         <?php }?>
+                                        <?php if ($value['state'] == -3) {?>
+                                        <a class="btn btn-white btn-xs" href="/bug/add/<?php echo $value['id'];?>"><i class="fa fa-bug"></i> 反馈BUG</a>
+                                        <?php } ?>
                                       </td>
                                     </tr>
                                     <?php
@@ -212,7 +219,53 @@
                             </div><!-- table-responsive -->
                         </div><!-- panel-body -->
                     </div><!-- panel -->
-                      
+                    <?php if ($bug_total_rows) {?>
+                    <div class="panel panel-danger panel-alt">
+                                <div class="panel-heading">
+                                    <div class="panel-btns">
+                                        <a href="" class="panel-close">&times;</a>
+                                        <a href="" class="minimize">&minus;</a>
+                                    </div><!-- panel-btns -->
+                                    <h5 class="panel-title">反馈BUG列表</h5>
+                                </div><!-- panel-heading -->
+                                <div class="panel-body panel-table">
+                                    <div class="table-responsive">
+                                    <table class="table table-buglist">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>#</th>
+                                                <th>标题</th>
+                                                <th>反馈人</th>
+                                                <th>反馈时间</th>
+                                                <th>操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                          <?php
+                                            if ($bug) {
+                                              foreach ($bug as $value) {
+                                          ?>
+                                            <tr>
+                                                <td><i class="fa fa-bug tooltips" data-toggle="tooltip" title="Bug"></i></td>
+                                                <td><?php echo $value['id']?></td>
+                                                <td><a href="javascript:;" bugid="<?php echo $value['id'];?>" class="bug" testid="<?php echo $value['id'];?>" data-toggle="modal" data-target=".bs-example-modal"><?php echo $value['subject']?></a></td>
+                                                <td><?php echo $value['add_user'] ? '<a href="/conf/profile/'.$value['add_user'].'">'.$users[$value['add_user']]['realname'].'</a>' : '-';?></td>
+                                                <td><?php echo friendlydate($value['add_time']);?>
+                                                <td>修复</td>
+                                            </tr>
+                                            <?php
+                                                }
+                                              } else {
+                                            ?>
+                                            <tr><td colspan="6" align="center">无提测信息</td></tr>
+                                            <?php } ?>
+                                        </tbody>
+                                    </table>
+                                    </div><!-- table-responsive -->
+                                </div><!-- panel-body -->
+                            </div><!-- panel -->
+                      <?php } ?>
                   </div>
               </div><!-- row -->
               
@@ -253,6 +306,7 @@
 <script src="/static/js/bootstrap-editable.min.js"></script>
 <script src="/static/js/bootstrap-datetimepicker.min.js"></script>
 <script src="/static/js/moment.js"></script>
+<script src="/static/js/jquery.countdown.js"></script>
 
 <script src="/static/js/custom.js"></script>
 <script>
@@ -333,6 +387,11 @@
   }
 
   $(document).ready(function(){
+
+    $('#deadline').countdown('<?php echo date("Y-m-d H:i", $row['deadline']);?>', function(event) {
+      $(this).html(event.strftime('%D days %H:%M:%S'));
+    });
+
     $("#del").click(
       changeIssueStatus('#del','del','确认要删除吗？')
     );
@@ -608,6 +667,19 @@
           url: "/test/log/"+id,
           success: function(data){
             $(".modal-title").text('更新日志');
+            $(".modal-body-inner").addClass('height300');
+            $(".modal-body-inner").html(data);
+          }
+        });
+    });
+
+    $(".bug").click(function(){
+      id = $(this).attr("bugid");
+        $.ajax({
+          type: "GET",
+          url: "/bug/view/"+id,
+          success: function(data){
+            $(".modal-title").text('BUG详情');
             $(".modal-body-inner").addClass('height300');
             $(".modal-body-inner").html(data);
           }
