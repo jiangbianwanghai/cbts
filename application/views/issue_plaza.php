@@ -69,9 +69,9 @@
                           <th width="50px">#</th>
                           <th width="50px">类型</th>
                           <th>名称</th>
-                          <th width="80px">添加人</th>
+                          <th width="100px">添加人</th>
                           <th width="120px">添加时间</th>
-                          <th width="80px">受理人</th>
+                          <th width="100px">受理人</th>
                           <th width="160px" style="text-align:center"><span class="label label-danger">距离上线时间</span></th>
                         </tr>
                       </thead>
@@ -85,11 +85,11 @@
                           <td><?php if ($value['type'] == 2) {?><i class="fa fa-bug tooltips" data-toggle="tooltip" title="BUG"></i><?php } ?><?php if ($value['type'] == 1) {?><i class="fa fa-magic tooltips" data-toggle="tooltip" title="TASK"></i><?php } ?></td>
                           <td><?php if ($value['level']) { $level = array(1=>'!',2=>'!!',3=>'!!!',4=>'!!!!');?><?php echo "<strong style='color:#ff0000;'>".$level[$value['level']]."</strong> ";?><?php } ?><?php if ($value['status'] == '-1') { echo '<s><a href="/issue/view/'.$value['id'].'">'.$value['issue_name'].'</a></s>'; } else { echo '<a href="/issue/view/'.$value['id'].'">'.$value['issue_name'].'</a>'; }?>
                           </td>
-                          <td><?php echo $value['add_user'] ? '<a href="/conf/profile/'.$value['add_user'].'">'.$users[$value['add_user']]['realname'].'</a>' : '-';?>
+                          <td><?php echo $value['add_user'] ? '<div class="face"><img alt="" src="/static/avatar/'.$users[$value['add_user']]['username'].'.jpg" align="absmiddle"></div><a href="/conf/profile/'.$value['add_user'].'">'.$users[$value['add_user']]['realname'].'</a>' : '-';?>
                           </td>
                           <td><?php echo friendlydate($value['add_time']);?>
                           </td>
-                          <td><?php echo $value['accept_user'] ? '<a href="/conf/profile/'.$value['accept_user'].'">'.$users[$value['accept_user']]['realname'].'</a>' : '-';?>
+                          <td><?php echo $value['accept_user'] ? '<div class="face"><img alt="" src="/static/avatar/'.$users[$value['accept_user']]['username'].'.jpg" align="absmiddle"></div><a href="/conf/profile/'.$value['accept_user'].'">'.$users[$value['accept_user']]['realname'].'</a>' : '-';?>
                           </td>
                           <?php if ($value['deadline']) {?>
                           <td style="text-align:center">

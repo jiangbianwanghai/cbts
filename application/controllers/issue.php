@@ -483,9 +483,13 @@ class issue extends CI_Controller {
      */
     public function analytics() {
         $data['PAGE_TITLE'] = '任务统计';
+
+        $leftTime = $data['leftTime'] = strtotime(date("Y-m-d", time()));
+        $rightTime = $data['rightTime'] = strtotime(date("Y-m-d", strtotime("+1 day")));
+        
         //按天统计任务统计量（未解决，已经解决）
         $this->load->model('Model_issue', 'issue', TRUE);
-        $stacked = $this->issue->stacked();
+        $stacked = $this->issue->stacked(0, $leftTime, $rightTime);
         if ($stacked) {
             $stacked_str = "[";
             foreach ($stacked as $key => $value) {

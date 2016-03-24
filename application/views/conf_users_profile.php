@@ -17,7 +17,8 @@
         <div class="col-sm-12">
           
           <div class="profile-header">
-            <h2 class="profile-name"><?php echo $users[$id]['realname'];?> 的记录</h2>
+
+            <h2 class="profile-name"><?php echo $users[$id]['realname'];?> 的记录统计</h2>
             
           </div><!-- profile-header -->
 
@@ -28,12 +29,12 @@
                   <div class="row">
                     <div class="col-md-6">
                       <h5 class="subtitle mb5"><?php if ($role == 1) {?>TA受理的任务量统计<?php } ?><?php if ($role == 2) {?>TA提交的任务量统计<?php } ?></h5>
-                      <p class="mb15"><?php if ($role == 1) {?>最近30天受理的任务量统计(正常量/关闭量)<?php } ?><?php if ($role == 2) {?>最近30天提交的任务量(正常量/关闭量)<?php } ?></p>
+                      <p class="mb15"><?php if ($role == 1) {?>任务量统计(正常量/关闭量)<?php } ?><?php if ($role == 2) {?>任务量(正常量/关闭量)<?php } ?></p>
                       <div id="stacked-chart_issue_my" class="body-chart">暂无数据</div>
                     </div><!-- col-md-6 -->
                     <div class="col-md-6">
                       <h5 class="subtitle mb5"><?php if ($role == 1) {?>TA受理的提测量统计<?php } ?><?php if ($role == 2) {?>TA申请的提交量统计<?php } ?></h5>
-                      <p class="mb15"><?php if ($role == 1) {?>最近30天受理的提测量统计(待测+测试中/其他状态[不通过,通过,已覆盖])<?php } ?><?php if ($role == 2) {?>最近30天申请的提测量(不通过量/其他状态[待测,在测试,通过,已覆盖])<?php } ?></p>
+                      <p class="mb15"><?php if ($role == 1) {?>受理的提测量统计(待测+测试中/其他状态[不通过,通过,已覆盖])<?php } ?><?php if ($role == 2) {?>申请的提测量(不通过量/其他状态[待测,在测试,通过,已覆盖])<?php } ?></p>
                       <div id="stacked-chart_test_my" class="body-chart">暂无数据</div>
                     </div><!-- col-md-6 -->
                   </div><!-- row -->

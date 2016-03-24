@@ -5,6 +5,23 @@ class admin extends CI_Controller {
     public function index()
     {
         $data['PAGE_TITLE'] = '我的控制台';
+
+        $leftTime = $data['leftTime'] = strtotime(date("Y-m-d", time()));
+        $rightTime = $data['rightTime'] = strtotime(date("Y-m-d", strtotime("+1 day")));
+
+        //获取时间筛选范围并分解起止时间
+        $picker = $this->input->get('picker', TRUE);
+        if ($picker) {
+            $pickerArr = explode(' - ', $picker);
+            if (count($pickerArr) == 2) {
+                $leftTime = strtotime($pickerArr[0]);
+                $rightTime = strtotime($pickerArr[1]);
+                $data['day'] = round(($rightTime - $leftTime)/86400)-1;
+                $data['leftTime'] = $leftTime;
+                $data['rightTime'] = $rightTime;
+            }
+        }
+
         $this->load->helper('url');
         if (!$this->input->cookie('uids')) {
             redirect('/admin/signin', 'location');
@@ -29,7 +46,7 @@ class admin extends CI_Controller {
 
             if ($users[$this->input->cookie('uids')]['role'] == 1) {
                 //我的按天统计任务量
-                $stackedMyIssue = $this->issue->stackedByQa($this->input->cookie('uids'));
+                $stackedMyIssue = $this->issue->stackedByQa($this->input->cookie('uids'), $leftTime, $rightTime);
                 if ($stackedMyIssue) {
                     $stackedMyIssueStr = "[";
                     foreach ($stackedMyIssue as $key => $value) {
@@ -40,7 +57,7 @@ class admin extends CI_Controller {
                 $data['stackedMyIssueStr'] = $stackedMyIssueStr;
 
                 //我的按天统计提测量
-                $stackedMyTest = $this->test->stackedByQa($this->input->cookie('uids'));
+                $stackedMyTest = $this->test->stackedByQa($this->input->cookie('uids'), $leftTime, $rightTime);
                 if ($stackedMyTest) {
                     $stackedMyTestStr = "[";
                     foreach ($stackedMyTest as $key => $value) {
@@ -53,7 +70,7 @@ class admin extends CI_Controller {
 
             if ($users[$this->input->cookie('uids')]['role'] == 2) {
                 //我的按天统计任务量
-                $stackedMyIssue = $this->issue->stacked($this->input->cookie('uids'));
+                $stackedMyIssue = $this->issue->stacked($this->input->cookie('uids'), $leftTime, $rightTime);
                 if ($stackedMyIssue) {
                     $stackedMyIssueStr = "[";
                     foreach ($stackedMyIssue as $key => $value) {
@@ -64,7 +81,7 @@ class admin extends CI_Controller {
                 $data['stackedMyIssueStr'] = $stackedMyIssueStr;
 
                 //我的按天统计提测量
-                $stackedMyTest = $this->test->stacked($this->input->cookie('uids'));
+                $stackedMyTest = $this->test->stacked($this->input->cookie('uids'), $leftTime, $rightTime);
                 if ($stackedMyTest) {
                     $stackedMyTestStr = "[";
                     foreach ($stackedMyTest as $key => $value) {
@@ -77,7 +94,7 @@ class admin extends CI_Controller {
 
             //按天统计任务量
             
-            $stacked = $this->issue->stacked();
+            $stacked = $this->issue->stacked(0, $leftTime, $rightTime);
             if ($stacked) {
                 $stacked_str = "[";
                 foreach ($stacked as $key => $value) {
@@ -89,7 +106,7 @@ class admin extends CI_Controller {
 
             //按天统计提测量
             
-            $stackedTest = $this->test->stacked();
+            $stackedTest = $this->test->stacked(0, $leftTime, $rightTime);
             if ($stackedTest) {
                 $stacked_test_str = "[";
                 foreach ($stackedTest as $key => $value) {
@@ -247,16 +264,23 @@ class admin extends CI_Controller {
         echo '1';
     }
 
-    public function email($to = '896767248@qq.com') {
+    public function email($uid = 1) {
         $this->load->library('email');
         $this->config->load('extension', TRUE);
         $config = $this->config->item('email', 'extension');
         $this->email->initialize($config);
 
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+        }
+
+        $this->config->load('extension', TRUE);
+        $home = $this->config->item('home', 'extension');
+
         $this->email->from($config['smtp_user'], 'CBTS提醒服务');
-        $this->email->to($to);
-        $this->email->subject('你的2016年第十一周周报 From CBTS');
-        $this->email->message('这里是周报内容');
+        $this->email->to($users[$uid]['email']);
+        $this->email->subject('2016年第十二周周报 From CBTS');
+        $this->email->message($users[$uid]['realname'].'，你好：<br />你的周报已经生成，请点击链接。<a href="'.$home.'/conf/profile/'.$uid.'?picker=2016-03-21+-+2016-03-26">查看周报</a><br/><br/><p style="font-size:10px">如果不想再收到此类消息，可以选择<a href="'.$home.'/admin/unsubscribe">退订</a></p>');
         $this->email->send();
     }
 
@@ -280,6 +304,16 @@ class admin extends CI_Controller {
                 $img=$data['upload_data']['file_name'];
                 echo '{"success": true,"file_path": "'.'/static/upload/'.$dir_name.'/'.$img.'"}';                              
             }  
+        }
+    }
+
+    public function unsubscribe() {
+        $this->load->model('Model_users', 'users', TRUE);
+        $flag = $this->users->unsubscribe();
+        if ($flag) {
+            echo '退订成功，<a href="/">使用CBTS</a>';
+        } else {
+            echo '退订失败';
         }
     }
 }

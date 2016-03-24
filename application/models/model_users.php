@@ -59,6 +59,10 @@ class Model_users extends CI_Model {
         return $this->db->update('users', array('last_login_time' => time()), array('uid' => $id));
     }
 
+    public function unsubscribe() {
+        return $this->db->update('users', array('unsubscribe' => 1), array('uid' => $this->input->cookie('uids')));
+    }
+
     /**
      * 刷新缓存
      */

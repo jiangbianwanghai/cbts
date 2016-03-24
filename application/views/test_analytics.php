@@ -152,41 +152,39 @@
 <script src="/static/js/daterangepicker.min.js"></script>
 <script src="/static/js/angular-daterangepicker.js"></script>
 
-    <script>
-    exampleApp = angular.module('example', ['ngMessages', 'daterangepicker']);
-    exampleApp.controller('TestCtrl', function($scope) {
-        $scope.date = {
-            startDate: moment().subtract(<?php if ($leftTime == strtotime(date("Y-m-d", strtotime("-1 day"))) && $rightTime == strtotime(date("Y-m-d", time()))) { echo 1;} else {echo $day;}?>, "days"),
-            <?php if ($leftTime == strtotime(date("Y-m-d", strtotime("-1 day"))) && $rightTime == strtotime(date("Y-m-d", time()))) {?>
-            endDate: moment()
-            <?php } else {?>
-            endDate: moment().subtract(-1, 'days')
-            <?php } ?>
-        };
+<script>
+  exampleApp = angular.module('example', ['ngMessages', 'daterangepicker']);
+  exampleApp.controller('TestCtrl', function($scope) {
+    $scope.date = {
+        startDate: moment().subtract(<?php if ($leftTime == strtotime(date("Y-m-d", strtotime("-1 day"))) && $rightTime == strtotime(date("Y-m-d", time()))) { echo 1;} else {echo $day;}?>, "days"),
+        <?php if ($leftTime == strtotime(date("Y-m-d", strtotime("-1 day"))) && $rightTime == strtotime(date("Y-m-d", time()))) {?>
+        endDate: moment()
+        <?php } else {?>
+        endDate: moment().subtract(-1, 'days')
+        <?php } ?>
+    };
 
-        $scope.opts = {
-            locale: {
-                applyClass: 'btn-green',
-                applyLabel: "确定",
-                cancelLabel: '取消',
-                customRangeLabel: '自定义',
-                daysOfWeek: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
-                firstDay: 0,
-                monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月',
-                    '十月', '十一月', '十二月'
-                ]
-            },
-            ranges: {
-              '今天': [moment(), moment().subtract(-1, 'days')],
-              '昨天': [moment().subtract(1, 'days'), moment()],
-              '最近一周': [moment().subtract(6, 'days'), moment().subtract(-1, 'days')],
-              '最近一个月': [moment().subtract(29, 'days'), moment().subtract(-1, 'days')]
-            }
-        };
-
-    });
-
-angular.bootstrap(document, ['example']);
+    $scope.opts = {
+        locale: {
+            applyClass: 'btn-green',
+            applyLabel: "确定",
+            cancelLabel: '取消',
+            customRangeLabel: '自定义',
+            daysOfWeek: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+            firstDay: 0,
+            monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月',
+                '十月', '十一月', '十二月'
+            ]
+        },
+        ranges: {
+          '今天': [moment(), moment().subtract(-1, 'days')],
+          '昨天': [moment().subtract(1, 'days'), moment()],
+          '最近一周': [moment().subtract(6, 'days'), moment().subtract(-1, 'days')],
+          '最近一个月': [moment().subtract(29, 'days'), moment().subtract(-1, 'days')]
+        }
+    };
+  });
+  angular.bootstrap(document, ['example']);
 </script>
 
 </body>

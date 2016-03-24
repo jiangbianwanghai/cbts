@@ -508,7 +508,7 @@ class test extends CI_Controller {
         $this->load->model('Model_issue', 'issue', TRUE);
         $flag = $this->issue->checkAccept($row['issue_id']);
         if (!$flag) {
-            //对提测所属的任务标记标记梳理人，谁第一个提测，谁就是该提测所属任务的受理人
+            //对提测所属的任务标记标记受理人，谁第一个提测，谁就是该提测所属任务的受理人
             $this->issue->accept($row['issue_id']);
         }
 

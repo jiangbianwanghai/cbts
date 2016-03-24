@@ -144,7 +144,11 @@ class conf extends CI_Controller {
      * 个人资料面板
      */
     public function profile() {
+
+        //设置页面标题
         $data['PAGE_TITLE'] = '个人资料';
+
+        //验证数据是否存在
         $id = $this->uri->segment(3, 0);
         $data['id'] = $id;
         if (file_exists('./cache/users.conf.php')) {
@@ -155,6 +159,23 @@ class conf extends CI_Controller {
             $data['users'] = $users;
         }
 
+        $leftTime = $data['leftTime'] = strtotime(date("Y-m-d", time()));
+        $rightTime = $data['rightTime'] = strtotime(date("Y-m-d", strtotime("+1 day")));
+
+        //获取时间筛选范围并分解起止时间
+        $picker = $this->input->get('picker', TRUE);
+        if ($picker) {
+            $pickerArr = explode(' - ', $picker);
+            if (count($pickerArr) == 2) {
+                $leftTime = strtotime($pickerArr[0]);
+                $rightTime = strtotime($pickerArr[1]);
+                $data['day'] = round(($rightTime - $leftTime)/86400)-1;
+                $data['leftTime'] = $leftTime;
+                $data['rightTime'] = $rightTime;
+            }
+        }
+
+        //载入代码库缓存文件
         if (file_exists('./cache/repos.conf.php')) {
             require './cache/repos.conf.php';
             $data['repos'] = $repos;
@@ -163,21 +184,21 @@ class conf extends CI_Controller {
         $data['role'] = $users[$id]['role'];
 
         //获取创建的任务列表
-        $id = trim($this->uri->segment(3, 0));
         $this->load->model('Model_issue', 'issue', TRUE);
-        $rows = $this->issue->profile($id, $data['role'], 0, 100);
+        $rows = $this->issue->profile($id, $data['role'], $leftTime, $rightTime, 0, 100);
         $data['issue_total'] = $rows['total_rows'];
         $data['issue'] = $rows['data'];
 
         //获取创建的提测列表
         $this->load->model('Model_test', 'test', TRUE);
-        $rows = $this->test->profile($id, $data['role'], 0, 100);
+        $rows = $this->test->profile($id, $data['role'], $leftTime, $rightTime, 0, 100);
         $data['test_total'] = $rows['total_rows'];
         $data['test'] = $rows['data'];
 
         if ($users[$id]['role'] == 1) {
             //我的按天统计任务量
-            $stackedMyIssue = $this->issue->stackedByQa($id);
+            $stackedMyIssue = $this->issue->stackedByQa($id, $leftTime, $rightTime);
+            $stackedMyIssueStr = '';
             if ($stackedMyIssue) {
                 $stackedMyIssueStr = "[";
                 foreach ($stackedMyIssue as $key => $value) {
@@ -188,7 +209,8 @@ class conf extends CI_Controller {
             $data['stackedMyIssueStr'] = $stackedMyIssueStr;
 
             //我的按天统计提测量
-            $stackedMyTest = $this->test->stackedByQa($id);
+            $stackedMyTest = $this->test->stackedByQa($id, $leftTime, $rightTime);
+            $stackedMyTestStr = '';
             if ($stackedMyTest) {
                 $stackedMyTestStr = "[";
                 foreach ($stackedMyTest as $key => $value) {
@@ -201,7 +223,8 @@ class conf extends CI_Controller {
 
         if ($users[$id]['role'] == 2) {
             //我的按天统计任务量
-            $stackedMyIssue = $this->issue->stacked($id);
+            $stackedMyIssue = $this->issue->stacked($id, $leftTime, $rightTime);
+            $stackedMyIssueStr = '';
             if ($stackedMyIssue) {
                 $stackedMyIssueStr = "[";
                 foreach ($stackedMyIssue as $key => $value) {
@@ -212,7 +235,8 @@ class conf extends CI_Controller {
             $data['stackedMyIssueStr'] = $stackedMyIssueStr;
 
             //我的按天统计提测量
-            $stackedMyTest = $this->test->stacked($id);
+            $stackedMyTest = $this->test->stacked($id, $leftTime, $rightTime);
+            $stackedMyTestStr = '';
             if ($stackedMyTest) {
                 $stackedMyTestStr = "[";
                 foreach ($stackedMyTest as $key => $value) {

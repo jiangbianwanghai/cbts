@@ -164,27 +164,30 @@ class Model_issue extends CI_Model {
     /**
      * 我的任务列表
      */
-    public function profile($id, $role, $offset = 0, $per_page = 20) {
+    public function profile($id, $role, $leftTime, $rightTime, $offset = 0, $per_page = 20) {
         $rows = array(
             'total_rows' => 0,
             'data' => false
         );
 
         $user = 'add_user';
+        $userTime = 'add_time';
         if ($role == 1) {
             $user = 'accept_user';
+            $userTime = 'accept_time';
         }
         if ($role == 2) {
             $user = 'add_user';
+            $userTime = 'add_time';
         }
 
         //获取总数
-        $sql = "SELECT * FROM `choc_issue` WHERE `".$user."` = '".$id."'";
+        $sql = "SELECT * FROM `choc_issue` WHERE `".$user."` = '".$id."' AND `".$userTime."` >= '".$leftTime."' AND `".$userTime."` < '".$rightTime."'";
         $query = $this->db->query($sql);
         $rows['total_rows'] = $query->num_rows;
 
         //获取翻页数据
-        $sql = "SELECT * FROM `choc_issue` WHERE `".$user."` = '".$id."' ORDER BY `id` DESC LIMIT ".$offset .", ".$per_page."";
+        $sql = "SELECT * FROM `choc_issue` WHERE `".$user."` = '".$id."' AND `".$userTime."` >= '".$leftTime."' AND `".$userTime."` < '".$rightTime."' ORDER BY `id` DESC LIMIT ".$offset .", ".$per_page."";
         $query = $this->db->query($sql);
         foreach ($query->result_array() as $row)
         {
@@ -282,11 +285,11 @@ class Model_issue extends CI_Model {
         return false;
     }
 
-    public function stacked($userId = 0) {
+    public function stacked($userId = 0, $leftTime, $rightTime) {
         $rows = false;
         $where = 'WHERE `status` >=0';
         if ($userId) {
-            $where .= " AND `add_user` = '".$userId."'";
+            $where .= " AND `add_user` = '".$userId."' AND `add_time` >= '".$leftTime."' AND `add_time` < '".$rightTime."'";
         }
         //正常状态的
         $sql = "SELECT FROM_UNIXTIME(`add_time`,'%Y-%m-%d') AS `perday`, SUM(`status` = 1)  AS `count` FROM `choc_issue` ".$where." GROUP BY FROM_UNIXTIME(`add_time`,'%Y-%m-%d')";
@@ -305,11 +308,11 @@ class Model_issue extends CI_Model {
         return $rows;
     }
 
-    public function stackedByQa($userId = 0) {
+    public function stackedByQa($userId = 0, $leftTime, $rightTime) {
         $rows = false;
         $where = 'WHERE `status` >=0';
         if ($userId) {
-            $where .= " AND `accept_user` = '".$userId."'";
+            $where .= " AND `accept_user` = '".$userId."' AND `accept_time` >= '".$leftTime."' AND `accept_time` < '".$rightTime."'";
         }
         //正常状态的
         $sql = "SELECT FROM_UNIXTIME(`accept_time`,'%Y-%m-%d') AS `perday`, SUM(`status` = 1)  AS `count` FROM `choc_issue` ".$where." GROUP BY FROM_UNIXTIME(`accept_time`,'%Y-%m-%d')";

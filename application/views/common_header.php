@@ -76,7 +76,7 @@
           <li>
             <div class="btn-group">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                <img src="/static/images/photos/loggeduser.png" alt="" />
+                <img src="/static/avatar/<?php echo $this->input->cookie('username');?>.jpg" alt="" />
                 <?php echo $this->input->cookie('realname');?>
                 <span class="caret"></span>
               </button>
