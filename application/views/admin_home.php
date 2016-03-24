@@ -20,7 +20,7 @@
                 <div class="col-md-6">
                   <h5 class="subtitle mb5"><?php if ($role == 1) {?>我受理的任务量统计<?php } ?><?php if ($role == 2) {?>我提交的任务量统计<?php } ?></h5>
                   <p class="mb15"><?php if ($role == 1) {?>受理的任务量统计(正常量/关闭量)<?php } ?><?php if ($role == 2) {?>提交的任务量(正常量/关闭量)<?php } ?></p>
-                  <div id="stacked-chart_issue_my" class="body-chart">暂无数据</div>
+                  <div id="stacked-chart_issue_my" class="body-chart"><img src="/static/images/loaders/loader3.gif" />载入中…</div>
                 </div><!-- col-md-6 -->
                 <div class="col-md-6">
                   <h5 class="subtitle mb5"><?php if ($role == 1) {?>我受理的提测量统计<?php } ?><?php if ($role == 2) {?>我申请的提交量统计<?php } ?></h5>
@@ -134,6 +134,18 @@
 jQuery(document).ready(function() {
   
   "use strict";
+
+  $.ajax({
+    type: "GET",
+    url: "/admin/issueAnalytics?picker=2016-02-24+-+2016-03-25",
+    dataType: "text",
+    success: function(data){
+      if (data) {
+        $("#stacked-chart_issue_my").html(data);
+      }
+    }
+  });
+
   <?php if ($stacked) { ?>
   $("#stacked-chart").text('');
   var m1 = new Morris.Bar({
@@ -185,23 +197,6 @@ jQuery(document).ready(function() {
   });
   <?php } ?>
 
-  <?php if ($stackedMyIssueStr) { ?>
-  $("#stacked-chart_issue_my").text('');
-  var m4 = new Morris.Bar({
-        element: 'stacked-chart_issue_my',
-        data: <?php echo $stackedMyIssueStr;?>,
-        xkey: 'y',
-        ykeys: ['a', 'b'],
-        labels: ['关闭', '正常'],
-        barColors: ['#428BCA', '#1CAF9A'],
-        lineWidth: '1px',
-        fillOpacity: 0.8,
-        smooth: false,
-        stacked: true,
-        hideHover: true
-  });
-  <?php } ?>
-
   var m5 = new Morris.Donut({
       element: 'donut-chart1',
       data: <?php echo $topUserStr;?>,
@@ -227,16 +222,13 @@ jQuery(document).ready(function() {
   });
 
   jQuery(window).resize(function() {
-    delay(function() {
-      <?php if ($stacked) { ?>m1.redraw();<?php } ?>
-      <?php if ($stacked_test) { ?>m2.redraw();<?php } ?>
-      <?php if ($stackedMyTestStr) { ?>m3.redraw();<?php } ?>
-      <?php if ($stackedMyIssueStr) { ?>m4.redraw();<?php } ?>
-      m5.redraw();
-      m6.redraw();
-      m7.redraw();
-      m8.redraw();
-    }, 200);
+    <?php if ($stacked) { ?>m1.redraw();<?php } ?>
+    <?php if ($stacked_test) { ?>m2.redraw();<?php } ?>
+    <?php if ($stackedMyTestStr) { ?>m3.redraw();<?php } ?>
+    m5.redraw();
+    m6.redraw();
+    m7.redraw();
+    m8.redraw();
   }).trigger('resize');
   
 });

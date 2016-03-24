@@ -68,7 +68,7 @@
                                 <div class="col-xs-6">-</div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-6">距离上线日期</div>
+                                <div class="col-xs-6">距离上线日期还有</div>
                                 <div class="col-xs-6" id="deadline"></div>
                             </div>
                           </div><!-- col-sm-6 -->
@@ -125,9 +125,8 @@
                             <table class="table table-hover">
                                 <thead>
                                     <tr class="table-head-alt">
-                                      <th>#</th>
+                                      <th width="50px">#</th>
                                       <th>相关代码库</th>
-                                      <th>提测版本标识</th>
                                       <th>所处阶段</th>
                                       <th>提测状态</th>
                                       <th>添加人</th>
@@ -142,8 +141,7 @@
                                     ?>
                                     <tr id="tr-<?php echo $value['id'];?>">
                                       <td><?php echo $value['id'];?></td>
-                                      <td><?php if ($value['status'] == '-1') { echo '<s><a href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a></s>'; } else { echo '<a href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a>'; }?><?php if ($value['status'] == '-1') {?> <span class="label label-warning">已删除</span><?php } ?> <?php if ($value['test_summary']) {?><a href="javascript:;" class="btn btn-info btn-xs view" testid="<?php echo $value['id'];?>" data-toggle="modal" data-target=".bs-example-modal">有说明</a><?php } ?></td>
-                                      <td><?php echo $value['test_flag'];?> (<a href="javascript:;" class="log" testid="<?php echo $value['id'];?>" data-toggle="modal" data-target=".bs-example-modal">查看版本差异</a>)</td>
+                                      <td><?php if ($value['status'] == '-1') { echo '<s><a title="'.$repos[$value['repos_id']]['repos_url'].'" href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a></s>'; } else { echo '<a title="'.$repos[$value['repos_id']]['repos_url'].'" href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a>'; }?>/<?php if ($repos[$value['repos_id']]['merge']) { echo 'branches'; } else { echo 'trunk';}?>/<span class="label label-danger"><?php echo $value['br'];?>@<?php echo $value['test_flag'];?></span> (<a href="javascript:;" class="log" testid="<?php echo $value['id'];?>" data-toggle="modal" data-target=".bs-example-modal">查看版本差异</a>) <?php if ($value['test_summary']) {?><a href="javascript:;" class="btn btn-info btn-xs view" testid="<?php echo $value['id'];?>" data-toggle="modal" data-target=".bs-example-modal">有说明</a><?php } ?></td>
                                       <td>
                                         <?php if ($value['rank'] == 0) {?>
                                         <button class="btn btn-default btn-xs"><i class="fa fa-coffee"></i> 开发环境</button>
@@ -160,7 +158,7 @@
                                         <button class="btn btn-default btn-xs"><i class="fa fa-coffee"></i> 待测</button>
                                         <?php } ?>
                                         <?php if ($value['state'] == 1) {?>
-                                        <button class="btn btn-primary btn-xs"><i class="fa fa-clock-o"></i> 测试中……</button>
+                                        <button class="btn btn-primary btn-xs"><i class="fa fa-clock-o"></i> 测试中…</button>
                                         <?php } ?>
                                         <?php if ($value['state'] == -3) {?>
                                         <button class="btn btn-danger btn-xs"><i class="fa fa-exclamation-circle"></i> 不通过</button>
@@ -179,9 +177,9 @@
                                         <?php if ($value['status'] == 1) {?>
                                         <?php if ($value['tice'] == 0 && $row['status'] == 1) {?><button class="btn btn-success btn-xs tice"  id="tice-<?php echo $value['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-send"></i> 提测</button><?php }?>
                                         <?php if ($value['tice'] == -1 ) {?><button class="btn btn-warning btn-xs tice" id="tice-<?php echo $value['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-exclamation-circle"></i> 提测失败,请再提测</button><?php }?>
-                                        <?php if ($value['tice'] == 3 ) {?><button class="btn btn-white btn-xs" testid="<?php echo $value['id'];?>" disabled><img src="/static/images/loaders/loader3.gif" alt="" /> 提测中……</button><?php }?>
+                                        <?php if ($value['tice'] == 3 ) {?><button class="btn btn-white btn-xs" testid="<?php echo $value['id'];?>" disabled><img src="/static/images/loaders/loader3.gif" alt="" /> 提测中…</button><?php }?>
                                         <?php if ($value['state'] == 3 && $value['rank'] == 1 && $value['tice'] < 5 && $users[$value['accept_user']]['role'] == 1) {?><button class="btn btn-success btn-xs cap_production"  id="cap_production-<?php echo $value['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-send"></i> 发布到生产环境</button><?php }?>
-                                        <?php if ($value['tice'] == 5 ) {?><button class="btn btn-white btn-xs" disabled><img src="/static/images/loaders/loader3.gif" alt="" /> 发布中……</button><?php }?>
+                                        <?php if ($value['tice'] == 5 ) {?><button class="btn btn-white btn-xs" disabled><img src="/static/images/loaders/loader3.gif" alt="" /> 发布中…</button><?php }?>
                                         <?php if ($value['tice'] == '-7' ) {?><button class="btn btn-warning btn-xs cap_production" id="cap_production-<?php echo $value['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-exclamation-circle"></i> 发布失败,请再发布</button><?php }?>
                                         <?php if ($row['status'] == 1) {?>
                                         <?php if ($value['tice'] < 1) {?>

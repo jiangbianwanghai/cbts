@@ -72,7 +72,7 @@
                           <th width="100px">添加人</th>
                           <th width="120px">添加时间</th>
                           <th width="100px">受理人</th>
-                          <th width="160px" style="text-align:center"><span class="label label-danger">距离上线时间</span></th>
+                          <th width="160px" style="text-align:center"><span class="label label-danger">距离上线时间还有</span></th>
                         </tr>
                       </thead>
                       <tbody>
@@ -96,7 +96,7 @@
                             <?php 
                             $remaining = $value['deadline'] - time();  
                             if ($remaining>0) {
-                              echo floor($remaining / 86400).' 天'.floor(($remaining % 86400) / 3600).' 小时'.floor(($remaining % 86400) % 3600 % 60).' 秒';
+                              echo floor($remaining / 86400).' 天 '.floor(($remaining % 86400) / 3600).' 小时 '.floor(($remaining % 86400) % 3600 % 60).' 秒';
                             } else {
                               echo '已过期';
                             }?></td>

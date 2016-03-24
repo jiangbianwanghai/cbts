@@ -316,4 +316,55 @@ class admin extends CI_Controller {
             echo '退订失败';
         }
     }
+
+    /**
+     * 任务量统计
+     */
+    public function issueAnalytics() {
+        $this->load->model('Model_issue', 'issue', TRUE);
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+        }
+        $picker = $this->input->get('picker', TRUE);
+        $dateRange = $this->getDateRange($picker);
+        $data['stackedMyIssueStr'] = '';
+        if ($users[$this->input->cookie('uids')]['role'] == 1) {
+            $stackedMyIssue = $this->issue->stackedByQa($this->input->cookie('uids'), $dateRange['leftTime'], $dateRange['rightTime']);
+        }
+        if ($users[$this->input->cookie('uids')]['role'] == 2) {
+            $stackedMyIssue = $this->issue->stacked($this->input->cookie('uids'), $dateRange['leftTime'], $dateRange['rightTime']);
+        }
+        if ($stackedMyIssue) {
+            $data['stackedMyIssueStr'] = "[";
+            foreach ($stackedMyIssue as $key => $value) {
+                $data['stackedMyIssueStr'] .= "{ y: '".$value['perday']."', a: ".$value['close'].", b: ".$value['able']." },";
+            }
+            $data['stackedMyIssueStr'] .= "]";
+        }
+
+        $this->load->view('analytics_issue', $data);
+    }
+
+    /**
+     * 获取时间范围
+     * @access private
+     * @param mixed $picker 时间区间。格式：2016-03-23+-+2016-03-24 
+     * @return array (leftTime:开始时间,rightTime:截至时间,day:相差天数)
+     */
+    private function getDateRange($picker) {
+        $array = array('leftTime' => '', 'rightTime' => '', 'day' => 0);
+        //默认是当前时间
+        $array['leftTime'] = strtotime(date("Y-m-d", time()));
+        $array['rightTime'] = strtotime(date("Y-m-d", strtotime("+1 day")));
+        //获取时间筛选范围并分解起止时间
+        if ($picker) {
+            $pickerArr = explode(' - ', $picker);
+            if (count($pickerArr) == 2) {
+                $array['day'] = round((strtotime($pickerArr[1]) - strtotime($pickerArr[0]))/86400)-1;
+                $array['leftTime'] = strtotime($pickerArr[0]);
+                $array['rightTime'] = strtotime($pickerArr[1]);
+            }
+        }
+        return $array;
+    }
 }
