@@ -236,7 +236,7 @@
                                                 <th>标题</th>
                                                 <th>反馈人</th>
                                                 <th>反馈时间</th>
-                                                <th>操作</th>
+                                                <th width="100px" style="text-align:center">操作</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -250,7 +250,7 @@
                                                 <td><a href="javascript:;" bugid="<?php echo $value['id'];?>" class="bug" testid="<?php echo $value['id'];?>" data-toggle="modal" data-target=".bs-example-modal"><?php echo $value['subject']?></a></td>
                                                 <td><?php echo $value['add_user'] ? '<a href="/conf/profile/'.$value['add_user'].'">'.$users[$value['add_user']]['realname'].'</a>' : '-';?></td>
                                                 <td><?php echo friendlydate($value['add_time']);?>
-                                                <td>修复</td>
+                                                <td><a class="btn btn-white btn-xs" href="/test/add/<?php echo $row['id'];?>/<?php echo $value['id'];?>"><i class="fa fa-wrench"></i> 我要修复</a></td>
                                             </tr>
                                             <?php
                                                 }

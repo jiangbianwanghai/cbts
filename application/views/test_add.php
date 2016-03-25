@@ -89,7 +89,7 @@
                 <div class="form-group">
                   <label class="col-sm-3 control-label">说明 </label>
                   <div class="col-sm-9">
-                    <textarea id="test_summary" name="test_summary" rows="5" class="form-control" placeholder="请简要说明提测时需要注意的事项"></textarea>
+                    <textarea id="test_summary" name="test_summary" rows="5" class="form-control"><?php if ($this->uri->segment(4, 0)) {echo '修复QA反馈BUG#'.$this->uri->segment(4, 0);}?></textarea>
                   </div>
                 </div>
               </div><!-- panel-body -->

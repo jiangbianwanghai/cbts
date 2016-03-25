@@ -43,54 +43,7 @@ class admin extends CI_Controller {
 
             $this->load->model('Model_issue', 'issue', TRUE);
             $this->load->model('Model_test', 'test', TRUE);
-
-            if ($users[$this->input->cookie('uids')]['role'] == 1) {
-                //我的按天统计任务量
-                $stackedMyIssue = $this->issue->stackedByQa($this->input->cookie('uids'), $leftTime, $rightTime);
-                if ($stackedMyIssue) {
-                    $stackedMyIssueStr = "[";
-                    foreach ($stackedMyIssue as $key => $value) {
-                        $stackedMyIssueStr .= "{ y: '".$value['perday']."', a: ".$value['close'].", b: ".$value['able']." },";
-                    }
-                    $stackedMyIssueStr .= "]";
-                }
-                $data['stackedMyIssueStr'] = $stackedMyIssueStr;
-
-                //我的按天统计提测量
-                $stackedMyTest = $this->test->stackedByQa($this->input->cookie('uids'), $leftTime, $rightTime);
-                if ($stackedMyTest) {
-                    $stackedMyTestStr = "[";
-                    foreach ($stackedMyTest as $key => $value) {
-                        $stackedMyTestStr .= "{ y: '".$value['perday']."', a: ".$value['other'].", b: ".$value['no']." },";
-                    }
-                    $stackedMyTestStr .= "]";
-                }
-                $data['stackedMyTestStr'] = $stackedMyTestStr;
-            }
-
-            if ($users[$this->input->cookie('uids')]['role'] == 2) {
-                //我的按天统计任务量
-                $stackedMyIssue = $this->issue->stacked($this->input->cookie('uids'), $leftTime, $rightTime);
-                if ($stackedMyIssue) {
-                    $stackedMyIssueStr = "[";
-                    foreach ($stackedMyIssue as $key => $value) {
-                        $stackedMyIssueStr .= "{ y: '".$value['perday']."', a: ".$value['close'].", b: ".$value['able']." },";
-                    }
-                    $stackedMyIssueStr .= "]";
-                }
-                $data['stackedMyIssueStr'] = $stackedMyIssueStr;
-
-                //我的按天统计提测量
-                $stackedMyTest = $this->test->stacked($this->input->cookie('uids'), $leftTime, $rightTime);
-                if ($stackedMyTest) {
-                    $stackedMyTestStr = "[";
-                    foreach ($stackedMyTest as $key => $value) {
-                        $stackedMyTestStr .= "{ y: '".$value['perday']."', a: ".$value['other'].", b: ".$value['no']." },";
-                    }
-                    $stackedMyTestStr .= "]";
-                }
-                $data['stackedMyTestStr'] = $stackedMyTestStr;
-            }
+            
 
             //按天统计任务量
             
@@ -341,8 +294,35 @@ class admin extends CI_Controller {
             }
             $data['stackedMyIssueStr'] .= "]";
         }
-
         $this->load->view('analytics_issue', $data);
+    }
+
+    /**
+     * 任务量统计
+     */
+    public function testAnalytics() {
+        $this->load->model('Model_test', 'test', TRUE);
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+        }
+        $picker = $this->input->get('picker', TRUE);
+        $data['role'] = $users[$this->input->cookie('uids')]['role'];
+        $dateRange = $this->getDateRange($picker);
+        $data['stackedMyTestStr'] = '';
+        if ($users[$this->input->cookie('uids')]['role'] == 1) {
+            $stackedMyTest = $this->test->stackedByQa($this->input->cookie('uids'), $dateRange['leftTime'], $dateRange['rightTime']);
+        }
+        if ($users[$this->input->cookie('uids')]['role'] == 2) {
+            $stackedMyTest = $this->test->stacked($this->input->cookie('uids'), $dateRange['leftTime'], $dateRange['rightTime']);
+        }
+        if ($stackedMyTest) {
+            $data['stackedMyTestStr'] = "[";
+            foreach ($stackedMyTest as $key => $value) {
+                $data['stackedMyTestStr'] .= "{ y: '".$value['perday']."', a: ".$value['other'].", b: ".$value['no']." },";
+            }
+            $data['stackedMyTestStr'] .= "]";
+        }
+        $this->load->view('analytics_test', $data);
     }
 
     /**

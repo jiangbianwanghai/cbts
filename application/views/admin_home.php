@@ -25,7 +25,7 @@
                 <div class="col-md-6">
                   <h5 class="subtitle mb5"><?php if ($role == 1) {?>我受理的提测量统计<?php } ?><?php if ($role == 2) {?>我申请的提交量统计<?php } ?></h5>
                   <p class="mb15"><?php if ($role == 1) {?>受理的提测量统计(待测+测试中/其他状态[不通过,通过,已覆盖])<?php } ?><?php if ($role == 2) {?>最近30天申请的提测量(不通过量/其他状态[待测,在测试,通过,已覆盖])<?php } ?></p>
-                  <div id="stacked-chart_test_my" class="body-chart">暂无数据</div>
+                  <div id="stacked-chart_test_my" class="body-chart"><img src="/static/images/loaders/loader3.gif" />载入中…</div>
                 </div><!-- col-md-6 -->
               </div><!-- row -->
             </div><!-- panel-body -->
@@ -146,6 +146,17 @@ jQuery(document).ready(function() {
     }
   });
 
+  $.ajax({
+    type: "GET",
+    url: "/admin/testAnalytics?picker=2016-02-24+-+2016-03-25",
+    dataType: "text",
+    success: function(data){
+      if (data) {
+        $("#stacked-chart_test_my").html(data);
+      }
+    }
+  });
+
   <?php if ($stacked) { ?>
   $("#stacked-chart").text('');
   var m1 = new Morris.Bar({
@@ -171,23 +182,6 @@ jQuery(document).ready(function() {
         xkey: 'y',
         ykeys: ['a', 'b'],
         labels: ['其他状态', '不通过'],
-        barColors: ['#F0AD4E', '#D9534F'],
-        lineWidth: '1px',
-        fillOpacity: 0.8,
-        smooth: false,
-        stacked: true,
-        hideHover: true
-  });
-  <?php } ?>
-
-  <?php if ($stackedMyTestStr) { ?>
-  $("#stacked-chart_test_my").text('');
-  var m3 = new Morris.Bar({
-        element: 'stacked-chart_test_my',
-        data: <?php echo $stackedMyTestStr;?>,
-        xkey: 'y',
-        ykeys: ['a', 'b'],
-        labels: ['其他状态', '<?php if ($role == 1) {?>待测+测试中<?php } ?><?php if ($role == 2) {?>不通过<?php } ?>'],
         barColors: ['#F0AD4E', '#D9534F'],
         lineWidth: '1px',
         fillOpacity: 0.8,
@@ -224,7 +218,6 @@ jQuery(document).ready(function() {
   jQuery(window).resize(function() {
     <?php if ($stacked) { ?>m1.redraw();<?php } ?>
     <?php if ($stacked_test) { ?>m2.redraw();<?php } ?>
-    <?php if ($stackedMyTestStr) { ?>m3.redraw();<?php } ?>
     m5.redraw();
     m6.redraw();
     m7.redraw();
