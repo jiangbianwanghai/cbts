@@ -46,7 +46,7 @@ class test extends CI_Controller {
             exit();
         }
         //提测版本号不能已经存在
-        $checkTestFlag = $this->test->checkFlag($this->input->post('repos_id'), $this->input->post('test_flag'));
+        $checkTestFlag = $this->test->checkFlag($this->input->post('repos_id'), $this->input->post('br'), $this->input->post('test_flag'));
         if (!$checkTestFlag) {
             $callBack = array(
                 'status' => false,

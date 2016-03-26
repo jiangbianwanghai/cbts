@@ -68,7 +68,7 @@ class issue extends CI_Controller {
         //获取相关提测记录
         $this->load->model('Model_test', 'test', TRUE);
         $rows = $this->test->listByIssueId($id);
-        if ($rows) {
+        if ($rows['total_rows']) {
             $data['test'] = $rows['data'];
             $data['total_rows'] = $rows['total_rows'];
         }
@@ -151,7 +151,7 @@ class issue extends CI_Controller {
     public function plaza() {
         $data['PAGE_TITLE'] = '任务广场列表';
 
-        $this->load->helper('friendlydate');
+        $this->load->helper(array('friendlydate','countdown'));
 
         $this->config->load('extension', TRUE);
         $config = $this->config->item('pages', 'extension');

@@ -158,8 +158,8 @@ class Model_test extends CI_Model {
     /**
      * 验证版本号是否可以添加
      */
-    public function checkFlag($repos_id, $test_flag) {
-        $sql = "SELECT * FROM `choc_test` WHERE `repos_id` = '".$repos_id."' ORDER BY `test_flag` DESC LIMIT 1";
+    public function checkFlag($repos_id, $br, $test_flag) {
+        $sql = "SELECT * FROM `choc_test` WHERE `repos_id` = '".$repos_id."' AND `br` = '".$br."' ORDER BY `test_flag` DESC LIMIT 1";
         $query = $this->db->query($sql);
         if ($query->num_rows()) {
             $row = $query->row_array();

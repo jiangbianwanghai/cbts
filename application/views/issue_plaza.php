@@ -72,7 +72,7 @@
                           <th width="100px">添加人</th>
                           <th width="120px">添加时间</th>
                           <th width="100px">受理人</th>
-                          <th width="160px" style="text-align:center"><span class="label label-danger">距离上线时间还有</span></th>
+                          <th width="200px" style="text-align:center"><span class="label label-danger">距离上线时间还有</span></th>
                         </tr>
                       </thead>
                       <tbody>
@@ -92,14 +92,7 @@
                           <td><?php echo $value['accept_user'] ? '<div class="face"><img alt="" src="/static/avatar/'.$users[$value['accept_user']]['username'].'.jpg" align="absmiddle"></div><a href="/conf/profile/'.$value['accept_user'].'">'.$users[$value['accept_user']]['realname'].'</a>' : '-';?>
                           </td>
                           <?php if ($value['deadline']) {?>
-                          <td style="text-align:center">
-                            <?php 
-                            $remaining = $value['deadline'] - time();  
-                            if ($remaining>0) {
-                              echo floor($remaining / 86400).' 天 '.floor(($remaining % 86400) / 3600).' 小时 '.floor(($remaining % 86400) % 3600 % 60).' 秒';
-                            } else {
-                              echo '已过期';
-                            }?></td>
+                          <td><span class="badge badge-info"><?php echo countdown($value['deadline']);?></span></td>
                           <?php } else {?>
                           <td>-</td>
                           <?php } ?>

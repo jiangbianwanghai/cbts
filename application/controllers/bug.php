@@ -47,6 +47,7 @@ class bug extends CI_Controller {
             exit("查询数据错误.");
         }
         $post = array(
+            'level' => $this->input->post('level'),
             'issue_id' => $this->input->post('issue_id'),
             'test_id' => $this->input->post('test_id'),
             'subject' => $this->input->post('subject'),

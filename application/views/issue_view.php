@@ -35,8 +35,7 @@
               </div>
               
               <div class="btn-group mr10">
-                  <a href="javascript:;" id="resolve" reposid="<?php echo $row['id'];?>" class="btn btn-default" type="button">解决</a>
-                  <a href="javascript:;" id="close" reposid="<?php echo $row['id'];?>" class="btn btn-default" type="button">关闭</a>
+                  <a href="javascript:;" id="resolve" reposid="<?php echo $row['id'];?>" class="btn btn-default" type="button"><i class="fa fa-check-square-o mr5"></i> 已完成</a>
               </div>
 
               <br /><br />
@@ -141,7 +140,7 @@
                                     ?>
                                     <tr id="tr-<?php echo $value['id'];?>">
                                       <td><?php echo $value['id'];?></td>
-                                      <td><?php if ($value['status'] == '-1') { echo '<s><a title="'.$repos[$value['repos_id']]['repos_url'].'" href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a></s>'; } else { echo '<a title="'.$repos[$value['repos_id']]['repos_url'].'" href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a>'; }?>/<?php if ($repos[$value['repos_id']]['merge']) { echo 'branches'; } else { echo 'trunk';}?>/<span class="label label-danger"><?php echo $value['br'];?>@<?php echo $value['test_flag'];?></span> (<a href="javascript:;" class="log" testid="<?php echo $value['id'];?>" data-toggle="modal" data-target=".bs-example-modal">查看版本差异</a>) <?php if ($value['test_summary']) {?><a href="javascript:;" class="btn btn-info btn-xs view" testid="<?php echo $value['id'];?>" data-toggle="modal" data-target=".bs-example-modal">有说明</a><?php } ?></td>
+                                      <td><?php if ($value['status'] == '-1') { echo '<s><a title="'.$repos[$value['repos_id']]['repos_url'].'" href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a></s>'; } else { echo '<a title="'.$repos[$value['repos_id']]['repos_url'].'" href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a>'; }?>/branches/<span class="label label-danger"><?php echo $value['br'];?>@<?php echo $value['test_flag'];?></span> (<a href="javascript:;" class="log" testid="<?php echo $value['id'];?>" data-toggle="modal" data-target=".bs-example-modal">查看版本差异</a>) <?php if ($value['test_summary']) {?><a href="javascript:;" class="btn btn-info btn-xs view" testid="<?php echo $value['id'];?>" data-toggle="modal" data-target=".bs-example-modal">有说明</a><?php } ?></td>
                                       <td>
                                         <?php if ($value['rank'] == 0) {?>
                                         <button class="btn btn-default btn-xs"><i class="fa fa-coffee"></i> 开发环境</button>
@@ -247,7 +246,7 @@
                                             <tr>
                                                 <td><i class="fa fa-bug tooltips" data-toggle="tooltip" title="Bug"></i></td>
                                                 <td><?php echo $value['id']?></td>
-                                                <td><a href="javascript:;" bugid="<?php echo $value['id'];?>" class="bug" testid="<?php echo $value['id'];?>" data-toggle="modal" data-target=".bs-example-modal"><?php echo $value['subject']?></a></td>
+                                                <td><?php if ($value['level']) { $level = array(1=>'!',2=>'!!',3=>'!!!',4=>'!!!!');?><?php echo "<strong style='color:#ff0000;'>".$level[$value['level']]."</strong> ";?><?php } ?><a href="javascript:;" bugid="<?php echo $value['id'];?>" class="bug" testid="<?php echo $value['id'];?>" data-toggle="modal" data-target=".bs-example-modal"><?php echo $value['subject']?></a></td>
                                                 <td><?php echo $value['add_user'] ? '<a href="/conf/profile/'.$value['add_user'].'">'.$users[$value['add_user']]['realname'].'</a>' : '-';?></td>
                                                 <td><?php echo friendlydate($value['add_time']);?>
                                                 <td><a class="btn btn-white btn-xs" href="/test/add/<?php echo $row['id'];?>/<?php echo $value['id'];?>"><i class="fa fa-wrench"></i> 我要修复</a></td>

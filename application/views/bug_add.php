@@ -40,7 +40,18 @@
                     <input type="text" id="repos_id" name="repos_id" class="form-control" value="<?php echo $repos[$row['repos_id']]['repos_name']?>#<?php echo $row['test_flag'];?>" disabled="" />
                   </div>
                 </div>
-
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">请选择优先级 <span class="asterisk">*</span></label>
+                  <div class="col-sm-9">
+                    <select id="level" name="level" class="select2" data-placeholder="请选择优先级" required>
+                      <option value=""></option>
+                      <option value="4">[!!!!]非常紧急</option>
+                      <option value="3">[!!!]优先处理</option>
+                      <option value="2">[!!]正常迭代</option>
+                      <option value="1">[!]抽空处理</option>
+                    </select>
+                  </div>
+                </div>
                 <div class="form-group">
                   <label class="col-sm-3 control-label">BUG标题 <span class="asterisk">*</span></label>
                   <div class="col-sm-9">
@@ -156,7 +167,10 @@ jQuery(document).ready(function(){
       jQuery(element).closest('.form-group').removeClass('has-error');
     },
   });
-
+  jQuery(".select2").select2({
+      width: '150',
+      minimumResultsForSearch: -1
+  });
 
 });
 
