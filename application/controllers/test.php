@@ -601,6 +601,87 @@ class test extends CI_Controller {
     }
 
     /**
+     * 使用capistrano将代码部署到测试服务器
+     */
+    public function tice2() {
+
+        //获取提测id
+        $id = $this->uri->segment(3, 0);
+
+        //根据id验证记录是否存在
+        $this->load->model('Model_test', 'test', TRUE);
+        $row = $this->test->fetchOne($id);
+
+        //不存在则直接返回数据错误
+        if (!$row) {
+            $callBack = array(
+                'status' => false,
+                'message' => '数据错误',
+                'url' => '/'
+            );
+            echo json_encode($callBack);
+            exit();
+        }
+
+        $callBack['url'] = '/issue/view/'.$row['issue_id'];
+
+        //验证是否有权限提测
+        if ($row['accept_user'] != $this->input->cookie('uids')) {
+            $callBack['status'] = false;
+            $callBack['message'] = '非受理人不能提测';
+            echo json_encode($callBack);
+            exit();
+        }
+
+        //获取该版本库的前面的一个提测任务
+        $prevRow = $this->test->prev($row['id'], $row['repos_id']);
+        if ($prevRow) {
+            if ($prevRow['state'] == 1) {
+                $callBack = array(
+                    'status' => false,
+                    'message' => '前面有测试任务正在占用测试环境，请稍后',
+                    'url' => '/issue/view/'.$row['issue_id']
+                );
+                $this->test->returntice($id);
+                echo json_encode($callBack);
+                exit();
+            }
+        }
+
+        //验证提测所属的任务是否被受理
+        $this->load->model('Model_issue', 'issue', TRUE);
+        $flag = $this->issue->checkAccept($row['issue_id']);
+        if (!$flag) {
+            //对提测所属的任务标记标记受理人，谁第一个提测，谁就是该提测所属任务的受理人
+            $this->issue->accept($row['issue_id']);
+        }
+
+        //提测标记受理
+        $this->test->accept($id);
+
+        //验证是否需要合并后提测
+        if (file_exists('./cache/repos.conf.php')) {
+            require './cache/repos.conf.php';
+        }
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+        }
+
+        $this->config->load('extension', TRUE);
+        $sqs = $this->config->item('sqs', 'extension');
+        $cap = $this->config->item('cap', 'extension');
+
+        //打队列通知Worker部署分支的某个版本到测试环境
+        $sqs_url = $sqs."/?name=tice&opt=put&data=";
+        $sqs_url .= $row['id']."|".$row['add_user']."|".$row['repos_id']."|".$row['br']."|".$row['test_flag']."|".$row['issue_id']."|".$row['accept_user']."&auth=mypass123";
+        file_get_contents($sqs_url);
+
+        $callBack['status'] = true;
+        $callBack['message'] = '部署中……';
+        echo json_encode($callBack);
+    }
+
+    /**
      * 测试通过
      */
     public function success() {
@@ -655,6 +736,58 @@ class test extends CI_Controller {
     }
 
     /**
+     * 测试通过
+     */
+    public function success2() {
+        $id = $this->uri->segment(3, 0);
+        $this->load->model('Model_test', 'test', TRUE);
+        $row = $this->test->fetchOne($id);
+        if (!$row) {
+            $callBack = array(
+                'status' => false,
+                'message' => '数据错误',
+                'url' => '/'
+            );
+            echo json_encode($callBack);
+            exit();
+        }
+
+        //不是受理本人不能操作
+        if ($row['accept_user'] != $this->input->cookie('uids')) {
+            $callBack = array(
+                'status' => false,
+                'message' => '不是受理人本人没有权限操作',
+                'url' => '/issue/view/'.$row['issue_id']
+            );
+            echo json_encode($callBack);
+            exit();
+        }
+
+        //
+        if (file_exists('./cache/repos.conf.php')) {
+            require './cache/repos.conf.php';
+        }
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+        }
+
+        $this->config->load('extension', TRUE);
+        $cap = $this->config->item('cap', 'extension');
+        $home = $this->config->item('home', 'extension');
+        $home .= '/issue/view/'.$row['issue_id'];
+
+        $this->test->changestat($row['id'], 3);
+        $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：".$repos[$row['repos_id']]['repos_name']."(".$row['test_flag'].")测试通过，会择机发布到线上";
+        $this->rtx($users[$row['add_user']]['username'],$home,$subject);
+        $callBack = array(
+            'status' => true,
+            'message' => '操作成功',
+            'url' => '/issue/view/'.$row['issue_id']
+        );
+        echo json_encode($callBack);
+    }
+
+    /**
      * 测试不通过
      */
     public function fail() {
@@ -697,6 +830,58 @@ class test extends CI_Controller {
 
         $cap_url = $cap."/pub/vertifyapi/?appname=".$repos[$row['repos_id']]['repos_name_other']."&version=".$row['trunk_flag']."&operate=2&secret=7232275";
         file_get_contents($cap_url);
+        $this->test->changestat($row['id'], '-3');
+        $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：".$repos[$row['repos_id']]['repos_name']."(".$row['test_flag'].")测试不通过，并驳回了";
+        $this->rtx($users[$row['add_user']]['username'],$home,$subject);
+        $callBack = array(
+            'status' => true,
+            'message' => '操作成功',
+            'url' => '/issue/view/'.$row['issue_id']
+        );
+        echo json_encode($callBack);
+    }
+
+    /**
+     * 测试不通过
+     */
+    public function fail2() {
+        $id = $this->uri->segment(3, 0);
+        $this->load->model('Model_test', 'test', TRUE);
+        $row = $this->test->fetchOne($id);
+        if (!$row) {
+            $callBack = array(
+                'status' => false,
+                'message' => '数据错误',
+                'url' => '/'
+            );
+            echo json_encode($callBack);
+            exit();
+        }
+
+        //不是受理本人不能操作
+        if ($row['accept_user'] != $this->input->cookie('uids')) {
+            $callBack = array(
+                'status' => false,
+                'message' => '不是受理人本人没有权限操作',
+                'url' => '/issue/view/'.$row['issue_id']
+            );
+            echo json_encode($callBack);
+            exit();
+        }
+
+        //
+        if (file_exists('./cache/repos.conf.php')) {
+            require './cache/repos.conf.php';
+        }
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+        }
+        
+        $this->config->load('extension', TRUE);
+        $cap = $this->config->item('cap', 'extension');
+        $home = $this->config->item('home', 'extension');
+        $home .= '/issue/view/'.$row['issue_id'];
+
         $this->test->changestat($row['id'], '-3');
         $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：".$repos[$row['repos_id']]['repos_name']."(".$row['test_flag'].")测试不通过，并驳回了";
         $this->rtx($users[$row['add_user']]['username'],$home,$subject);
@@ -820,6 +1005,45 @@ class test extends CI_Controller {
         $subject = $users[$this->input->cookie('uids')]['realname']."指派了一个提测给你";
         $this->rtx($username,$url,$subject);
         echo 1;
+    }
+
+    public function getbr() {
+        $reposId = $this->uri->segment(3, 0);
+        if (file_exists('./cache/repos.conf.php')) {
+            require './cache/repos.conf.php';
+        }
+
+        $merge = $repos[$reposId]['merge'];
+
+        if ($reposId) {
+            if ($merge) {
+                //打队列
+                $this->config->load('extension', TRUE);
+                $sqs = $this->config->item('sqs', 'extension');
+                $sqs_url = $sqs."/?name=getbr&opt=put&data=";
+                $sqs_url .= $reposId."&auth=mypass123";
+                file_get_contents($sqs_url);
+                sleep(3);
+                $file = "/usr/local/nginx/html/cbts/cache/repos_br_".$reposId;
+                if (file_exists($file)) {
+                    $con = file_get_contents($file);
+                    $conArr = array_filter(explode("\n", $con));
+                    $str = '';
+                    if ($conArr) {
+                        foreach ($conArr as $key => $value) {
+                            $str .='<option value="'.str_replace('/', '', $value).'">branches/'.$value.'</option>';
+                        }
+                        echo $str;
+                    }
+                }
+            } else {
+                if ($reposId == 42) {
+                    echo '<option value="branches">branches</option>';
+                } else {
+                    echo '<option value="trunk">trunk</option>';
+                }
+            }
+        }
     }
 
     private function rtx($toList,$url,$subject)

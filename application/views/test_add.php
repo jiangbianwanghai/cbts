@@ -55,7 +55,9 @@
                 <div class="form-group">
                   <label class="col-sm-3 control-label">分支名称</label>
                   <div class="col-sm-9">
-                    <input type="text" id="br" name="br" class="form-control" placeholder="请输入分支名字" />
+                    <select id="br" name="br" class="select3" data-placeholder="请选择分支" required>
+                      <option value=""></option>
+                    </select>
                   </div>
                 </div>
                 
@@ -203,6 +205,25 @@ jQuery(document).ready(function(){
 
   jQuery(".select2").select2({
       width: '100%'
+  });
+
+  jQuery(".select3").select2({
+      width: '100%'
+  });
+
+  $("#repos_id").change(function(){
+    reposId = $(this).val();
+    $.ajax({
+      type: "GET",
+      url: "/test/getbr/"+reposId,
+      success: function(data){
+        if (data) {
+          $("#br").html(data);
+        } else {
+          alert('获取分支异常，请联系QA');
+        }
+      }
+    });
   });
 
 });
