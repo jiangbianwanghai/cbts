@@ -140,6 +140,20 @@ class Model_test extends CI_Model {
     }
 
     /**
+     * 获取前面一个任务的信息
+     */
+    public function prev2($reposId, $testFlag) {
+        $sql = "SELECT * FROM `choc_test` WHERE `repos_id` = '".$reposId."' AND `test_flag` < '".$testFlag."' AND `status` = 1 ORDER BY `id` DESC LIMIT 1";
+        $query = $this->db->query($sql);
+        if ($query->num_rows()) {
+            $row = $query->row_array();
+            return $row;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * 验证后续的版本是否正在测试，如果后续版本已经发布，则当前版本状态改为已覆盖
      */
     public function checkOver($id, $repos_id, $test_flag) {

@@ -140,7 +140,7 @@
                                     ?>
                                     <tr id="tr-<?php echo $value['id'];?>">
                                       <td><?php echo $value['id'];?></td>
-                                      <td><?php if ($value['status'] == '-1') { echo '<s><a title="'.$repos[$value['repos_id']]['repos_url'].'" href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a></s>'; } else { echo '<a title="'.$repos[$value['repos_id']]['repos_url'].'" href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a>'; }?>/branches/<span class="label label-danger"><?php echo $value['br'];?>@<?php echo $value['test_flag'];?></span> (<a href="javascript:;" class="log" testid="<?php echo $value['id'];?>" data-toggle="modal" data-target=".bs-example-modal">查看版本差异</a>) <?php if ($value['test_summary']) {?><a href="javascript:;" class="btn btn-info btn-xs view" testid="<?php echo $value['id'];?>" data-toggle="modal" data-target=".bs-example-modal">有说明</a><?php } ?></td>
+                                      <td><?php if ($value['status'] == '-1') { echo '<s><a title="'.$repos[$value['repos_id']]['repos_url'].'" href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a></s>'; } else { echo '<a title="'.$repos[$value['repos_id']]['repos_url'].'" href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a>'; }?><span class="label label-danger"><?php if ($repos[$value['repos_id']]['merge'] == 1) { echo '/branches/';}?><?php if ($value['repos_id'] == 42 || $repos[$value['repos_id']]['merge'] == 0) { echo '/';}?><?php echo $value['br'];?>@<?php echo $value['test_flag'];?></span> (<a href="javascript:;" class="log" testid="<?php echo $value['id'];?>" data-toggle="modal" data-target=".bs-example-modal">查看版本差异</a>) <?php if ($value['test_summary']) {?><a href="javascript:;" class="btn btn-info btn-xs view" testid="<?php echo $value['id'];?>" data-toggle="modal" data-target=".bs-example-modal">有说明</a><?php } ?></td>
                                       <td>
                                         <?php if ($value['rank'] == 0) {?>
                                         <button class="btn btn-default btn-xs"><i class="fa fa-coffee"></i> 开发环境</button>
@@ -176,7 +176,7 @@
                                         <?php if ($value['status'] == 1) {?>
                                         <?php if ($value['tice'] == 0 && $row['status'] == 1) {?><button class="btn btn-success btn-xs tice"  id="tice-<?php echo $value['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-send"></i> 提测</button><?php }?>
                                         <?php if ($value['tice'] == 0 && $row['status'] == 1) {?><button class="btn btn-info btn-xs tice2"  id="tice-<?php echo $value['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-send"></i> 部署到Staging</button><?php }?>
-                                        <?php if ($value['tice'] == -1 ) {?><button class="btn btn-warning btn-xs tice2" id="tice-<?php echo $value['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-exclamation-circle"></i> 部署失败,请重试</button><?php }?>
+                                        <?php if ($value['tice'] == -1 ) {?><button class="btn btn-warning btn-xs tice" id="tice-<?php echo $value['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-exclamation-circle"></i> 部署失败,请重试</button><?php }?>
                                         <?php if ($value['tice'] == 3 ) {?><button class="btn btn-white btn-xs" testid="<?php echo $value['id'];?>" disabled><img src="/static/images/loaders/loader3.gif" alt="" /> 提测中…</button><?php }?>
                                         <?php if ($value['state'] == 3 && $value['rank'] == 1 && $value['tice'] < 5 && $users[$value['accept_user']]['role'] == 1) {?><button class="btn btn-success btn-xs cap_production"  id="cap_production-<?php echo $value['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-send"></i> 发布到生产环境</button><?php }?>
                                         <?php if ($value['tice'] == 5 ) {?><button class="btn btn-white btn-xs" disabled><img src="/static/images/loaders/loader3.gif" alt="" /> 发布中…</button><?php }?>
@@ -405,7 +405,7 @@
         id = $(this).attr("testid");
         $.ajax({
           type: "GET",
-          url: "/test/success2/"+id,
+          url: "/test/success/"+id,
           dataType: "JSON",
           success: function(data){
             if (data.status) {
@@ -440,7 +440,7 @@
         id = $(this).attr("testid");
         $.ajax({
           type: "GET",
-          url: "/test/fail2/"+id,
+          url: "/test/fail/"+id,
           dataType: "JSON",
           success: function(data){
             if (data.status) {

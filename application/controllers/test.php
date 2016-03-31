@@ -530,9 +530,9 @@ class test extends CI_Controller {
         if ($repos[$row['repos_id']]['merge']) {
             //需要合并
             //获取该版本库的前面的一个提测任务
-            $prevRow = $this->test->prev($row['repos_id'], $row['test_flag']);
+            $prevRow = $this->test->prev2($row['repos_id'], $row['test_flag']);
             if ($prevRow) {
-                if ($prevRow['state'] == 0 || $prevRow['state'] == 1) {
+                if (($prevRow['state'] == 0 || $prevRow['state'] == 1) && ($prevRow['br'] == $row['br'])) {
                     $callBack = array(
                         'status' => true,
                         'message' => '前面有测试任务正在进行，请稍后',
@@ -556,7 +556,7 @@ class test extends CI_Controller {
             file_get_contents($sqs_url);
         } else {
             //获取该版本库的前面的一个提测任务
-            $prevRow = $this->test->prev($row['repos_id'], $row['test_flag']);
+            $prevRow = $this->test->prev2($row['repos_id'], $row['test_flag']);
             if ($prevRow) {
                 if ($prevRow['state'] == 0 || $prevRow['state'] == 1) {
                     $callBack = array(
