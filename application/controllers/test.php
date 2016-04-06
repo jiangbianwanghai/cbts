@@ -722,8 +722,10 @@ class test extends CI_Controller {
         $home = $this->config->item('home', 'extension');
         $home .= '/issue/view/'.$row['issue_id'];
 
-        $cap_url = $cap."/pub/vertifyapi/?appname=".$repos[$row['repos_id']]['repos_name_other']."&version=".$row['trunk_flag']."&operate=4&secret=7232275";
-        file_get_contents($cap_url);
+        if (!empty($row['br']) && ($row['br'] == 'dev' || $row['br'] == 'trunk')) {
+            $cap_url = $cap."/pub/vertifyapi/?appname=".$repos[$row['repos_id']]['repos_name_other']."&version=".$row['trunk_flag']."&operate=4&secret=7232275";
+            file_get_contents($cap_url);
+        }
         $this->test->changestat($row['id'], 3);
         $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：".$repos[$row['repos_id']]['repos_name']."(".$row['test_flag'].")测试通过，会择机发布到线上";
         $this->rtx($users[$row['add_user']]['username'],$home,$subject);
@@ -828,8 +830,10 @@ class test extends CI_Controller {
         $home = $this->config->item('home', 'extension');
         $home .= '/issue/view/'.$row['issue_id'];
 
-        $cap_url = $cap."/pub/vertifyapi/?appname=".$repos[$row['repos_id']]['repos_name_other']."&version=".$row['trunk_flag']."&operate=2&secret=7232275";
-        file_get_contents($cap_url);
+        if (!empty($row['br']) && ($row['br'] == 'dev' || $row['br'] == 'trunk')) {
+            $cap_url = $cap."/pub/vertifyapi/?appname=".$repos[$row['repos_id']]['repos_name_other']."&version=".$row['trunk_flag']."&operate=2&secret=7232275";
+            file_get_contents($cap_url);
+        }
         $this->test->changestat($row['id'], '-3');
         $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：".$repos[$row['repos_id']]['repos_name']."(".$row['test_flag'].")测试不通过，并驳回了";
         $this->rtx($users[$row['add_user']]['username'],$home,$subject);
@@ -936,7 +940,7 @@ class test extends CI_Controller {
         }
 
         //获取该版本库的前面的一个提测任务
-        $prevRow = $this->test->prev($row['repos_id'], $row['test_flag']);
+        $prevRow = $this->test->prev2($row['repos_id'], $row['test_flag']);
         if ($prevRow) {
             $oldversion = $prevRow['trunk_flag'];
         } else {

@@ -478,4 +478,42 @@ class Model_test extends CI_Model {
         $query = $this->db->query($sql);
         return $query->result_array();
     }
+
+    public function tongji($uid) {
+        $array = array('taskNumWithme' => 0, 'testNumByme' => 0, 'testNumWait' => 0, 'testNumPass' => 0);
+        //统计3月份多少任务与他有关
+        $sql = "SELECT count(1) as total FROM `choc_test` WHERE `add_time` >= '1456761600' AND `add_time` < '1459440000' AND `add_user`='".$uid."' AND `status` = 1 GROUP BY `issue_id`";
+        $query = $this->db->query($sql);
+        if ($query->result_array()) {
+            $row = $query->result_array();
+            $num = 0;
+            foreach ($row as $key => $value) {
+                $num ++;
+            }
+            $array['taskNumWithme'] = $num;
+        }
+        //统计提测量
+        $sql = "SELECT count(1) as total FROM `choc_test` WHERE `add_time` >= '1456761600' AND `add_time` < '1459440000' AND `add_user`='".$uid."' AND `status` = 1";
+        $query = $this->db->query($sql);
+        if ($query->num_rows()) {
+            $row = $query->row_array();
+            $array['testNumByme'] = $row['total'];
+        }
+        //统计为测试
+        $sql = "SELECT count(1) as total FROM `choc_test` WHERE `add_time` >= '1456761600' AND `add_time` < '1459440000' AND `add_user`='".$uid."' AND `status` = 1 AND `tice` = 0";
+        $query = $this->db->query($sql);
+        if ($query->num_rows()) {
+            $row = $query->row_array();
+            $array['testNumWait'] = $row['total'];
+        }
+        //不通过
+        $sql = "SELECT count(1) as total FROM `choc_test` WHERE `add_time` >= '1456761600' AND `add_time` < '1459440000' AND `add_user`='".$uid."' AND `status` = 1 AND `state` = '-3'";
+        $query = $this->db->query($sql);
+        if ($query->num_rows()) {
+            $row = $query->row_array();
+            $array['testNumPass'] = $row['total'];
+        }
+
+        return $array;
+    }
 }

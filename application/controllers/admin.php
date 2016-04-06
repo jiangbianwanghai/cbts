@@ -347,4 +347,53 @@ class admin extends CI_Controller {
         }
         return $array;
     }
+
+    //输出每个人的月报
+    public function tongji() {
+        $uid = $this->uri->segment(3, 0);
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+        }
+        if ($uid) {
+
+            $taskNumByme = $taskNumWithme = $testNumByme = $testNumWait = $testNumPass = $butongguo = 0;
+
+            if ($users[$uid]['role'] != 2) {
+                exit('仅输出研发人员的数据');
+            }
+
+            $this->load->model('Model_issue', 'issue', TRUE);
+            $this->load->model('Model_test', 'test', TRUE);
+            $issueTj = $this->issue->tongji($uid);
+            $taskNumByme = $issueTj['taskNumByme'];
+            $testTj = $this->test->tongji($uid);
+            $taskNumWithme = $testTj['taskNumWithme'];
+            $testNumByme = $testTj['testNumByme'];
+            $testNumWait = $testTj['testNumWait'];
+            $testNumPass = $testTj['testNumPass'];
+            $fenmu = $testNumByme - $testNumWait;
+            if ($fenmu) {
+                $butongguo = sprintf("%.2f", $testNumPass/($testNumByme - $testNumWait))*100;
+            }
+            
+
+            echo $users[$uid]['realname'].'，你好：<br />';
+            echo '根据你在CBTS上产生的数据，以下是你3月份（3.1~31）的统计结果。<br />';
+            echo '你发起了 <b><font color="#ff0000">'.$taskNumByme.' </font></b> 个任务<br />';
+            echo '你参与了 <b><font color="#ff0000">'.$taskNumWithme.' </font></b> 个任务<br />';
+            echo '提交了 <b><font color="#ff0000">'.$testNumByme.' </font></b> 次测试<br />';
+            echo '有 <b><font color="#ff0000">'.$testNumWait.' </font></b> 个正在等待测试<br />';
+            echo '有 <b><font color="#ff0000">'.$testNumPass.' </font></b> 次不通过<br />';
+            echo '不通过率（不通过/已提测量，不包含为提测的） <b><font color="#ff0000">'.$butongguo.'% </font></b> 次测试<br />';
+
+        } else {
+            $list = '';
+            foreach ($users as $key => $value) {
+                if ($value['role'] == 2) {
+                    $list .= '<a href="/admin/tongji/'.$value['uid'].'" target="_blank">'.$value['realname'].'</a><br />';
+                }
+            }
+            echo $list;
+        }
+    }
 }

@@ -336,4 +336,17 @@ class Model_issue extends CI_Model {
         $query = $this->db->query($sql);
         return $query->result_array();
     }
+
+    public function tongji($uid) {
+        $array = array('taskNumByme' => 0);
+        //统计他在3月份创建了多少任务
+        $sql = "SELECT count(1) as total FROM `choc_issue` WHERE `add_time` >= '1456761600' AND `add_time` < '1459440000' AND `add_user`='".$uid."' AND 'status' >= 0";
+        $query = $this->db->query($sql);
+        if ($query->num_rows()) {
+            $row = $query->row_array();
+            $array['taskNumByme'] = $row['total'];
+        }
+        //
+        return $array;
+    }
 }
