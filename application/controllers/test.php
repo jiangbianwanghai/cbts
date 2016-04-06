@@ -262,7 +262,7 @@ class test extends CI_Controller {
             echo nl2br($content);
         } else {
             //获取上一个任务
-            $prevRow = $this->test->prev($row['repos_id'], $row['test_flag']);
+            $prevRow = $this->test->prev2($row['repos_id'], $row['test_flag']);
             if ($prevRow) {
                 $prev_flag = $prevRow['test_flag'];
             } else {
@@ -385,8 +385,7 @@ class test extends CI_Controller {
         $data['PAGE_TITLE'] = '我的待测';
         $this->config->load('extension', TRUE);
         $config = $this->config->item('pages', 'extension');
-        $repos_id = trim($this->uri->segment(3, 0));
-        $offset = trim($this->uri->segment(4, 0));
+        $offset = trim($this->uri->segment(3, 0));
         $this->load->model('Model_test', 'test', TRUE);
         $rows = $this->test->todo($offset, $config['per_page']);
         $data['rows'] = $rows['data'];

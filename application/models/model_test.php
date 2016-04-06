@@ -268,12 +268,12 @@ class Model_test extends CI_Model {
         );
 
         //获取总数
-        $sql = "SELECT * FROM `choc_test` WHERE `accept_user` = '".$this->input->cookie('uids')."' AND `state` < '3' AND `status` = '1'";
+        $sql = "SELECT * FROM `choc_test` WHERE `accept_user` = '".$this->input->cookie('uids')."' AND `state` IN (0,1) AND `status` = '1'";
         $query = $this->db->query($sql);
         $rows['total_rows'] = $query->num_rows;
 
         //获取翻页数据
-        $sql = "SELECT * FROM `choc_test` WHERE `accept_user` = '".$this->input->cookie('uids')."' AND `state` < '3' AND `status` = '1' ORDER BY `id` DESC LIMIT ".$offset .", ".$per_page."";
+        $sql = "SELECT * FROM `choc_test` WHERE `accept_user` = '".$this->input->cookie('uids')."' AND `state` IN (0,1) AND `status` = '1' ORDER BY `id` DESC LIMIT ".$offset .", ".$per_page."";
         $query = $this->db->query($sql);
         foreach ($query->result_array() as $row)
         {
