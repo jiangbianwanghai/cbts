@@ -129,6 +129,7 @@
                                       <th>所处阶段</th>
                                       <th>提测状态</th>
                                       <th>添加人</th>
+                                      <th width="150px">添加时间</th>
                                       <th>受理人</th>
                                       <th>&nbsp;</th>
                                     </tr>
@@ -170,6 +171,7 @@
                                         <?php } ?>
                                       </td>
                                       <td><?php echo $value['add_user'] ? '<a href="/conf/profile/'.$value['add_user'].'">'.$users[$value['add_user']]['realname'].'</a>' : '-';?></td>
+                                      <td><?php echo date("Y/m/d H:i", $value['add_time']);?></td>
                                       <td><?php if ($value['state'] == 3 || $value['state'] == 5) {?><?php echo $value['accept_user'] ? '<a href="/conf/profile/'.$value['accept_user'].'">'.$users[$value['accept_user']]['realname'].'</a>' : '-';?><?php } else {?><a href="javascript:;" id="test-<?php echo $row['id'];?>-<?php echo $value['id'];?>" class="country" data-type="select2" data-value="<?php echo $value['accept_user'];?>" data-title="更改受理人"></a><?php }?></td>
                                       
                                       <td class="table-action">

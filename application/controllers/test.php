@@ -272,7 +272,7 @@ class test extends CI_Controller {
             $sqs = $this->config->item('sqs', 'extension');
             //打队列
             $sqs_url = $sqs."/?name=logdiff&opt=put&data=";
-            $sqs_url .= $row['id']."|".$row['repos_id']."|".$prev_flag."|".$row['test_flag']."&auth=mypass123";
+            $sqs_url .= $row['id']."|".$row['repos_id']."|".$prev_flag."|".$row['test_flag']."|".$row['br']."&auth=mypass123";
             file_get_contents($sqs_url);
             echo '请关闭窗口等候2秒，再点击就有了';
         }
