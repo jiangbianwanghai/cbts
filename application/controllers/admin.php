@@ -419,4 +419,10 @@ class admin extends CI_Controller {
             echo $list;
         }
     }
+
+    public function curl() {
+        $this->load->library('curl');
+        $res = $this->curl->get('http://product.gongchang.com/s9106/CNS29003818551.html?gct=1.1.3-3-1-2.1');
+        print_r($res);
+    }
 }

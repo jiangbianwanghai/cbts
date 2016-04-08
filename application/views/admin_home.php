@@ -20,7 +20,7 @@
                 <div class="col-md-6">
                   <h5 class="subtitle mb5"><?php if ($role == 1) {?>我受理的任务量统计<?php } ?><?php if ($role == 2) {?>我提交的任务量统计<?php } ?></h5>
                   <p class="mb15"><?php if ($role == 1) {?>受理的任务量统计(正常量/关闭量)<?php } ?><?php if ($role == 2) {?>提交的任务量(正常量/关闭量)<?php } ?></p>
-                  <div id="stacked-chart_issue_my" class="body-chart"><img src="/static/images/loaders/loader3.gif" />载入中…</div>
+                  <div id="stacked-chart_issue_my" class="body-chart"><img src="/static/images/loaders/loader2.gif" />载入中…</div>
                 </div><!-- col-md-6 -->
                 <div class="col-md-6">
                   <h5 class="subtitle mb5"><?php if ($role == 1) {?>我受理的提测量统计<?php } ?><?php if ($role == 2) {?>我申请的提交量统计<?php } ?></h5>
@@ -131,11 +131,28 @@
 <script src="/static/js/custom.js"></script>
 
 <script type="text/javascript">
+function load() {
+  setTimeout(function () {
+    //获取我受理的任务量统计
+    $.ajax({
+      type: "GET",
+      url: "/admin/issueAnalytics/my?picker=2016-02-24+-+2016-03-25",
+      dataType: "text",
+      success: function(data){
+        if (data) {
+          $("#stacked-chart_issue_my").html(data);
+        }
+      }
+    });
+  }, 1101);
+}
+load();
+
 jQuery(document).ready(function() {
   
   "use strict";
-  //获取我受理的任务量统计
-  $.ajax({
+  
+  /*$.ajax({
     type: "GET",
     url: "/admin/issueAnalytics/my?picker=2016-02-24+-+2016-03-25",
     dataType: "text",
@@ -144,7 +161,7 @@ jQuery(document).ready(function() {
         $("#stacked-chart_issue_my").html(data);
       }
     }
-  });
+  });*/
   //获取我受理的提测量统计
   $.ajax({
     type: "GET",
