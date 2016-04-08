@@ -35,7 +35,7 @@
               </div>
               
               <div class="btn-group mr10">
-                  <a href="javascript:;" id="resolve" reposid="<?php echo $row['id'];?>" class="btn btn-default" type="button"><i class="fa fa-check-square-o mr5"></i> 已完成</a>
+                  <a href="javascript:;" id="resolve" reposid="<?php echo $row['id'];?>" class="btn btn-success" type="button"><i class="fa fa-gavel mr5"></i> 我已验证通过，并部署到生产环境</a>
               </div>
 
               <br /><br />
@@ -399,7 +399,7 @@
       changeIssueStatus('#close','close','确认要关闭吗？')
     );
     $("#resolve").click(
-      changeIssueStatus('#resolve','resolve','确认要解决吗？')
+      changeIssueStatus('#resolve','resolve','确认验证通过并告知任务添加人吗？')
     );
     $(".success").click(function(){
       var c = confirm('确认要通过吗？');

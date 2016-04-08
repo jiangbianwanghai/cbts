@@ -40,7 +40,7 @@
             <div class="panel-body">
             <h5 class="subtitle mb5">添加任务最多的TA们</h5>
             <p class="mb15">显示提测最多的前5个人</p>
-            <div id="donut-chart2" class="ex-donut-chart"></div>
+            <div id="donut-chart2" class="ex-donut-chart"><img src="/static/images/loaders/loader3.gif" />载入中…</div>
             </div><!-- panel-body -->
           </div><!-- panel -->
 
@@ -52,7 +52,7 @@
             <div class="panel-body">
             <h5 class="subtitle mb5">提测最多的TA们</h5>
             <p class="mb15">显示提测最多的前5个人</p>
-            <div id="donut-chart1" class="ex-donut-chart"></div>
+            <div id="donut-chart1" class="ex-donut-chart"><img src="/static/images/loaders/loader3.gif" />载入中…</div>
             </div><!-- panel-body -->
           </div><!-- panel -->
 
@@ -64,7 +64,7 @@
             <div class="panel-body">
             <h5 class="subtitle mb5">不通过最多的TA们</h5>
             <p class="mb15">显示提测最多的前5个人</p>
-            <div id="donut-chart3" class="ex-donut-chart"></div>
+            <div id="donut-chart3" class="ex-donut-chart"><img src="/static/images/loaders/loader3.gif" />载入中…</div>
             </div><!-- panel-body -->
           </div><!-- panel -->
 
@@ -76,7 +76,7 @@
             <div class="panel-body">
             <h5 class="subtitle mb5">受理测试最多的TA们</h5>
             <p class="mb15">显示提测最多的前5个人</p>
-            <div id="donut-chart4" class="ex-donut-chart"></div>
+            <div id="donut-chart4" class="ex-donut-chart"><img src="/static/images/loaders/loader3.gif" />载入中…</div>
             </div><!-- panel-body -->
           </div><!-- panel -->
 
@@ -91,12 +91,12 @@
                 <div class="col-md-6">
                   <h5 class="subtitle mb5">任务提交量统计</h5>
                   <p class="mb15">统计最近30天的任务提交量(正常量/关闭量)</p>
-                  <div id="stacked-chart" class="body-chart">暂无数据</div>
+                  <div id="stacked-chart_issue_all" class="body-chart"><img src="/static/images/loaders/loader3.gif" />载入中…</div>
                 </div><!-- col-md-6 -->
                 <div class="col-md-6">
                   <h5 class="subtitle mb5">提测量统计</h5>
                   <p class="mb15">统计最近30天的提测量(不通过量/其他状态[待测,在测试,通过,已覆盖])</p>
-                  <div id="stacked-chart_test" class="body-chart">暂无数据</div>
+                  <div id="stacked-chart_test_all" class="body-chart"><img src="/static/images/loaders/loader3.gif" />载入中…</div>
                 </div><!-- col-md-6 -->
               </div><!-- row -->
             </div><!-- panel-body -->
@@ -134,10 +134,10 @@
 jQuery(document).ready(function() {
   
   "use strict";
-
+  //获取我受理的任务量统计
   $.ajax({
     type: "GET",
-    url: "/admin/issueAnalytics?picker=2016-02-24+-+2016-03-25",
+    url: "/admin/issueAnalytics/my?picker=2016-02-24+-+2016-03-25",
     dataType: "text",
     success: function(data){
       if (data) {
@@ -145,10 +145,10 @@ jQuery(document).ready(function() {
       }
     }
   });
-
+  //获取我受理的提测量统计
   $.ajax({
     type: "GET",
-    url: "/admin/testAnalytics?picker=2016-02-24+-+2016-03-25",
+    url: "/admin/testAnalytics/my?picker=2016-02-24+-+2016-03-25",
     dataType: "text",
     success: function(data){
       if (data) {
@@ -156,73 +156,73 @@ jQuery(document).ready(function() {
       }
     }
   });
-
-  <?php if ($stacked) { ?>
-  $("#stacked-chart").text('');
-  var m1 = new Morris.Bar({
-        element: 'stacked-chart',
-        data: <?php echo $stacked;?>,
-        xkey: 'y',
-        ykeys: ['a', 'b'],
-        labels: ['关闭', '正常'],
-        barColors: ['#428BCA', '#1CAF9A'],
-        lineWidth: '1px',
-        fillOpacity: 0.8,
-        smooth: false,
-        stacked: true,
-        hideHover: true
+  //获取任务提交量统计
+  $.ajax({
+    type: "GET",
+    url: "/admin/issueAnalytics/all?picker=2016-02-24+-+2016-03-25",
+    dataType: "text",
+    success: function(data){
+      if (data) {
+        $("#stacked-chart_issue_all").html(data);
+      }
+    }
   });
-  <?php } ?>
-
-  <?php if ($stacked_test) { ?>
-  $("#stacked-chart_test").text('');
-  var m2 = new Morris.Bar({
-        element: 'stacked-chart_test',
-        data: <?php echo $stacked_test;?>,
-        xkey: 'y',
-        ykeys: ['a', 'b'],
-        labels: ['其他状态', '不通过'],
-        barColors: ['#F0AD4E', '#D9534F'],
-        lineWidth: '1px',
-        fillOpacity: 0.8,
-        smooth: false,
-        stacked: true,
-        hideHover: true
-  });
-  <?php } ?>
-
-  var m5 = new Morris.Donut({
-      element: 'donut-chart1',
-      data: <?php echo $topUserStr;?>,
-      colors: ['#D9534F','#1CAF9A','#428BCA','#5BC0DE','#428BCA']
+  //获取提测量统计
+  $.ajax({
+    type: "GET",
+    url: "/admin/testAnalytics/all?picker=2016-02-24+-+2016-03-25",
+    dataType: "text",
+    success: function(data){
+      if (data) {
+        $("#stacked-chart_test_all").html(data);
+      }
+    }
   });
 
-  var m6 = new Morris.Donut({
-      element: 'donut-chart2',
-      data: <?php echo $topUserIssueStr;?>,
-      colors: ['#D9534F','#1CAF9A','#428BCA','#5BC0DE','#428BCA']
+  $.ajax({
+    type: "GET",
+    url: "/admin/people/test?picker=2016-02-24+-+2016-03-25",
+    dataType: "text",
+    success: function(data){
+      if (data) {
+        $("#donut-chart1").html(data);
+      }
+    }
   });
 
-  var m7 = new Morris.Donut({
-      element: 'donut-chart3',
-      data: <?php echo $topPassUserStr;?>,
-      colors: ['#D9534F','#1CAF9A','#428BCA','#5BC0DE','#428BCA']
+  $.ajax({
+    type: "GET",
+    url: "/admin/people/issue?picker=2016-02-24+-+2016-03-25",
+    dataType: "text",
+    success: function(data){
+      if (data) {
+        $("#donut-chart2").html(data);
+      }
+    }
   });
 
-  var m8 = new Morris.Donut({
-      element: 'donut-chart4',
-      data: <?php echo $topAcceptUserStr;?>,
-      colors: ['#D9534F','#1CAF9A','#428BCA','#5BC0DE','#428BCA']
+  $.ajax({
+    type: "GET",
+    url: "/admin/people/testpass?picker=2016-02-24+-+2016-03-25",
+    dataType: "text",
+    success: function(data){
+      if (data) {
+        $("#donut-chart3").html(data);
+      }
+    }
   });
 
-  jQuery(window).resize(function() {
-    <?php if ($stacked) { ?>m1.redraw();<?php } ?>
-    <?php if ($stacked_test) { ?>m2.redraw();<?php } ?>
-    m5.redraw();
-    m6.redraw();
-    m7.redraw();
-    m8.redraw();
-  }).trigger('resize');
+  $.ajax({
+    type: "GET",
+    url: "/admin/people/testaccept?picker=2016-02-24+-+2016-03-25",
+    dataType: "text",
+    success: function(data){
+      if (data) {
+        $("#donut-chart4").html(data);
+      }
+    }
+  });
+  
   
 });
 
