@@ -684,6 +684,8 @@ class test extends CI_Controller {
      * 测试通过
      */
     public function success() {
+
+        //验证传入的ID是否有效
         $id = $this->uri->segment(3, 0);
         $this->load->model('Model_test', 'test', TRUE);
         $row = $this->test->fetchOne($id);
@@ -701,14 +703,14 @@ class test extends CI_Controller {
         if ($row['accept_user'] != $this->input->cookie('uids')) {
             $callBack = array(
                 'status' => false,
-                'message' => '不是受理人本人没有权限操作',
+                'message' => '只有受理人才有权限操作',
                 'url' => '/issue/view/'.$row['issue_id']
             );
             echo json_encode($callBack);
             exit();
         }
 
-        //
+        //载入必要的缓存文件
         if (file_exists('./cache/repos.conf.php')) {
             require './cache/repos.conf.php';
         }
@@ -716,82 +718,55 @@ class test extends CI_Controller {
             require './cache/users.conf.php';
         }
 
+        //读取配置文件
         $this->config->load('extension', TRUE);
         $cap = $this->config->item('cap', 'extension');
         $home = $this->config->item('home', 'extension');
         $home .= '/issue/view/'.$row['issue_id'];
 
+        //在dev或者trunk提测的走的是CAP提供的API，所以审核通过的时候需要请求CAP的审核接口以便变更CAP中的记录状态
         if (!empty($row['br']) && ($row['br'] == 'dev' || $row['br'] == 'trunk')) {
             $cap_url = $cap."/pub/vertifyapi/?appname=".$repos[$row['repos_id']]['repos_name_other']."&version=".$row['trunk_flag']."&operate=4&secret=7232275";
-            file_get_contents($cap_url);
-        }
-        $this->test->changestat($row['id'], 3);
-        $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：".$repos[$row['repos_id']]['repos_name']."(".$row['test_flag'].")测试通过，会择机发布到线上";
-        $this->rtx($users[$row['add_user']]['username'],$home,$subject);
-        $callBack = array(
-            'status' => true,
-            'message' => '操作成功',
-            'url' => '/issue/view/'.$row['issue_id']
-        );
-        echo json_encode($callBack);
-    }
-
-    /**
-     * 测试通过
-     */
-    public function success2() {
-        $id = $this->uri->segment(3, 0);
-        $this->load->model('Model_test', 'test', TRUE);
-        $row = $this->test->fetchOne($id);
-        if (!$row) {
+            $this->load->library('curl');
+            $res = $this->curl->get($cap_url);
+            if ($res['httpcode'] == '200') {
+                $this->test->changestat($row['id'], 3);
+                $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：".$repos[$row['repos_id']]['repos_name']."(".$row['test_flag'].")测试通过，会择机发布到线上";
+                $this->rtx($users[$row['add_user']]['username'],$home,$subject);
+                $callBack = array(
+                    'status' => true,
+                    'message' => '操作成功',
+                    'url' => '/issue/view/'.$row['issue_id']
+                );
+                echo json_encode($callBack);
+            } else {
+                $callBack = array(
+                    'status' => false,
+                    'message' => '请求CAP的接口失败，请再重试一次',
+                    'url' => '/issue/view/'.$row['issue_id']
+                );
+                echo json_encode($callBack);
+                exit();
+            }
+        } else { //走capistrano提测方法，直接修改数据库状态即可
+            $this->test->changestat($row['id'], 3);
+            $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：".$repos[$row['repos_id']]['repos_name']."(".$row['test_flag'].")测试通过，会择机发布到线上";
+            $this->rtx($users[$row['add_user']]['username'],$home,$subject);
             $callBack = array(
-                'status' => false,
-                'message' => '数据错误',
-                'url' => '/'
-            );
-            echo json_encode($callBack);
-            exit();
-        }
-
-        //不是受理本人不能操作
-        if ($row['accept_user'] != $this->input->cookie('uids')) {
-            $callBack = array(
-                'status' => false,
-                'message' => '不是受理人本人没有权限操作',
+                'status' => true,
+                'message' => '操作成功',
                 'url' => '/issue/view/'.$row['issue_id']
             );
             echo json_encode($callBack);
-            exit();
         }
-
-        //
-        if (file_exists('./cache/repos.conf.php')) {
-            require './cache/repos.conf.php';
-        }
-        if (file_exists('./cache/users.conf.php')) {
-            require './cache/users.conf.php';
-        }
-
-        $this->config->load('extension', TRUE);
-        $cap = $this->config->item('cap', 'extension');
-        $home = $this->config->item('home', 'extension');
-        $home .= '/issue/view/'.$row['issue_id'];
-
-        $this->test->changestat($row['id'], 3);
-        $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：".$repos[$row['repos_id']]['repos_name']."(".$row['test_flag'].")测试通过，会择机发布到线上";
-        $this->rtx($users[$row['add_user']]['username'],$home,$subject);
-        $callBack = array(
-            'status' => true,
-            'message' => '操作成功',
-            'url' => '/issue/view/'.$row['issue_id']
-        );
-        echo json_encode($callBack);
     }
 
     /**
      * 测试不通过
      */
     public function fail() {
+
+        //验证传入的ID是否有效
         $id = $this->uri->segment(3, 0);
         $this->load->model('Model_test', 'test', TRUE);
         $row = $this->test->fetchOne($id);
@@ -816,7 +791,7 @@ class test extends CI_Controller {
             exit();
         }
 
-        //
+        //载入必要的缓存文件
         if (file_exists('./cache/repos.conf.php')) {
             require './cache/repos.conf.php';
         }
@@ -824,6 +799,7 @@ class test extends CI_Controller {
             require './cache/users.conf.php';
         }
         
+        //读取配置文件
         $this->config->load('extension', TRUE);
         $cap = $this->config->item('cap', 'extension');
         $home = $this->config->item('home', 'extension');
@@ -831,69 +807,38 @@ class test extends CI_Controller {
 
         if (!empty($row['br']) && ($row['br'] == 'dev' || $row['br'] == 'trunk')) {
             $cap_url = $cap."/pub/vertifyapi/?appname=".$repos[$row['repos_id']]['repos_name_other']."&version=".$row['trunk_flag']."&operate=2&secret=7232275";
-            file_get_contents($cap_url);
-        }
-        $this->test->changestat($row['id'], '-3');
-        $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：".$repos[$row['repos_id']]['repos_name']."(".$row['test_flag'].")测试不通过，并驳回了";
-        $this->rtx($users[$row['add_user']]['username'],$home,$subject);
-        $callBack = array(
-            'status' => true,
-            'message' => '操作成功',
-            'url' => '/issue/view/'.$row['issue_id']
-        );
-        echo json_encode($callBack);
-    }
-
-    /**
-     * 测试不通过
-     */
-    public function fail2() {
-        $id = $this->uri->segment(3, 0);
-        $this->load->model('Model_test', 'test', TRUE);
-        $row = $this->test->fetchOne($id);
-        if (!$row) {
+            $this->load->library('curl');
+            $res = $this->curl->get($cap_url);
+            if ($res['httpcode'] == '200') {
+                $this->test->changestat($row['id'], '-3');
+                $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：".$repos[$row['repos_id']]['repos_name']."(".$row['test_flag'].")测试不通过，并驳回了";
+                $this->rtx($users[$row['add_user']]['username'],$home,$subject);
+                $callBack = array(
+                    'status' => true,
+                    'message' => '操作成功',
+                    'url' => '/issue/view/'.$row['issue_id']
+                );
+                echo json_encode($callBack);
+            } else {
+                $callBack = array(
+                    'status' => false,
+                    'message' => '请求CAP的接口失败，请再重试一次',
+                    'url' => '/issue/view/'.$row['issue_id']
+                );
+                echo json_encode($callBack);
+                exit();
+            }
+        } else { //走capistrano提测方法，直接修改数据库状态即可
+            $this->test->changestat($row['id'], '-3');
+            $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：".$repos[$row['repos_id']]['repos_name']."(".$row['test_flag'].")测试不通过，并驳回了";
+            $this->rtx($users[$row['add_user']]['username'],$home,$subject);
             $callBack = array(
-                'status' => false,
-                'message' => '数据错误',
-                'url' => '/'
-            );
-            echo json_encode($callBack);
-            exit();
-        }
-
-        //不是受理本人不能操作
-        if ($row['accept_user'] != $this->input->cookie('uids')) {
-            $callBack = array(
-                'status' => false,
-                'message' => '不是受理人本人没有权限操作',
+                'status' => true,
+                'message' => '操作成功',
                 'url' => '/issue/view/'.$row['issue_id']
             );
             echo json_encode($callBack);
-            exit();
         }
-
-        //
-        if (file_exists('./cache/repos.conf.php')) {
-            require './cache/repos.conf.php';
-        }
-        if (file_exists('./cache/users.conf.php')) {
-            require './cache/users.conf.php';
-        }
-        
-        $this->config->load('extension', TRUE);
-        $cap = $this->config->item('cap', 'extension');
-        $home = $this->config->item('home', 'extension');
-        $home .= '/issue/view/'.$row['issue_id'];
-
-        $this->test->changestat($row['id'], '-3');
-        $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：".$repos[$row['repos_id']]['repos_name']."(".$row['test_flag'].")测试不通过，并驳回了";
-        $this->rtx($users[$row['add_user']]['username'],$home,$subject);
-        $callBack = array(
-            'status' => true,
-            'message' => '操作成功',
-            'url' => '/issue/view/'.$row['issue_id']
-        );
-        echo json_encode($callBack);
     }
 
     /**
