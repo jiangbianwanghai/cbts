@@ -162,7 +162,7 @@ jQuery(document).ready(function() {
       } else {
 
          if(body.hasClass('leftpanel-show'))
-            body.removeClass('leftpanel-show');
+            body.addClass('leftpanel-show');
          else
             body.addClass('leftpanel-show');
 
