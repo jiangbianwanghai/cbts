@@ -2,6 +2,32 @@
 
 class bug extends CI_Controller {
 
+    public function index() {
+        $data['PAGE_TITLE'] = '提交BUG';
+        $offset = $this->uri->segment(3, 0);
+        $this->load->model('Model_bug', 'bug', TRUE);
+        $this->config->load('extension', TRUE);
+        $data['level'] = $this->config->item('level', 'extension');
+        $config = $this->config->item('pages', 'extension');
+        $rows = $this->bug->searchByMysql($config['per_page'], $offset);
+        $data['rows'] = $rows['data'];
+        $data['total'] = $rows['total'];
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+            $data['users'] = $users;
+        }
+        $this->load->helper('friendlydate');
+        $this->load->library('pagination');
+        $config['total_rows'] = $rows['total'];
+        $config['cur_page'] = $offset;
+        $config['base_url'] = '/bug/index/';
+        $this->pagination->initialize($config);
+        $data['pages'] = $this->pagination->create_links();
+        $data['offset'] = $offset;
+        $data['per_page'] = $config['per_page'];
+        $this->load->view('bug_index', $data);
+    }
+
     /**
      * 添加表单
      */

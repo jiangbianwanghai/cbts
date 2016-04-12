@@ -2,6 +2,8 @@
 
 class Model_bug extends CI_Model {
 
+    private $_table = 'issue_bug';
+
     public $rankArr = array(
         'dev' => '0', 
         'bug' => '1',
@@ -258,36 +260,22 @@ class Model_bug extends CI_Model {
         return $rows;
     }
 
-    /**
-     * 提测广场列表
-     */
-    public function plaza($add_user, $accept_user, $rank, $state, $offset = 0, $per_page = 20) {
-        $rows = array(
-            'total_rows' => 0,
-            'data' => false
-        );
-
-        $addUserStr = $acceptUserStr = "";
-
-        if ($add_user == 'my') {
-            $addUserStr = "`add_user` = '".$this->input->cookie('uids')."' AND ";
-        }
-        if ($accept_user == 'my') {
-            $acceptUserStr = "`accept_user` = '".$this->input->cookie('uids')."' AND ";
-        }
-
-        //获取总数
-        $sql = "SELECT * FROM `choc_bug` WHERE ".$addUserStr.$acceptUserStr."`state` = '".$this->stateArr[$state]."' AND `rank` = '".$this->rankArr[$rank]."' AND `status` = 1";
-        $query = $this->db->query($sql);
-        $rows['total_rows'] = $query->num_rows;
-
-        //获取翻页数据
-        $sql = "SELECT * FROM `choc_bug` WHERE ".$addUserStr.$acceptUserStr."`state` = '".$this->stateArr[$state]."' AND `rank` = '".$this->rankArr[$rank]."' AND `status` = 1 ORDER BY `id` DESC LIMIT ".$offset .", ".$per_page."";
-        $query = $this->db->query($sql);
-        foreach ($query->result_array() as $row)
-        {
-            $rows['data'][] = $row;
-        }
+    public function searchByMysql($limit = 20, $offset = 0, $userType = false, $state = false) {
+        $rows = array('total' => 0, 'data' => false);
+        $this->db->select('id, level, issue_id, subject, add_user, add_time, accept_user, accept_time, state');
+        if ($userType == 1)
+            $this->db->where('add_user', $this->input->cookie('uids'));
+        if ($userType == 2)
+            $this->db->where('accept_user', $this->input->cookie('uids'));
+        if (is_numeric($state) && $state)
+            $this->db->where('state', $state);
+        $db = clone($this->db);
+        $rows['total'] = $this->db->count_all_results($this->_table);
+        $this->db = $db;
+        $this->db->order_by('id', 'desc');
+        $this->db->limit($limit, $offset);
+        $query = $this->db->get($this->_table);
+        $rows['data'] = $query->result_array();
         return $rows;
     }
 
