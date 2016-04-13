@@ -1,4 +1,4 @@
-# 巧克力任务跟踪系统 - Chocolcate Issue Tracker System
+# 巧克力任务跟踪系统 - Chocolate Issue Tracker System
 Choc - Bug Tracker System. Based on the CodeIgniter framework development.
 
 Design ideas:

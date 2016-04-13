@@ -526,154 +526,81 @@ class test extends CI_Controller {
         $sqs = $this->config->item('sqs', 'extension');
         $cap = $this->config->item('cap', 'extension');
 
-        if ($repos[$row['repos_id']]['merge']) {
-            //需要合并
-            //获取该版本库的前面的一个提测任务
-            $prevRow = $this->test->prev2($row['repos_id'], $row['test_flag']);
-            if ($prevRow) {
-                if (($prevRow['state'] == 0 || $prevRow['state'] == 1) && ($prevRow['br'] == $row['br'])) {
-                    $callBack = array(
-                        'status' => true,
-                        'message' => '前面有测试任务正在进行，请稍后',
-                        'url' => '/issue/view/'.$row['issue_id']
-                    );
-                    $this->test->returntice($id);
-                    echo json_encode($callBack);
-                    exit();
-                }
-                $oldversion = $prevRow['trunk_flag'];
-            } else {
-                $oldversion = 1;
-            }
-
-            $reason = $users[$row['add_user']]['realname']."提测，并由".$users[$this->input->cookie('uids')]['realname']."进行测试，解决的问题是ISSUE-".$row['issue_id'];
-            
-
-            //打队列，数据顺序：test_id[提测任务ID]|add_user[提测任务添加人]|repos_id[代码ID]|oldversion[测试任务前一个标识]|curr_flag[当前标识]
-            $sqs_url = $sqs."/?name=mergev2&opt=put&data=";
-            $sqs_url .= $row['id']."|".$row['add_user']."|".$row['repos_id']."|".$oldversion."|".$row['test_flag']."|".$reason."|".$row['issue_id']."|".$row['accept_user']."&auth=mypass123";
+        if ($row['br'] != 'dev' || $row['repos_id'] != '43') {
+            //打队列通知Worker部署分支的某个版本到测试环境
+            $sqs_url = $sqs."/?name=tice&opt=put&data=";
+            $sqs_url .= $row['id']."|".$row['add_user']."|".$row['repos_id']."|".$row['br']."|".$row['test_flag']."|".$row['issue_id']."|".$row['accept_user']."&auth=mypass123";
             file_get_contents($sqs_url);
         } else {
-            //获取该版本库的前面的一个提测任务
-            $prevRow = $this->test->prev2($row['repos_id'], $row['test_flag']);
-            if ($prevRow) {
-                if ($prevRow['state'] == 0 || $prevRow['state'] == 1) {
-                    $callBack = array(
-                        'status' => true,
-                        'message' => '前面有测试任务正在进行，请稍后',
-                        'url' => '/issue/view/'.$row['issue_id']
-                    );
-                    $this->test->returntice($id);
-                    echo json_encode($callBack);
-                    exit();
+
+            if ($repos[$row['repos_id']]['merge']) {
+                //需要合并
+                //获取该版本库的前面的一个提测任务
+                $prevRow = $this->test->prev2($row['repos_id'], $row['test_flag']);
+                if ($prevRow) {
+                    if (($prevRow['state'] == 0 || $prevRow['state'] == 1) && ($prevRow['br'] == $row['br'])) {
+                        $callBack = array(
+                            'status' => true,
+                            'message' => '前面有测试任务正在进行，请稍后',
+                            'url' => '/issue/view/'.$row['issue_id']
+                        );
+                        $this->test->returntice($id);
+                        echo json_encode($callBack);
+                        exit();
+                    }
+                    $oldversion = $prevRow['trunk_flag'];
+                } else {
+                    $oldversion = 1;
                 }
-                $oldversion = $prevRow['test_flag'];
-            } else {
-                $oldversion = 1;
-            }
 
-            //组合发布API参数
-            $cap_url = $cap."/pub/deployapi/?oldversion=".$oldversion."&newversion=".$row['test_flag']."&appname=".$repos[$row['repos_id']]['repos_name_other']."&reason=".$users[$row['add_user']]['realname']."提交代码".$users[$this->input->cookie('uids')]['realname']."测试"."&secret=7232275";
-            //echo $cap_url;
-            $con = file_get_contents($cap_url);
-            //echo $con;
-            $con_arr = json_decode($con, true);
+                $reason = $users[$row['add_user']]['realname']."提测，并由".$users[$this->input->cookie('uids')]['realname']."进行测试，解决的问题是ISSUE-".$row['issue_id'];
+                
 
-            //获取PID
-            $pid = 0;
-            if ($con_arr['status']) {
-                $pid = $con_arr['pid'];
-            } else {
-                $this->test->returntice($id);
-            }
-            if ($pid) {
-                //打队列
-                $sqs_url = $sqs."/?name=stateupdatev2&opt=put&data=";
-                $sqs_url .= $row['id']."|".$pid."|".$row['add_user']."|".$row['test_flag']."|".$row['issue_id']."|".$row['accept_user']."&auth=mypass123";
+                //打队列，数据顺序：test_id[提测任务ID]|add_user[提测任务添加人]|repos_id[代码ID]|oldversion[测试任务前一个标识]|curr_flag[当前标识]
+                $sqs_url = $sqs."/?name=mergev2&opt=put&data=";
+                $sqs_url .= $row['id']."|".$row['add_user']."|".$row['repos_id']."|".$oldversion."|".$row['test_flag']."|".$reason."|".$row['issue_id']."|".$row['accept_user']."&auth=mypass123";
                 file_get_contents($sqs_url);
+            } else {
+                //获取该版本库的前面的一个提测任务
+                $prevRow = $this->test->prev2($row['repos_id'], $row['test_flag']);
+                if ($prevRow) {
+                    if ($prevRow['state'] == 0 || $prevRow['state'] == 1) {
+                        $callBack = array(
+                            'status' => true,
+                            'message' => '前面有测试任务正在进行，请稍后',
+                            'url' => '/issue/view/'.$row['issue_id']
+                        );
+                        $this->test->returntice($id);
+                        echo json_encode($callBack);
+                        exit();
+                    }
+                    $oldversion = $prevRow['test_flag'];
+                } else {
+                    $oldversion = 1;
+                }
+
+                //组合发布API参数
+                $cap_url = $cap."/pub/deployapi/?oldversion=".$oldversion."&newversion=".$row['test_flag']."&appname=".$repos[$row['repos_id']]['repos_name_other']."&reason=".$users[$row['add_user']]['realname']."提交代码".$users[$this->input->cookie('uids')]['realname']."测试"."&secret=7232275";
+                //echo $cap_url;
+                $con = file_get_contents($cap_url);
+                //echo $con;
+                $con_arr = json_decode($con, true);
+
+                //获取PID
+                $pid = 0;
+                if ($con_arr['status']) {
+                    $pid = $con_arr['pid'];
+                } else {
+                    $this->test->returntice($id);
+                }
+                if ($pid) {
+                    //打队列
+                    $sqs_url = $sqs."/?name=stateupdatev2&opt=put&data=";
+                    $sqs_url .= $row['id']."|".$pid."|".$row['add_user']."|".$row['test_flag']."|".$row['issue_id']."|".$row['accept_user']."&auth=mypass123";
+                    file_get_contents($sqs_url);
+                }
             }
         }
-
-        $callBack['status'] = true;
-        $callBack['message'] = '提测中……';
-        echo json_encode($callBack);
-    }
-
-    /**
-     * 使用capistrano将代码部署到测试服务器
-     */
-    public function tice2() {
-
-        //获取提测id
-        $id = $this->uri->segment(3, 0);
-
-        //根据id验证记录是否存在
-        $this->load->model('Model_test', 'test', TRUE);
-        $row = $this->test->fetchOne($id);
-
-        //不存在则直接返回数据错误
-        if (!$row) {
-            $callBack = array(
-                'status' => false,
-                'message' => '数据错误',
-                'url' => '/'
-            );
-            echo json_encode($callBack);
-            exit();
-        }
-
-        $callBack['url'] = '/issue/view/'.$row['issue_id'];
-
-        //验证是否有权限提测
-        if ($row['accept_user'] != $this->input->cookie('uids')) {
-            $callBack['status'] = false;
-            $callBack['message'] = '非受理人不能提测';
-            echo json_encode($callBack);
-            exit();
-        }
-
-        //获取该版本库的前面的一个提测任务
-        $prevRow = $this->test->prev($row['id'], $row['repos_id']);
-        if ($prevRow) {
-            if ($prevRow['state'] == 1) {
-                $callBack = array(
-                    'status' => false,
-                    'message' => '前面有测试任务正在占用测试环境，请稍后',
-                    'url' => '/issue/view/'.$row['issue_id']
-                );
-                $this->test->returntice($id);
-                echo json_encode($callBack);
-                exit();
-            }
-        }
-
-        //验证提测所属的任务是否被受理
-        $this->load->model('Model_issue', 'issue', TRUE);
-        $flag = $this->issue->checkAccept($row['issue_id']);
-        if (!$flag) {
-            //对提测所属的任务标记标记受理人，谁第一个提测，谁就是该提测所属任务的受理人
-            $this->issue->accept($row['issue_id']);
-        }
-
-        //提测标记受理
-        $this->test->accept($id);
-
-        //验证是否需要合并后提测
-        if (file_exists('./cache/repos.conf.php')) {
-            require './cache/repos.conf.php';
-        }
-        if (file_exists('./cache/users.conf.php')) {
-            require './cache/users.conf.php';
-        }
-
-        $this->config->load('extension', TRUE);
-        $sqs = $this->config->item('sqs', 'extension');
-        $cap = $this->config->item('cap', 'extension');
-
-        //打队列通知Worker部署分支的某个版本到测试环境
-        $sqs_url = $sqs."/?name=tice&opt=put&data=";
-        $sqs_url .= $row['id']."|".$row['add_user']."|".$row['repos_id']."|".$row['br']."|".$row['test_flag']."|".$row['issue_id']."|".$row['accept_user']."&auth=mypass123";
-        file_get_contents($sqs_url);
 
         $callBack['status'] = true;
         $callBack['message'] = '部署中……';
