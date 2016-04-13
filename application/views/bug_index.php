@@ -13,16 +13,22 @@
     
     <div class="contentpanel panel-email">
       <div class="row">
-            <div class="col-sm-3 col-lg-2">
-                
-                <ul class="nav nav-pills nav-stacked nav-email">
-                    <li class="active"><a href="#"><i class="glyphicon glyphicon-inbox"></i> 我的Bug</a></li>
-                    <li><a href="#"><i class="glyphicon glyphicon-star"></i> 星标</a></li>
-                    <li><a href="#"><i class="glyphicon glyphicon-trash"></i> 已删除</a></li>
-                </ul>
-              </ul>
-                
-            </div><!-- col-sm-3 -->
+        <div class="col-sm-3 col-lg-2">
+          <ul class="nav nav-pills nav-stacked nav-email">
+              <li class="active"><a href="#"><i class="glyphicon glyphicon-inbox"></i> Bug列表</a></li>
+              <li><a href="#"><i class="glyphicon glyphicon-star"></i> 星标</a></li>
+              <li><a href="#"><i class="glyphicon glyphicon-trash"></i> 已删除</a></li>
+          </ul>
+          <div class="mb30"></div>
+          
+          <h5 class="subtitle">快捷方式</h5>
+          <ul class="nav nav-pills nav-stacked nav-email mb20">
+            <li><a href="#"><i class="glyphicon glyphicon-folder-open"></i> 我负责的</a></li>
+            <li><a href="#"><i class="glyphicon glyphicon-folder-open"></i> 我创建的</a></li>
+            <li><a href="#"><i class="glyphicon glyphicon-folder-open"></i> 我参与的</a></li>
+            <li><a href="#"><i class="glyphicon glyphicon-folder-open"></i> 已完成的</a></li>
+          </ul>
+        </div><!-- col-sm-3 -->
             
             <div class="col-sm-9 col-lg-10">
                 
@@ -61,7 +67,7 @@
                             </div>
                         </div><!-- pull-right -->
                         
-                        <h5 class="subtitle mb5">我收到的Bug</h5>
+                        <h5 class="subtitle mb5">Bug列表</h5>
                         <p class="text-muted">查询结果：<?php echo ($offset+1).' - '.($offset+$per_page).' of '.$total;?></p>
                         
                         <div class="table-responsive">
@@ -95,11 +101,11 @@
                                 <td>
                                   <div class="media">
                                       <a href="#" class="pull-left">
-                                        <div class="face"><img alt="" src="/static/avatar/<?php echo $users[$value['accept_user']]['username']?>.jpg" align="absmiddle" title="<?php echo $users[$value['accept_user']]['realname'];?>"></div>
+                                        <div class="face"><img alt="" src="/static/avatar/<?php echo $users[$value['add_user']]['username']?>.jpg" align="absmiddle" title="<?php echo $users[$value['add_user']]['realname'];?>"></div>
                                       </a>
                                       <div class="media-body">
                                           <span class="media-meta pull-right"><?php echo friendlydate($value['add_time']);?></span>
-                                          <p class="email-summary"><?php if ($value['level']) {?><?php echo "<strong style='color:#ff0000;' title='".$level[$value['level']]['alt']."'>".$level[$value['level']]['name']."</strong> ";?><?php } ?> <?php echo $value['subject'];?></p>
+                                          <p class="email-summary"><?php if ($value['level']) {?><?php echo "<strong style='color:#ff0000;' title='".$level[$value['level']]['alt']."'>".$level[$value['level']]['name']."</strong> ";?><?php } ?> <a href="/bug/view/<?php echo $value['id'];?>"><?php echo $value['subject'];?></a></p>
                                       </div>
                                   </div>
                                 </td>

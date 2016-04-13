@@ -28,6 +28,19 @@ class bug extends CI_Controller {
         $this->load->view('bug_index', $data);
     }
 
+    public function view() {
+        $data['PAGE_TITLE'] = 'Bug详情';
+        $id = $this->uri->segment(3, 0);
+        $this->load->model('Model_bug', 'bug', TRUE);
+        $data['row'] = $this->bug->fetchOne($id);
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+            $data['users'] = $users;
+        }
+        $this->load->helper('friendlydate');
+        $this->load->view('bug_view', $data);
+    }
+
     /**
      * 添加表单
      */
@@ -110,16 +123,6 @@ class bug extends CI_Controller {
             );
         }
         echo json_encode($callBack);
-    }
-
-    /**
-     * 提测详情
-     */
-    public function view() {
-        $id = $this->uri->segment(3, 0);
-        $this->load->model('Model_bug', 'bug', TRUE);
-        $row = $this->bug->fetchOne($id);
-        echo '<p>'.nl2br($row['content']).'</p>';
     }
 
     private function rtx($toList,$url,$subject)
