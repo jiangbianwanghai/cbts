@@ -45,25 +45,12 @@ class bug extends CI_Controller {
      * 添加表单
      */
     public function add() {
-        //设置页面标题
     	$data['PAGE_TITLE'] = '提交BUG';
-
-        //获取提测ID
-        $testId = $this->uri->segment(3, 0);
-
-        //验证ID合法性
-        $this->load->model('Model_test', 'test', TRUE);
-        $data['row'] = $this->test->fetchOne($testId);
-        if (!$data['row']) {
-            exit("查询数据错误.");
-        }
-
-        //获取所属任务信息
+        $issueId = $this->uri->segment(3, 0);
         $this->load->model('Model_issue', 'issue', TRUE);
-        $issueRow = $this->issue->fetchOne($data['row']['issue_id']);
-        $data['row']['issue_id'] = $issueRow['id'];
-        $data['row']['issue_name'] = $issueRow['issue_name'];
-
+        $data['row'] = $this->issue->fetchOne($issueId);
+        if (!$data['row'])
+            exit("无此数据.");
         if (file_exists('./cache/repos.conf.php')) {
             require './cache/repos.conf.php';
             $data['repos'] = $repos;
@@ -80,21 +67,26 @@ class bug extends CI_Controller {
      */
     public function add_ajax() {
     	$this->load->model('Model_bug', 'bug', TRUE);
-        $this->load->model('Model_test', 'test', TRUE);
-        $row = $this->test->fetchOne($this->input->post('test_id'));
+        $this->load->model('Model_issue', 'issue', TRUE);
+        $row = $this->issue->fetchOne($this->input->post('issue_id'));
         if (!$row) {
-            exit("查询数据错误.");
+            $callBack = array(
+                'status' => false,
+                'message' => '无此数据',
+                'url' => '/'
+            );
+            exit();
         }
         $post = array(
             'level' => $this->input->post('level'),
             'issue_id' => $this->input->post('issue_id'),
-            'test_id' => $this->input->post('test_id'),
             'subject' => $this->input->post('subject'),
             'content' => $this->input->post('content'),
             'add_user' => $this->input->cookie('uids'),
             'add_time' => time(),
             'accept_user' => $row['add_user'],
             'accept_time' => time(),
+            'state' => 0,
             'status' => 1
         );
         $feedback = $this->bug->add($post);

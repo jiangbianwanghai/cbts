@@ -526,13 +526,7 @@ class test extends CI_Controller {
         $sqs = $this->config->item('sqs', 'extension');
         $cap = $this->config->item('cap', 'extension');
 
-        if ($row['br'] != 'dev' || $row['repos_id'] != '43') {
-            //打队列通知Worker部署分支的某个版本到测试环境
-            $sqs_url = $sqs."/?name=tice&opt=put&data=";
-            $sqs_url .= $row['id']."|".$row['add_user']."|".$row['repos_id']."|".$row['br']."|".$row['test_flag']."|".$row['issue_id']."|".$row['accept_user']."&auth=mypass123";
-            file_get_contents($sqs_url);
-        } else {
-
+        if ($row['br'] == 'dev' || $row['repos_id'] == '43') {
             if ($repos[$row['repos_id']]['merge']) {
                 //需要合并
                 //获取该版本库的前面的一个提测任务
@@ -600,6 +594,11 @@ class test extends CI_Controller {
                     file_get_contents($sqs_url);
                 }
             }
+        } else {
+            //打队列通知Worker部署分支的某个版本到测试环境
+            $sqs_url = $sqs."/?name=tice&opt=put&data=";
+            $sqs_url .= $row['id']."|".$row['add_user']."|".$row['repos_id']."|".$row['br']."|".$row['test_flag']."|".$row['issue_id']."|".$row['accept_user']."&auth=mypass123";
+            file_get_contents($sqs_url);
         }
 
         $callBack['status'] = true;
@@ -766,6 +765,62 @@ class test extends CI_Controller {
             );
             echo json_encode($callBack);
         }
+    }
+
+    /**
+     * 更改提测状态
+     */
+    public function change_tice() {
+        $id = $this->uri->segment(3, 0);
+        $status = $this->uri->segment(4, 0);
+        $this->load->model('Model_test', 'test', TRUE);
+        $row = $this->test->fetchOne($id);
+        if (!$row) {
+            $callBack = array(
+                'status' => false,
+                'message' => '数据错误',
+                'url' => '/'
+            );
+            echo json_encode($callBack);
+            exit();
+        }
+        //不是受理本人不能操作
+        if ($row['accept_user'] != $this->input->cookie('uids')) {
+            $callBack = array(
+                'status' => false,
+                'message' => '不是受理人本人没有权限操作',
+                'url' => '/issue/view/'.$row['issue_id']
+            );
+            echo json_encode($callBack);
+            exit();
+        }
+        if ($status == 'zhanyong') {
+            $prevRow = $this->test->prev2($row['repos_id'], $row['test_flag']);
+            if ($prevRow) {
+                $callBack = array(
+                    'status' => true,
+                    'message' => '前面有测试任务正在使用，请稍后',
+                    'url' => '/issue/view/'.$row['issue_id']
+                );
+                echo json_encode($callBack);
+                exit();
+            }
+        }
+        $flag = $this->test->changeTice($id, $status);
+        if ($flag) {
+            $callBack = array(
+                'status' => true,
+                'message' => '操作成功',
+                'url' => '/issue/view/'.$row['issue_id']
+            );
+        } else {
+            $callBack = array(
+                'status' => true,
+                'message' => '操作失败',
+                'url' => '/issue/view/'.$row['issue_id']
+            );
+        }
+        echo json_encode($callBack);
     }
 
     /**

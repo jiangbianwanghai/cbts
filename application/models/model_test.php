@@ -143,7 +143,7 @@ class Model_test extends CI_Model {
      * 获取前面一个任务的信息
      */
     public function prev2($reposId, $testFlag) {
-        $sql = "SELECT * FROM `choc_test` WHERE `repos_id` = '".$reposId."' AND `test_flag` < '".$testFlag."' AND `status` = 1 ORDER BY `id` DESC LIMIT 1";
+        $sql = "SELECT * FROM `choc_test` WHERE `repos_id` = '".$reposId."' AND `state` = 1 AND `status` = 1 ORDER BY `id` DESC LIMIT 1";
         $query = $this->db->query($sql);
         if ($query->num_rows()) {
             $row = $query->row_array();
@@ -358,6 +358,18 @@ class Model_test extends CI_Model {
      */
     public function returntice($id) {
         return $this->db->update('test', array('tice' => '-1'), array('id' => $id));
+    }
+
+    public function changeTice($id, $status) {
+        if ($status == 'zhanyong') {
+            return $this->db->update('test', array('tice' => 1,'state' => 1, 'rank' => 1, 'last_time' => time(), 'last_user' => $this->input->cookie('uids')), array('id' => $id));
+        }
+        if ($status == 'online') {
+            return $this->db->update('test', array('tice' => 7,'state' => 3, 'rank' => 2, 'last_time' => time(), 'last_user' => $this->input->cookie('uids')), array('id' => $id));
+        }
+        if ($status == 'wait') {
+            return $this->db->update('test', array('tice' => 0,'state' => 0, 'rank' => 0, 'last_time' => time(), 'last_user' => $this->input->cookie('uids')), array('id' => $id));
+        }
     }
 
     /**

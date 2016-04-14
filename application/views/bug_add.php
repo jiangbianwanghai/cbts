@@ -30,14 +30,7 @@
                 <div class="form-group">
                   <label class="col-sm-3 control-label">相关任务 <span class="asterisk">*</span></label>
                   <div class="col-sm-9">
-                    <input type="text" id="issue_id" name="issue_id" class="form-control" value="<?php echo $row['issue_name']?>#<?php echo $row['issue_id']?>" disabled="" />
-                  </div>
-                </div>
-                
-                <div class="form-group">
-                  <label class="col-sm-3 control-label">代码库及版本号 <span class="asterisk">*</span></label>
-                  <div class="col-sm-9">
-                    <input type="text" id="repos_id" name="repos_id" class="form-control" value="<?php echo $repos[$row['repos_id']]['repos_name']?>#<?php echo $row['test_flag'];?>" disabled="" />
+                    <input type="text" id="issue_id" name="issue_id" class="form-control" value="<?php echo $row['issue_name']?>#<?php echo $row['id']?>" disabled="" />
                   </div>
                 </div>
                 <div class="form-group">
@@ -66,8 +59,7 @@
                   </div>
                 </div>
               </div><!-- panel-body -->
-              <input type="hidden" value="<?php echo $row['issue_id'];?>" id="issue_id" name="issue_id">
-              <input type="hidden" value="<?php echo $row['id'];?>" id="test_id" name="test_id">
+              <input type="hidden" value="<?php echo $row['id'];?>" id="issue_id" name="issue_id">
               <div class="panel-footer">
                 <div class="row">
                   <div class="col-sm-9 col-sm-offset-3">

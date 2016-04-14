@@ -37,6 +37,9 @@
               <div class="btn-group mr10">
                   <a href="javascript:;" id="resolve" reposid="<?php echo $row['id'];?>" class="btn btn-success" type="button"><i class="fa fa-gavel mr5"></i> 我已验证通过，并部署到生产环境</a>
               </div>
+              <div class="btn-group mr10">
+                  <a href="/bug/add/<?php echo $row['id'];?>" class="btn btn-danger" type="button">反馈BUG</a>
+              </div>
 
               <br /><br />
               <?php } ?>
@@ -175,32 +178,26 @@
                                       <td><?php if ($value['state'] == 3 || $value['state'] == 5) {?><?php echo $value['accept_user'] ? '<a href="/conf/profile/'.$value['accept_user'].'">'.$users[$value['accept_user']]['realname'].'</a>' : '-';?><?php } else {?><a href="javascript:;" id="test-<?php echo $row['id'];?>-<?php echo $value['id'];?>" class="country" data-type="select2" data-value="<?php echo $value['accept_user'];?>" data-title="更改受理人"></a><?php }?></td>
                                       
                                       <td class="table-action">
+                                        
                                         <?php if ($value['status'] == 1) {?>
-                                        <?php if ($value['tice'] == 0 && $row['status'] == 1) {?><button class="btn btn-success btn-xs tice"  id="tice-<?php echo $value['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-send"></i> 部署到测试环境</button><?php }?>
-                                        <?php if ($value['tice'] == -1 ) {?><button class="btn btn-warning btn-xs tice" id="tice-<?php echo $value['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-exclamation-circle"></i> 部署失败,请重试</button><?php }?>
-                                        <?php if ($value['tice'] == 3 ) {?><button class="btn btn-white btn-xs" testid="<?php echo $value['id'];?>" disabled><img src="/static/images/loaders/loader3.gif" alt="" /> 提测中…</button><?php }?>
-                                        <?php if ($value['state'] == 3 && $value['rank'] == 1 && $value['tice'] < 5 && $users[$value['accept_user']]['role'] == 1) {?><button class="btn btn-success btn-xs cap_production"  id="cap_production-<?php echo $value['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-send"></i> 发布到生产环境</button><?php }?>
-                                        <?php if ($value['tice'] == 5 ) {?><button class="btn btn-white btn-xs" disabled><img src="/static/images/loaders/loader3.gif" alt="" /> 发布中…</button><?php }?>
-                                        <?php if ($value['tice'] == '-7' ) {?><button class="btn btn-warning btn-xs cap_production" id="cap_production-<?php echo $value['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-exclamation-circle"></i> 发布失败,请再发布</button><?php }?>
-                                        <?php if ($row['status'] == 1) {?>
-                                        <?php if ($value['tice'] < 1) {?>
-                                        <a class="btn btn-white btn-xs" href="/test/edit/<?php echo $row['id'];?>/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 编辑</a>
-                                        <a class="btn btn-white btn-xs delete-row" href="javascript:;" issueid="<?php echo $row['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-trash-o"></i> 删除</a>
-                                        <?php }?>
-                                        <?php }?>
-                                        <?php if ($value['tice'] == 1 && $value['state'] == 1 && $value['rank'] == 1) {?>
                                         <div class="btn-group">
-                                          <button type="button" class="btn btn-xs btn-primary">更改测试状态</button>
+                                          <button type="button" class="btn btn-xs btn-primary">更改提测状态</button>
                                           <button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown">
                                             <span class="caret"></span>
                                             <span class="sr-only">Toggle Dropdown</span>
                                           </button>
                                           <ul class="dropdown-menu" role="menu">
-                                            <li><a href="javascript:;" class="success" testid="<?php echo $value['id'];?>">通过</a></li>
-                                            <li><a href="javascript:;" class="fail" testid="<?php echo $value['id'];?>">不通过</a></li>
+                                            <li><a href="javascript:;" class="wait" testid="<?php echo $value['id']?>">我暂时不测了</a></li>
+                                            <li><a href="javascript:;" class="zhanyong" testid="<?php echo $value['id']?>">我要占用测试环境</a></li>
+                                            <li><a href="javascript:;" class="online" testid="<?php echo $value['id']?>">代码已上线</a></li>
                                           </ul>
-                                        </div><!-- btn-group -->
+                                        </div>
+                                        <?php if ($row['status'] == 1) {?>
+                                        <?php if ($value['tice'] < 1) {?>
+                                        <a class="btn btn-white btn-xs" href="/test/edit/<?php echo $row['id'];?>/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 编辑</a>
+                                        <a class="btn btn-white btn-xs delete-row" href="javascript:;" issueid="<?php echo $row['id'];?>" testid="<?php echo $value['id'];?>"><i class="fa fa-trash-o"></i> 删除</a>
                                         <?php }?>
+                                        <?php }?> 
                                         <?php }?>
                                         <?php if ($value['state'] == -3) {?>
                                         <a class="btn btn-white btn-xs" href="/bug/add/<?php echo $value['id'];?>"><i class="fa fa-bug"></i> 反馈BUG</a>
@@ -237,7 +234,7 @@
                                                 <th>标题</th>
                                                 <th>反馈人</th>
                                                 <th>反馈时间</th>
-                                                <th width="100px" style="text-align:center">操作</th>
+                                                <th width="100px" style="text-align:center">状态</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -248,10 +245,19 @@
                                             <tr>
                                                 <td><i class="fa fa-bug tooltips" data-toggle="tooltip" title="Bug"></i></td>
                                                 <td><?php echo $value['id']?></td>
-                                                <td><?php if ($value['level']) { $level = array(1=>'!',2=>'!!',3=>'!!!',4=>'!!!!');?><?php echo "<strong style='color:#ff0000;'>".$level[$value['level']]."</strong> ";?><?php } ?><a href="javascript:;" bugid="<?php echo $value['id'];?>" class="bug" testid="<?php echo $value['id'];?>" data-toggle="modal" data-target=".bs-example-modal"><?php echo $value['subject']?></a></td>
+                                                <td><?php if ($value['level']) { $level = array(1=>'!',2=>'!!',3=>'!!!',4=>'!!!!');?><?php echo "<strong style='color:#ff0000;'>".$level[$value['level']]."</strong> ";?><?php } ?><a href="/bug/view/<?php echo $value['id'];?>" target="_blank"><?php echo $value['subject']?></a></td>
                                                 <td><?php echo $value['add_user'] ? '<a href="/conf/profile/'.$value['add_user'].'">'.$users[$value['add_user']]['realname'].'</a>' : '-';?></td>
                                                 <td><?php echo friendlydate($value['add_time']);?>
-                                                <td><a class="btn btn-white btn-xs" href="/test/add/<?php echo $row['id'];?>/<?php echo $value['id'];?>"><i class="fa fa-wrench"></i> 我要修复</a></td>
+                                                <td><?php if ($value['state'] === '0') {?>
+                                                <span class="label label-default">未确认</span>
+                                                <?php } ?>
+                                                <?php if ($value['state'] === '1') {?>
+                                                <span class="label label-primary">处理中</span>
+                                                <?php } ?>
+                                                <?php if ($value['state'] === '3') {?>
+                                                <span class="label label-success">已处理</span>
+                                                <?php } ?>
+                                              </td>
                                             </tr>
                                             <?php
                                                 }
@@ -400,13 +406,13 @@
     $("#resolve").click(
       changeIssueStatus('#resolve','resolve','确认验证通过并告知任务添加人吗？')
     );
-    $(".success").click(function(){
-      var c = confirm('确认要通过吗？');
+    $(".zhanyong").click(function(){
+      var c = confirm('确认要改为测试状态吗？');
       if(c) {
         id = $(this).attr("testid");
         $.ajax({
           type: "GET",
-          url: "/test/success/"+id,
+          url: "/test/change_tice/"+id+"/zhanyong",
           dataType: "JSON",
           success: function(data){
             if (data.status) {
@@ -435,13 +441,48 @@
         });
       }
     });
-    $(".fail").click(function(){
-      var c = confirm('确认要不通过，驳回吗？');
+    $(".online").click(function(){
+      var c = confirm('确认改为上线状态吗？');
       if(c) {
         id = $(this).attr("testid");
         $.ajax({
           type: "GET",
-          url: "/test/fail/"+id,
+          url: "/test/change_tice/"+id+"/online",
+          dataType: "JSON",
+          success: function(data){
+            if (data.status) {
+              jQuery.gritter.add({
+                title: '提醒',
+                text: data.message,
+                  class_name: 'growl-success',
+                  image: '/static/images/screen.png',
+                sticky: false,
+                time: ''
+              });
+              setTimeout(function(){
+                location.href = data.url;
+              }, 2000);
+            } else {
+              jQuery.gritter.add({
+                title: '提醒',
+                text: data.message,
+                  class_name: 'growl-danger',
+                  image: '/static/images/screen.png',
+                sticky: false,
+                time: ''
+              });
+            };
+          }
+        });
+      }
+    });
+    $(".wait").click(function(){
+      var c = confirm('你确定不测了，将测试环境让给他人吗？');
+      if(c) {
+        id = $(this).attr("testid");
+        $.ajax({
+          type: "GET",
+          url: "/test/change_tice/"+id+"/wait",
           dataType: "JSON",
           success: function(data){
             if (data.status) {
@@ -666,19 +707,6 @@
           url: "/test/log/"+id,
           success: function(data){
             $(".modal-title").text('更新日志');
-            $(".modal-body-inner").addClass('height300');
-            $(".modal-body-inner").html(data);
-          }
-        });
-    });
-
-    $(".bug").click(function(){
-      id = $(this).attr("bugid");
-        $.ajax({
-          type: "GET",
-          url: "/bug/view/"+id,
-          success: function(data){
-            $(".modal-title").text('BUG详情');
             $(".modal-body-inner").addClass('height300');
             $(".modal-body-inner").html(data);
           }

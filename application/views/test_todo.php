@@ -14,7 +14,7 @@
     <div class="contentpanel">
       <div class="row">
         <div class="col-md-12">
-          <div class="panel panel-dark panel-alt">
+          <div class="panel panel-default panel-alt">
             <div class="panel-heading">
                 <div class="panel-btns">
                     <a href="" class="panel-close">&times;</a>

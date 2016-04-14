@@ -101,11 +101,11 @@
                                 <td>
                                   <div class="media">
                                       <a href="#" class="pull-left">
-                                        <div class="face"><img alt="" src="/static/avatar/<?php echo $users[$value['add_user']]['username']?>.jpg" align="absmiddle" title="<?php echo $users[$value['add_user']]['realname'];?>"></div>
+                                        <div class="face"><img alt="" src="/static/avatar/<?php echo $users[$value['accept_user']]['username']?>.jpg" align="absmiddle" title="处理人：<?php echo $users[$value['accept_user']]['realname'];?>"></div>
                                       </a>
                                       <div class="media-body">
                                           <span class="media-meta pull-right"><?php echo friendlydate($value['add_time']);?></span>
-                                          <p class="email-summary"><?php if ($value['level']) {?><?php echo "<strong style='color:#ff0000;' title='".$level[$value['level']]['alt']."'>".$level[$value['level']]['name']."</strong> ";?><?php } ?> <a href="/bug/view/<?php echo $value['id'];?>"><?php echo $value['subject'];?></a></p>
+                                          <p class="email-summary"><?php if ($value['level']) {?><?php echo "<strong style='color:#ff0000;' title='".$level[$value['level']]['alt']."'>".$level[$value['level']]['name']."</strong> ";?><?php } ?> <a href="/bug/view/<?php echo $value['id'];?>"><?php echo $value['subject'];?></a> <span class="badge"><?php echo $users[$value['add_user']]['realname'];?></span></p>
                                       </div>
                                   </div>
                                 </td>
