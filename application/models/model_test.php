@@ -370,6 +370,9 @@ class Model_test extends CI_Model {
         if ($status == 'wait') {
             return $this->db->update('test', array('tice' => 0,'state' => 0, 'rank' => 0, 'last_time' => time(), 'last_user' => $this->input->cookie('uids')), array('id' => $id));
         }
+        if ($status == 'pass') {
+            return $this->db->update('test', array('tice' => -3, 'last_time' => time(), 'last_user' => $this->input->cookie('uids')), array('id' => $id));
+        }
     }
 
     /**

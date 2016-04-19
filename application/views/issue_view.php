@@ -191,6 +191,7 @@
                                           <ul class="dropdown-menu" role="menu">
                                             <li><a href="javascript:;" class="wait" testid="<?php echo $value['id']?>">我暂时不测了</a></li>
                                             <li><a href="javascript:;" class="zhanyong" testid="<?php echo $value['id']?>">我要占用测试环境</a></li>
+                                            <li><a href="javascript:;" class="pass" testid="<?php echo $value['id']?>">测试不通过</a></li>
                                             <li><a href="javascript:;" class="online" testid="<?php echo $value['id']?>">代码已上线</a></li>
                                           </ul>
                                         </div>
@@ -485,6 +486,41 @@
         $.ajax({
           type: "GET",
           url: "/test/change_tice/"+id+"/wait",
+          dataType: "JSON",
+          success: function(data){
+            if (data.status) {
+              jQuery.gritter.add({
+                title: '提醒',
+                text: data.message,
+                  class_name: 'growl-success',
+                  image: '/static/images/screen.png',
+                sticky: false,
+                time: ''
+              });
+              setTimeout(function(){
+                location.href = data.url;
+              }, 2000);
+            } else {
+              jQuery.gritter.add({
+                title: '提醒',
+                text: data.message,
+                  class_name: 'growl-danger',
+                  image: '/static/images/screen.png',
+                sticky: false,
+                time: ''
+              });
+            };
+          }
+        });
+      }
+    });
+    $(".pass").click(function(){
+      var c = confirm('你确定不测了，将测试环境让给他人吗？');
+      if(c) {
+        id = $(this).attr("testid");
+        $.ajax({
+          type: "GET",
+          url: "/test/change_tice/"+id+"/pass",
           dataType: "JSON",
           success: function(data){
             if (data.status) {
