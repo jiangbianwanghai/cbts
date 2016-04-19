@@ -37,6 +37,9 @@
               <div class="btn-group mr10">
                   <a href="javascript:;" id="resolve" reposid="<?php echo $row['id'];?>" class="btn btn-success" type="button"><i class="fa fa-gavel mr5"></i> 我已验证通过，并部署到生产环境</a>
               </div>
+              <div class="btn-group mr10">
+                  <a href="/bug/add/<?php echo $row['id'];?>" class="btn btn-danger" type="button">反馈BUG</a>
+              </div>
 
               <br /><br />
               <?php } ?>
