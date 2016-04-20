@@ -33,11 +33,17 @@ class bug extends CI_Controller {
         $id = $this->uri->segment(3, 0);
         $this->load->model('Model_bug', 'bug', TRUE);
         $data['row'] = $this->bug->fetchOne($id);
+        $data['pager'] = $this->bug->getPrevNext($id);
         if (file_exists('./cache/users.conf.php')) {
             require './cache/users.conf.php';
             $data['users'] = $users;
         }
         $this->load->helper('friendlydate');
+        $this->load->model('Model_bugcomment', 'bugcomment', TRUE);
+        $rows = $this->bugcomment->rows($id);
+        $data['rows'] = $rows['data'];
+        $this->config->load('extension', TRUE);
+        $data['level'] = $this->config->item('level', 'extension');
         $this->load->view('bug_view', $data);
     }
 
@@ -112,6 +118,117 @@ class bug extends CI_Controller {
                 'status' => false,
                 'message' => '提交失败',
                 'url' => '/test/add/'.$this->input->post('issue_id')
+            );
+        }
+        echo json_encode($callBack);
+    }
+
+    public function coment_add_ajax() {
+        $this->load->model('Model_bug', 'bug', TRUE);
+        $this->load->model('Model_bugcomment', 'bugcomment', TRUE);
+        $row = $this->bug->fetchOne($this->input->post('bug_id'));
+        if (!$row) {
+            $callBack = array(
+                'status' => false,
+                'message' => '无此数据',
+                'url' => '/'
+            );
+            exit();
+        }
+        $post = array(
+            'bug_id' => $this->input->post('bug_id'),
+            'content' => $this->input->post('content'),
+            'add_user' => $this->input->cookie('uids'),
+            'add_time' => time(),
+        );
+        $feedback = $this->bugcomment->add($post);
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+        }
+        $this->load->helper('friendlydate');
+        if ($feedback['status']) {
+            $callBack = array(
+                'status' => true,
+                'message' => array(
+                    'content'=>$this->input->post('content'),
+                    'username'=>$users[$this->input->cookie('uids')]['username'],
+                    'realname'=>$users[$this->input->cookie('uids')]['realname'],
+                    'addtime' => friendlydate(time())
+                )
+            );
+        } else {
+            $callBack = array(
+                'status' => false,
+                'message' => '提交失败'
+            );
+        }
+        echo json_encode($callBack);
+    }
+
+    public function del_comment() {
+        $id = $this->uri->segment(3, 0);
+        $this->load->model('Model_bugcomment', 'bugcomment', TRUE);
+        $flag = $this->bugcomment->del($id);
+        if ($flag) {
+            $callBack = array(
+                'status' => true,
+                'message' => '删除成功'
+            );
+        } else {
+            $callBack = array(
+                'status' => false,
+                'message' => '删除失败'
+            );
+        }
+        echo json_encode($callBack);
+    }
+
+    public function checkin() {
+        $bugId = $this->uri->segment(3, 0);
+        $level = $this->uri->segment(4, 0);
+        $this->load->model('Model_bug', 'bug', TRUE);
+        $flag = $this->bug->checkin($bugId, $level);
+        if ($flag) {
+            $callBack = array(
+                'status' => true,
+                'message' => '确认成功'
+            );
+        } else {
+            $callBack = array(
+                'status' => false,
+                'message' => '确认失败'
+            );
+        }
+        echo json_encode($callBack);
+    }
+
+    public function checkout() {
+        $this->load->model('Model_bug', 'bug', TRUE);
+        $this->load->model('Model_bugcomment', 'bugcomment', TRUE);
+        $flag = $this->bug->checkout($this->input->post('bug_id'));
+        if ($flag) {
+            $post = array(
+                'bug_id' => $this->input->post('bug_id'),
+                'content' => $this->input->post('content'),
+                'add_user' => $this->input->cookie('uids'),
+                'add_time' => time(),
+            );
+            $feedback = $this->bugcomment->add($post);
+            if ($feedback['status']) {
+                $callBack = array(
+                    'status' => true,
+                    'message' => '操作成功'
+                );
+            } else {
+                $callBack = array(
+                    'status' => false,
+                    'message' => '操作失败'
+                );
+            }
+        } else {
+            $callBack = array(
+                'status' => false,
+                'message' => '操作失败'
             );
         }
         echo json_encode($callBack);

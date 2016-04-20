@@ -15,7 +15,7 @@
       <div class="row">
         <div class="col-sm-3 col-lg-2">
           <ul class="nav nav-pills nav-stacked nav-email">
-              <li class="active"><a href="#"><i class="glyphicon glyphicon-inbox"></i> Bug列表</a></li>
+              <li class="active"><a href="/bug"><i class="glyphicon glyphicon-inbox"></i> Bug列表</a></li>
               <li><a href="#"><i class="glyphicon glyphicon-star"></i> 星标</a></li>
               <li><a href="#"><i class="glyphicon glyphicon-trash"></i> 已删除</a></li>
           </ul>
@@ -25,7 +25,6 @@
           <ul class="nav nav-pills nav-stacked nav-email mb20">
             <li><a href="#"><i class="glyphicon glyphicon-folder-open"></i> 我负责的</a></li>
             <li><a href="#"><i class="glyphicon glyphicon-folder-open"></i> 我创建的</a></li>
-            <li><a href="#"><i class="glyphicon glyphicon-folder-open"></i> 我参与的</a></li>
             <li><a href="#"><i class="glyphicon glyphicon-folder-open"></i> 已完成的</a></li>
           </ul>
         </div><!-- col-sm-3 -->
@@ -37,33 +36,28 @@
                         
                         <div class="pull-right">
                           <div class="btn-group mr10">
-                            <div class="btn-group nomargin">
-                                <button data-toggle="dropdown" class="btn btn-sm btn-white" type="button">
-                                  <i class="glyphicon glyphicon-folder-close mr5"></i> 根据状态筛选
-                                  <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu">
-                                  <li><a href="#"><i class="glyphicon glyphicon-folder-open mr5"></i> 未确认</a></li>
-                                  <li><a href="#"><i class="glyphicon glyphicon-folder-open mr5"></i> 处理中</a></li>
-                                  <li><a href="#"><i class="glyphicon glyphicon-folder-open mr5"></i> 已处理</a></li>
-                                </ul>
-                            </div>
-                            <div class="btn-group nomargin">
-                                <button data-toggle="dropdown" class="btn btn-sm btn-white" type="button">
-                                  <i class="glyphicon glyphicon-flag mr5"></i> 根据项目筛选
-                                  <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu">
-                                  <li><a href="#"><i class="glyphicon glyphicon-flag mr5"></i> Forbuyers</a></li>
-                                  <li><a href="#"><i class="glyphicon glyphicon-flag mr5"></i> 中文站-用户运营</a></li>
-                                  <li><a href="#"><i class="glyphicon glyphicon-flag mr5"></i> 中文站-营销效果</a></li>
-                                </ul>
-                            </div>
-                          </div>
-                            <div class="btn-group mr10">
-                                <button class="btn btn-sm btn-white tooltips" type="button" data-toggle="tooltip" title="Archive"><i class="glyphicon glyphicon-hdd"></i></button>
-                                <button class="btn btn-sm btn-white tooltips" type="button" data-toggle="tooltip" title="Report Spam"><i class="glyphicon glyphicon-exclamation-sign"></i></button>
-                                <button class="btn btn-sm btn-white tooltips" type="button" data-toggle="tooltip" title="Delete"><i class="glyphicon glyphicon-trash"></i></button>
+                                <div class="btn-group nomargin">
+                                    <button data-toggle="dropdown" class="btn btn-sm btn-white dropdown-toggle tooltips" type="button" title="根据状态筛选">
+                                      <i class="glyphicon glyphicon-folder-close mr5"></i> 处理状态
+                                      <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                      <li><a href="#"><i class="glyphicon glyphicon-folder-open mr5"></i> 未确认</a></li>
+                                      <li><a href="#"><i class="glyphicon glyphicon-folder-open mr5"></i> 处理中</a></li>
+                                      <li><a href="#"><i class="glyphicon glyphicon-folder-open mr5"></i> 已处理</a></li>
+                                    </ul>
+                                </div>
+                                <div class="btn-group nomargin">
+                                    <button data-toggle="dropdown" class="btn btn-sm btn-white dropdown-toggle tooltips" type="button" title="根据项目筛选">
+                                      <i class="glyphicon glyphicon-tag mr5"></i> 所属项目所属项目
+                                      <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                      <li><a href="#"><i class="glyphicon glyphicon-tag mr5"></i> Web</a></li>
+                                      <li><a href="#"><i class="glyphicon glyphicon-tag mr5"></i> Photo</a></li>
+                                      <li><a href="#"><i class="glyphicon glyphicon-tag mr5"></i> Video</a></li>
+                                    </ul>
+                                </div>
                             </div>
                         </div><!-- pull-right -->
                         
@@ -80,18 +74,24 @@
                               <tr class="unread">
                                 <td>
                                   <div class="ckbox ckbox-success">
-                                      <input type="checkbox" id="checkbox1">
-                                      <label for="checkbox1"></label>
+                                      <input type="checkbox" id="checkbox<?php echo $value['id'];?>">
+                                      <label for="checkbox<?php echo $value['id'];?>"></label>
                                   </div>
                                 </td>
                                 <td>
-                                  <a href="" class="star"><i class="glyphicon glyphicon-star"></i></a>
+                                  <a href="javascript:;" class="star"><i class="glyphicon glyphicon-star"></i></a>
                                 </td>
                                 <td width="70px;">
+                                  <?php if ($value['state'] === '-1') {?>
+                                  <span class="label label-default">反馈无效</span>
+                                  <?php } ?>
                                   <?php if ($value['state'] === '0') {?>
                                   <span class="label label-default">未确认</span>
                                   <?php } ?>
                                   <?php if ($value['state'] === '1') {?>
+                                  <span class="label label-primary">已确认</span>
+                                  <?php } ?>
+                                  <?php if ($value['state'] === '2') {?>
                                   <span class="label label-primary">处理中</span>
                                   <?php } ?>
                                   <?php if ($value['state'] === '3') {?>
@@ -154,13 +154,39 @@
 <script src="/static/js/modernizr.min.js"></script>
 <script src="/static/js/jquery.sparkline.min.js"></script>
 <script src="/static/js/toggles.min.js"></script>
-<script src="/static/js/retina.min.js"></script>
 <script src="/static/js/jquery.cookies.js"></script>
 
 <script src="/static/js/jquery.datatables.min.js"></script>
 <script src="/static/js/select2.min.js"></script>
 
 <script src="/static/js/custom.js"></script>
+<script>
+jQuery(document).ready(function(){
+  
+  "use strict"
+
+  //Check
+  jQuery('.ckbox input').click(function(){
+      var t = jQuery(this);
+      if(t.is(':checked')){
+          t.closest('tr').addClass('selected');
+      } else {
+          t.closest('tr').removeClass('selected');
+      }
+  });
+  
+  // Star
+  jQuery('.star').click(function(){
+      if(!jQuery(this).hasClass('star-checked')) {
+          jQuery(this).addClass('star-checked');
+      }
+      else
+          jQuery(this).removeClass('star-checked');
+      return false;
+  });
+
+});
+</script>
 
 </body>
 </html>
