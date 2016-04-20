@@ -9,6 +9,23 @@ class Model_bug extends CI_Model {
         parent::__construct();
     }
 
+    public function listByIssueId($id) {
+        $rows = false;
+
+        //获取总数
+        $sql = "SELECT * FROM `choc_issue_bug` WHERE `issue_id` = '".$id."'";
+        $query = $this->db->query($sql);
+        $rows['total_rows'] = $query->num_rows;
+
+        $sql = "SELECT * FROM `choc_issue_bug` WHERE `issue_id` = '".$id."' ORDER BY `id` DESC";
+        $query = $this->db->query($sql);
+        foreach ($query->result_array() as $row)
+        {
+            $rows['data'][] = $row;
+        }
+        return $rows;
+    }
+
     public function fetchOne($id) {
         $query = $this->db->get_where($this->_table, array('id' => $id), 1);
         if ($query->num_rows()) {
