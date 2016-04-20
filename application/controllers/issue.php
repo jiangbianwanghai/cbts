@@ -4,7 +4,7 @@ class issue extends CI_Controller {
 
     public function add() {
     	$data['PAGE_TITLE'] = '申请提测';
-        $aclUsers = array('71','72','69','60','73');//只允许吕云毅，彭明明，张智龙，李奎，师旭
+        $aclUsers = array('71','72','69','60','73','74','20');//只允许吕云毅，彭明明，张智龙，李奎，师旭
         if (!in_array($this->input->cookie('uids'), $aclUsers))
             exit('只有各个绩效圈的Leader才有发起任务的权限，请联系@吕云毅，@彭明明，@张智龙，@李奎，@师旭');
         $this->load->view('issue_add', $data);
