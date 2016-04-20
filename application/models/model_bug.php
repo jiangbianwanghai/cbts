@@ -36,15 +36,19 @@ class Model_bug extends CI_Model {
         }
     }
 
-    public function searchByMysql($limit = 20, $offset = 0, $userType = false, $state = false) {
+    public function searchByMysql($folder, $state, $limit = 20, $offset = 0) {
         $rows = array('total' => 0, 'data' => false);
         $this->db->select('id, level, issue_id, subject, add_user, add_time, accept_user, accept_time, state');
-        if ($userType == 1)
-            $this->db->where('add_user', $this->input->cookie('uids'));
-        if ($userType == 2)
+        if ($folder == 'to_me')
             $this->db->where('accept_user', $this->input->cookie('uids'));
-        if (is_numeric($state) && $state)
-            $this->db->where('state', $state);
+        if ($folder == 'from_me')
+            $this->db->where('add_user', $this->input->cookie('uids'));
+        if ($state == 'uncheck')
+            $this->db->where('state', '0');
+        if ($state == 'doing')
+            $this->db->where('state', '2');
+        if ($state == 'over')
+            $this->db->where('state', '3');
         $db = clone($this->db);
         $rows['total'] = $this->db->count_all_results($this->_table);
         $this->db = $db;

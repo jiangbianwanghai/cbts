@@ -23,9 +23,8 @@
           
           <h5 class="subtitle">快捷方式</h5>
           <ul class="nav nav-pills nav-stacked nav-email mb20">
-            <li><a href="#"><i class="glyphicon glyphicon-folder-open"></i> 我负责的</a></li>
-            <li><a href="#"><i class="glyphicon glyphicon-folder-open"></i> 我创建的</a></li>
-            <li><a href="#"><i class="glyphicon glyphicon-folder-open"></i> 已完成的</a></li>
+            <li><a href="/bug/index/to_me"><i class="glyphicon glyphicon-folder-open"></i> 我负责的</a></li>
+            <li><a href="/bug/index/from_me"><i class="glyphicon glyphicon-folder-open"></i> 我创建的</a></li>
           </ul>
         </div><!-- col-sm-3 -->
             
@@ -38,13 +37,16 @@
                           <div class="btn-group mr10">
                                 <div class="btn-group nomargin">
                                     <button data-toggle="dropdown" class="btn btn-sm btn-white dropdown-toggle tooltips" type="button" title="根据状态筛选">
-                                      <i class="glyphicon glyphicon-folder-close mr5"></i> 处理状态
+                                      <i class="glyphicon glyphicon-folder-close mr5"></i> <?php if ($this->uri->segment(4, 'all') == 'all') { echo '处理状态'; }?><?php if ($this->uri->segment(4, 'all') == 'uncheck') { echo '未处理'; }?><?php if ($this->uri->segment(4, 'all') == 'doing') { echo '处理中'; }?><?php if ($this->uri->segment(4, 'all') == 'over') { echo '已处理'; }?>
                                       <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu">
-                                      <li><a href="#"><i class="glyphicon glyphicon-folder-open mr5"></i> 未确认</a></li>
-                                      <li><a href="#"><i class="glyphicon glyphicon-folder-open mr5"></i> 处理中</a></li>
-                                      <li><a href="#"><i class="glyphicon glyphicon-folder-open mr5"></i> 已处理</a></li>
+                                      <?php if ($this->uri->segment(4, 'all') != 'all') {?>
+                                      <li><a href="/bug/index/<?php echo $folder;?>/all"><i class="glyphicon glyphicon-folder-open mr5"></i> 查看全部状态</a></li>
+                                      <?php } ?>
+                                      <li><a href="/bug/index/<?php echo $folder;?>/uncheck"><i class="glyphicon glyphicon-folder-open mr5"></i> 未确认</a></li>
+                                      <li><a href="/bug/index/<?php echo $folder;?>/doing"><i class="glyphicon glyphicon-folder-open mr5"></i> 处理中</a></li>
+                                      <li><a href="/bug/index/<?php echo $folder;?>/over"><i class="glyphicon glyphicon-folder-open mr5"></i> 已处理</a></li>
                                     </ul>
                                 </div>
                                 <div class="btn-group nomargin">
@@ -62,7 +64,8 @@
                         </div><!-- pull-right -->
                         
                         <h5 class="subtitle mb5">Bug列表</h5>
-                        <p class="text-muted">查询结果：<?php echo ($offset+1).' - '.($offset+$per_page).' of '.$total;?></p>
+                        <?php if (($total-$offset) < $per_page) { $per_page_end = $total-$offset; } else { $per_page_end = $per_page; }?>
+                        <p class="text-muted">查询结果：<?php echo ($offset+1).' - '.($per_page_end+$offset).' of '.$total;?></p>
                         
                         <div class="table-responsive">
                           <table class="table table-email">
