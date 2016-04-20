@@ -22,11 +22,11 @@
   <![endif]-->
 </head>
 
-<body class="leftpanel-collapsed stickyheader">
+<body class="leftpanel-collapsed">
 
 <section>
 
-  <div class="leftpanel sticky-leftpanel">
+  <div class="leftpanel">
 
     <div class="logopanel" align="center">
         <strong style="font-family: Arial, Helvetica; ">CBTS-巧克力任务跟踪系统</strong> <sup><a target="_blank" href="http://192.168.8.91/markdown/" title="点击查看版本更新日志"><span class="badge badge-info">2.2.0</span></a></sup>
