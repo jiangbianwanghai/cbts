@@ -15,16 +15,16 @@
       <div class="row">
         <div class="col-sm-3 col-lg-2">
           <ul class="nav nav-pills nav-stacked nav-email">
-              <li class="active"><a href="/bug"><i class="glyphicon glyphicon-inbox"></i> Bug列表</a></li>
-              <li><a href="#"><i class="glyphicon glyphicon-star"></i> 星标</a></li>
-              <li><a href="#"><i class="glyphicon glyphicon-trash"></i> 已删除</a></li>
+              <li<?php if ($this->uri->segment(2, 'index') == 'index' && $this->uri->segment(3, 'index') == 'index') {?> class="active"<?php } ?>><a href="/bug"><i class="glyphicon glyphicon-inbox"></i> Bug列表</a></li>
+              <li<?php if ($this->uri->segment(2, '') == 'star') {?> class="active"<?php } ?>><a href="/bug/star"><i class="glyphicon glyphicon-star"></i> 星标</a></li>
+              <li<?php if ($this->uri->segment(2, '') == 'trash') {?> class="active"<?php } ?>><a href="/bug/trash"><i class="glyphicon glyphicon-trash"></i> 已删除</a></li>
           </ul>
           <div class="mb30"></div>
           
           <h5 class="subtitle">快捷方式</h5>
           <ul class="nav nav-pills nav-stacked nav-email mb20">
-            <li><a href="/bug/index/to_me"><i class="glyphicon glyphicon-folder-open"></i> 我负责的</a></li>
-            <li><a href="/bug/index/from_me"><i class="glyphicon glyphicon-folder-open"></i> 我创建的</a></li>
+            <li<?php if ($this->uri->segment(3, '') == 'to_me') {?> class="active"<?php } ?>><a href="/bug/index/to_me"><i class="glyphicon glyphicon-folder-open"></i> 我负责的</a></li>
+            <li<?php if ($this->uri->segment(3, '') == 'from_me') {?> class="active"<?php } ?>><a href="/bug/index/from_me"><i class="glyphicon glyphicon-folder-open"></i> 我创建的</a></li>
           </ul>
         </div><!-- col-sm-3 -->
             
