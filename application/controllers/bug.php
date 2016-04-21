@@ -321,6 +321,43 @@ class bug extends CI_Controller {
         echo json_encode($callBack);
     }
 
+    public function star_ajax() {
+        $bugId = $this->uri->segment(3, 0);
+        $this->load->model('Model_bug', 'bug', TRUE);
+        $data = array('add_user' => $this->input->cookie('uids'), 'add_time' => time(), 'star_id' => $bugId, 'star_type' => 3);
+        $flag = $this->bug->starAdd($data);
+        if ($flag) {
+            $callBack = array(
+                    'status' => true,
+                    'message' => '标记成功'
+                );
+        } else {
+            $callBack = array(
+                'status' => false,
+                'message' => '标记失败'
+            );
+        }
+        echo json_encode($callBack);
+    }
+
+    public function star_del() {
+        $bugId = $this->uri->segment(3, 0);
+        $this->load->model('Model_bug', 'bug', TRUE);
+        $flag = $this->bug->starDel($bugId);
+        if ($flag) {
+            $callBack = array(
+                    'status' => true,
+                    'message' => '取消标记成功'
+                );
+        } else {
+            $callBack = array(
+                'status' => false,
+                'message' => '取消标记失败'
+            );
+        }
+        echo json_encode($callBack);
+    }
+
     private function rtx($toList,$url,$subject)
     {
         $subject = str_replace(array('#', '&', ' '), '', $subject);

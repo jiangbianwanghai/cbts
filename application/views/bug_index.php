@@ -87,7 +87,7 @@
                                   </div>
                                 </td>
                                 <td>
-                                  <a href="javascript:;" class="star<?php if ($this->uri->segment(2, '') == 'star') { echo ' star-checked'; }?>"><i class="glyphicon glyphicon-star"></i></a>
+                                  <a href="javascript:;" bugid="<?php echo $value['id'];?>" class="star<?php if ($this->uri->segment(2, '') == 'star') { echo ' star-checked'; }?>"><i class="glyphicon glyphicon-star"></i></a>
                                 </td>
                                 <td width="70px;">
                                   <?php if ($value['status'] == 1) {?>
@@ -190,12 +190,40 @@ jQuery(document).ready(function(){
   });
   
   // Star
-  jQuery('.star').click(function(){
+  $('.star').click(function(){
+      //id = $(this).attr("bugid");
+      //alert(ids);
       if(!jQuery(this).hasClass('star-checked')) {
           jQuery(this).addClass('star-checked');
+          var id = jQuery(this).attr('bugid');
+          $.ajax({
+            type: "POST",
+            dataType: "JSON",
+            url: "/bug/star_ajax/"+id,
+            success: function(data){
+              if (data.status) {
+                alert(data.message);
+              } else {
+                alert(data.message);
+              } 
+            }
+          });
+      } else {
+        jQuery(this).removeClass('star-checked');
+        var id = jQuery(this).attr('bugid');
+        $.ajax({
+          type: "POST",
+          dataType: "JSON",
+          url: "/bug/star_del/"+id,
+          success: function(data){
+            if (data.status) {
+              alert(data.message);
+            } else {
+              alert(data.message);
+            } 
+          }
+        });
       }
-      else
-          jQuery(this).removeClass('star-checked');
       return false;
   });
 
