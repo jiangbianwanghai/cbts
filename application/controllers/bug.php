@@ -2,16 +2,20 @@
 
 class bug extends CI_Controller {
 
+    /**
+     * 默认列表控制器
+     */
     public function index() {
-        $data['PAGE_TITLE'] = '提交BUG';
+        $data['PAGE_TITLE'] = 'BUG列表';
         $folder = $data['folder'] = $this->uri->segment(3, 'all');
-        $state = $this->uri->segment(4, 'all');
-        $offset = $this->uri->segment(5, 0);
+        $state = $data['state'] = $this->uri->segment(4, 'all');
+        $status = $data['status'] = $this->uri->segment(5, 'all');
+        $offset = $this->uri->segment(6, 0);
         $this->load->model('Model_bug', 'bug', TRUE);
         $this->config->load('extension', TRUE);
         $data['level'] = $this->config->item('level', 'extension');
         $config = $this->config->item('pages', 'extension');
-        $rows = $this->bug->searchByMysql($folder, $state, $config['per_page'], $offset);
+        $rows = $this->bug->searchByMysql($folder, $state, $config['per_page'], $offset, $status);
         $data['rows'] = $rows['data'];
         $data['total'] = $rows['total'];
         if (file_exists('./cache/users.conf.php')) {
@@ -23,6 +27,68 @@ class bug extends CI_Controller {
         $config['total_rows'] = $rows['total'];
         $config['cur_page'] = $offset;
         $config['base_url'] = '/bug/index/'.$folder.'/'.$state;
+        $this->pagination->initialize($config);
+        $data['pages'] = $this->pagination->create_links();
+        $data['offset'] = $offset;
+        $data['per_page'] = $config['per_page'];
+        $this->load->view('bug_index', $data);
+    }
+
+    /**
+     * 垃圾箱列表控制器
+     */
+    public function trash() {
+        $data['PAGE_TITLE'] = '垃圾箱';
+        $folder = $data['folder'] = $this->uri->segment(3, 'all');
+        $state = $data['state'] = $this->uri->segment(4, 'all');
+        $offset = $this->uri->segment(5, 0);
+        $this->load->model('Model_bug', 'bug', TRUE);
+        $this->config->load('extension', TRUE);
+        $data['level'] = $this->config->item('level', 'extension');
+        $config = $this->config->item('pages', 'extension');
+        $rows = $this->bug->searchByMysql($folder, $state, $config['per_page'], $offset, 'del');
+        $data['rows'] = $rows['data'];
+        $data['total'] = $rows['total'];
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+            $data['users'] = $users;
+        }
+        $this->load->helper('friendlydate');
+        $this->load->library('pagination');
+        $config['total_rows'] = $rows['total'];
+        $config['cur_page'] = $offset;
+        $config['base_url'] = '/bug/index/'.$folder.'/'.$state;
+        $this->pagination->initialize($config);
+        $data['pages'] = $this->pagination->create_links();
+        $data['offset'] = $offset;
+        $data['per_page'] = $config['per_page'];
+        $this->load->view('bug_index', $data);
+    }
+
+    /**
+     * 星标列表控制器
+     */
+    public function star() {
+        $data['PAGE_TITLE'] = '星标记录';
+        $this->load->model('Model_bug', 'bug', TRUE);
+        $folder = $data['folder'] = $this->uri->segment(3, 'all');
+        $state = $this->uri->segment(4, 'all');
+        $offset = $this->uri->segment(5, 0);
+        $this->config->load('extension', TRUE);
+        $data['level'] = $this->config->item('level', 'extension');
+        $config = $this->config->item('pages', 'extension');
+        $rows = $this->bug->starList();
+        $data['rows'] = $rows['data'];
+        $data['total'] = $rows['total'];
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+            $data['users'] = $users;
+        }
+        $this->load->helper('friendlydate');
+        $this->load->library('pagination');
+        $config['total_rows'] = $rows['total'];
+        $config['cur_page'] = $offset;
+        $config['base_url'] = '/bug/star/'.$state;
         $this->pagination->initialize($config);
         $data['pages'] = $this->pagination->create_links();
         $data['offset'] = $offset;
@@ -233,6 +299,25 @@ class bug extends CI_Controller {
                 'message' => '操作失败'
             );
         }
+        echo json_encode($callBack);
+    }
+
+    public function del() {
+        $bugId = $this->uri->segment(3, 0);
+        $this->load->model('Model_bug', 'bug', TRUE);
+        $flag = $this->bug->del($bugId);
+        if ($flag) {
+            $callBack = array(
+                    'status' => true,
+                    'message' => '删除成功'
+                );
+        } else {
+            $callBack = array(
+                'status' => false,
+                'message' => '删除失败'
+            );
+        }
+
         echo json_encode($callBack);
     }
 
