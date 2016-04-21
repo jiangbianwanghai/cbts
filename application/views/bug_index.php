@@ -147,7 +147,7 @@
     </div><!-- contentpanel -->
     
   </div><!-- mainpanel -->
-  
+  <?php include('common_users.php');?>
 </section>
 
 <div class="modal fade bs-example-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
