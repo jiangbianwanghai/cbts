@@ -9,6 +9,24 @@ class Model_bug extends CI_Model {
         parent::__construct();
     }
 
+    /**
+     * 添加数据
+     */
+    public function add($data) {
+        $feedback = array(
+            'status' => false,
+            'message' => ''
+        );
+        $res = $this->db->insert('issue_bug', $data);
+        if ($res) {
+            $feedback['status'] = true;
+            $feedback['message'] = 'success';
+        } else {
+            $feedback['message'] = $this->db->error();
+        }
+        return $feedback;
+    }
+
     public function listByIssueId($id) {
         $rows = false;
 

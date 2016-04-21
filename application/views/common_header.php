@@ -72,6 +72,26 @@
 
       <a class="menutoggle"><i class="fa fa-bars"></i></a>
 
+      <div class="topnav">
+        <ul class="nav nav-horizontal">
+          <li class="active"><a href="/"><i class="fa fa-home"></i> <span>控制台</span></a></li>
+          <li class="nav-parent"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-list"></i> 项目 <span class="caret"></span></a>
+            <ul class="dropdown-menu children">
+              <?php
+              if (file_exists('./cache/project.conf.php')) {
+                  require './cache/project.conf.php';
+                  foreach ($project as $key => $value) {
+                    echo "<li><a href=\"/?projectId=".$value['id']."\">".$value['project_name']."</a></li>";
+                  }
+                  echo "<li class=\"divider\"></li>";
+              }
+              ?>
+              <li><a href="javascript:;">添加项目</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div><!-- topnav -->
+
       <div class="header-right">
         <ul class="headermenu">
           <li>

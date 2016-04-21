@@ -5,6 +5,13 @@ class admin extends CI_Controller {
     public function index()
     {
         $data['PAGE_TITLE'] = '我的控制台';
+        $this->load->library('strendecode');
+        $this->load->view('admin_dashboard', $data);
+    }
+
+    public function chart()
+    {
+        $data['PAGE_TITLE'] = '我的控制台';
 
         $leftTime = $data['leftTime'] = strtotime(date("Y-m-d", time()));
         $rightTime = $data['rightTime'] = strtotime(date("Y-m-d", strtotime("+1 day")));
@@ -27,23 +34,16 @@ class admin extends CI_Controller {
             redirect('/admin/signin', 'location');
         } else {
             $stacked_str = $stacked_test_str = $stackedMyIssueStr = $stackedMyTestStr = '';
-
             $data['stacked_str'] = '';
             $data['stacked_test_str'] = '';
             $data['stackedMyIssueStr'] = '';
             $data['stackedMyTestStr'] = '';
             $data['users'] = '';
-
             if (file_exists('./cache/users.conf.php')) {
                 require './cache/users.conf.php';
                 $data['users'] = $users;
             }
-
             $data['role'] = $users[$this->input->cookie('uids')]['role'];
-
-            
-
-
             $this->load->view('admin_home', $data);
         }
     }
@@ -136,6 +136,13 @@ class admin extends CI_Controller {
     {
         $this->load->model('Model_repos', 'repos', TRUE);
         $this->repos->cacheRefresh();
+        echo '1';
+    }
+
+    public function refresh_project()
+    {
+        $this->load->model('Model_project', 'project', TRUE);
+        $this->project->cacheRefresh();
         echo '1';
     }
 
