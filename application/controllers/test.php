@@ -7,7 +7,7 @@ class test extends CI_Controller {
      */
     public function add() {
     	$data['PAGE_TITLE'] = '提交代码';
-        $aclUsers = array('71','72','69','60','73','74','20', '1');//只允许吕云毅，彭明明，张智龙，李奎，师旭
+        $aclUsers = array('71','72','69','60','73','74','20', '1', '75');//只允许吕云毅，彭明明，张智龙，李奎，师旭
         if (!in_array($this->input->cookie('uids'), $aclUsers))
             exit('只有各个绩效圈的Leader才有提交测试的权限，请联系@吕云毅，@彭明明，@张智龙，@李奎，@师旭');
         $id = $this->uri->segment(3, 0);

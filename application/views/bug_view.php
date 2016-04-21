@@ -16,8 +16,8 @@
         <div class="col-sm-3 col-lg-2">
           <ul class="nav nav-pills nav-stacked nav-email">
               <li class="active"><a href="/bug"><i class="glyphicon glyphicon-inbox"></i> Bug列表</a></li>
-              <li><a href="#"><i class="glyphicon glyphicon-star"></i> 星标</a></li>
-              <li><a href="#"><i class="glyphicon glyphicon-trash"></i> 已删除</a></li>
+              <li><a href="/bug/star"><i class="glyphicon glyphicon-star"></i> 星标</a></li>
+              <li><a href="/bug/trash"><i class="glyphicon glyphicon-trash"></i> 已删除</a></li>
           </ul>
           <div class="mb30"></div>
           
@@ -36,14 +36,14 @@
                             <?php if ($row['state'] == '0' && ($this->input->cookie('uids') == $row['accept_user'])) {?>
                             <div class="btn-group mr10">
                                 <button class="btn btn-sm btn-primary tooltips" type="button" title="确认BUG，你可以调整严重级别" id="checkin" ids="<?php echo $row['id'];?>" data-toggle="modal" data-target="#myModal">确认BUG</button>
-                                <button class="btn btn-sm btn-primary tooltips" type="button" title="如果BUG反馈无效，请说明理由" id="checkout" data-toggle="modal" data-target="#myModal2">反馈无效</button>
+                                <button class="btn btn-sm btn-primary tooltips" type="button" title="如果BUG反馈无效，请说明理由" id="checkout" data-toggle="modal" data-target="#myModal2">无效反馈</button>
                             </div>
                             <?php }?>
 
                             <div class="btn-group mr10">
-                                <button class="btn btn-sm btn-white tooltips" type="button" data-toggle="tooltip" title="返回列表"><i class="fa fa-reply"></i></button>
-                                <button class="btn btn-sm btn-white tooltips" type="button" data-toggle="tooltip" title="额外信息"><i class="glyphicon glyphicon-exclamation-sign"></i></button>
-                                <button class="btn btn-sm btn-white tooltips" type="button" data-toggle="tooltip" title="删除"><i class="glyphicon glyphicon-trash"></i></button>
+                                <button class="btn btn-sm btn-white tooltips" id="back" type="button" data-toggle="tooltip" title="回到上一页面"><i class="fa fa-reply"></i></button>
+                                <button class="btn btn-sm btn-white tooltips" id="info" type="button" data-toggle="tooltip" title="额外信息"><i class="glyphicon glyphicon-exclamation-sign"></i></button>
+                                <?php if ($row['status'] != '-1' && ($this->input->cookie('uids') == $row['add_user'] || $this->input->cookie('uids') == $row['accept_user'])) {?><button class="btn btn-sm btn-white tooltips" id="del-bug" type="button" data-toggle="tooltip" ids="<?php echo $row['id'];?>" title="删除"><i class="glyphicon glyphicon-trash"></i></button><?php } ?>
                             </div>
                         </div><!-- pull-right -->
                         
@@ -61,7 +61,29 @@
                               <span class="media-meta pull-right"><?php echo friendlydate($row['add_time']);?></span>
                               <h4 class="text-primary"><?php echo $users[$row['add_user']]['realname'];?></h4>
                               <small class="text-muted">BUG反馈人</small>
-                              <h4 class="email-subject"><?php if ($row['level']) {?><?php echo "<strong style='color:#ff0000;' title='".$level[$row['level']]['alt']."'>".$level[$row['level']]['name']."</strong> ";?><?php } ?><?php echo $row['subject'];?></h4>
+                              <h4 class="email-subject">
+                                <?php if ($row['status'] == 1) {?>
+                                <?php if ($row['state'] === '-1') {?>
+                                <span class="label label-default">无效反馈</span>
+                                <?php } ?>
+                                <?php if ($row['state'] === '0') {?>
+                                <span class="label label-default">未确认</span>
+                                <?php } ?>
+                                <?php if ($row['state'] === '1') {?>
+                                <span class="label label-primary">已确认</span>
+                                <?php } ?>
+                                <?php if ($row['state'] === '2') {?>
+                                <span class="label label-warning">处理中</span>
+                                <?php } ?>
+                                <?php if ($row['state'] === '3') {?>
+                                <span class="label label-success">已处理</span>
+                                <?php } ?>
+                                <?php } elseif ($row['status'] == 0) {?>
+                                <span class="label label-default">已关闭</span>
+                                <?php } elseif ($row['status'] == -1) {?>
+                                <span class="label label-default">已删除</span>
+                                <?php } ?>
+                              <?php if ($row['level']) {?><?php echo "<strong style='color:#ff0000;' title='".$level[$row['level']]['alt']."'>".$level[$row['level']]['name']."</strong> ";?><?php } ?><?php echo $row['subject'];?></h4>
                               <p><?php echo $row['content'];?></p>
                             </div>
                           </div>
@@ -274,6 +296,34 @@ $(function(){
         } 
       }
     });
+  });
+
+  //返回上一页面
+  $("#back").click(function(){
+    window.history.back();
+  });
+
+  $("#info").click(function(){
+    alert('功能开发中...');
+  });
+
+  $("#del-bug").click(function(){
+    var c = confirm("确认要删除吗？");
+    if(c) {
+      id = $(this).attr("ids");
+      $.ajax({
+        type: "POST",
+        dataType: "JSON",
+        url: "/bug/del/"+id,
+        success: function(data){
+          if (data.status) {
+            location.href = '/bug/view/'+id;
+          } else {
+            alert('fail');
+          } 
+        }
+      });
+    }
   });
 
   //调整严重级别

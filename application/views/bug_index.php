@@ -15,7 +15,7 @@
       <div class="row">
         <div class="col-sm-3 col-lg-2">
           <ul class="nav nav-pills nav-stacked nav-email">
-              <li<?php if ($this->uri->segment(2, 'index') == 'index' && $this->uri->segment(3, 'index') == 'index') {?> class="active"<?php } ?>><a href="/bug"><i class="glyphicon glyphicon-inbox"></i> Bug列表</a></li>
+              <li<?php if ($this->uri->segment(1, 'index') == 'bug' && $this->uri->segment(2, 'index') == 'index' && $this->uri->segment(3, 'all') == 'all') {?> class="active"<?php } ?>><a href="/bug"><i class="glyphicon glyphicon-inbox"></i> Bug列表</a></li>
               <li<?php if ($this->uri->segment(2, '') == 'star') {?> class="active"<?php } ?>><a href="/bug/star"><i class="glyphicon glyphicon-star"></i> 星标</a></li>
               <li<?php if ($this->uri->segment(2, '') == 'trash') {?> class="active"<?php } ?>><a href="/bug/trash"><i class="glyphicon glyphicon-trash"></i> 已删除</a></li>
           </ul>
@@ -32,37 +32,42 @@
                 
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        
+                        <?php if ($this->uri->segment(2, 'index') == 'index') {?>
                         <div class="pull-right">
                           <div class="btn-group mr10">
                                 <div class="btn-group nomargin">
-                                    <button data-toggle="dropdown" class="btn btn-sm btn-white dropdown-toggle tooltips" type="button" title="根据状态筛选">
-                                      <i class="glyphicon glyphicon-folder-close mr5"></i> <?php if ($this->uri->segment(4, 'all') == 'all') { echo '处理状态'; }?><?php if ($this->uri->segment(4, 'all') == 'uncheck') { echo '未处理'; }?><?php if ($this->uri->segment(4, 'all') == 'doing') { echo '处理中'; }?><?php if ($this->uri->segment(4, 'all') == 'over') { echo '已处理'; }?>
+                                    <button data-toggle="dropdown" class="btn btn-sm btn-white dropdown-toggle tooltips" type="button" title="根据处理状态筛选">
+                                      <i class="glyphicon glyphicon-folder-close mr5"></i> <?php if ($state == 'all') { echo '处理状态筛选'; }?><?php if ($state == 'uncheck') { echo '未处理'; }?><?php if ($state == 'checkin') { echo '已确认'; }?><?php if ($state == 'doing') { echo '处理中'; }?><?php if ($state == 'over') { echo '已处理'; }?><?php if ($state == 'invalid') { echo '无效反馈'; }?>
                                       <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu">
-                                      <?php if ($this->uri->segment(4, 'all') != 'all') {?>
+                                      <?php if ($state != 'all') {?>
                                       <li><a href="/bug/index/<?php echo $folder;?>/all"><i class="glyphicon glyphicon-folder-open mr5"></i> 查看全部状态</a></li>
                                       <?php } ?>
                                       <li><a href="/bug/index/<?php echo $folder;?>/uncheck"><i class="glyphicon glyphicon-folder-open mr5"></i> 未确认</a></li>
+                                      <li><a href="/bug/index/<?php echo $folder;?>/checkin"><i class="glyphicon glyphicon-folder-open mr5"></i> 已确认</a></li>
                                       <li><a href="/bug/index/<?php echo $folder;?>/doing"><i class="glyphicon glyphicon-folder-open mr5"></i> 处理中</a></li>
                                       <li><a href="/bug/index/<?php echo $folder;?>/over"><i class="glyphicon glyphicon-folder-open mr5"></i> 已处理</a></li>
+                                      <li><a href="/bug/index/<?php echo $folder;?>/invalid"><i class="glyphicon glyphicon-folder-open mr5"></i> 无效反馈</a></li>
                                     </ul>
                                 </div>
                                 <div class="btn-group nomargin">
-                                    <button data-toggle="dropdown" class="btn btn-sm btn-white dropdown-toggle tooltips" type="button" title="根据项目筛选">
-                                      <i class="glyphicon glyphicon-tag mr5"></i> 所属项目所属项目
+                                    <button data-toggle="dropdown" class="btn btn-sm btn-white dropdown-toggle tooltips" type="button" title="根据信息状态筛选">
+                                      <i class="glyphicon glyphicon-tag mr5"></i> <?php if ($status == 'all') { echo '信息状态筛选'; }?><?php if ($status == 'normal') { echo '正常'; }?><?php if ($status == 'close') { echo '关闭'; }?><?php if ($status == 'del') { echo '已删除'; }?>
                                       <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu">
-                                      <li><a href="#"><i class="glyphicon glyphicon-tag mr5"></i> Web</a></li>
-                                      <li><a href="#"><i class="glyphicon glyphicon-tag mr5"></i> Photo</a></li>
-                                      <li><a href="#"><i class="glyphicon glyphicon-tag mr5"></i> Video</a></li>
+                                      <?php if ($status != 'all') {?>
+                                      <li><a href="/bug/index/<?php echo $folder;?>/<?php echo $state;?>"><i class="glyphicon glyphicon-folder-open mr5"></i> 查看全部状态</a></li>
+                                      <?php } ?>
+                                      <li><a href="/bug/index/<?php echo $folder;?>/<?php echo $state;?>/normal"><i class="glyphicon glyphicon-tag mr5"></i> 正常</a></li>
+                                      <li><a href="/bug/index/<?php echo $folder;?>/<?php echo $state;?>/close"><i class="glyphicon glyphicon-tag mr5"></i> 关闭</a></li>
+                                      <li><a href="/bug/index/<?php echo $folder;?>/<?php echo $state;?>/del"><i class="glyphicon glyphicon-tag mr5"></i> 已删除</a></li>
                                     </ul>
                                 </div>
                             </div>
                         </div><!-- pull-right -->
-                        
+                        <?php } ?>
                         <h5 class="subtitle mb5">Bug列表</h5>
                         <?php if (($total-$offset) < $per_page) { $per_page_end = $total-$offset; } else { $per_page_end = $per_page; }?>
                         <p class="text-muted">查询结果：<?php echo ($offset+1).' - '.($per_page_end+$offset).' of '.$total;?></p>
@@ -82,11 +87,12 @@
                                   </div>
                                 </td>
                                 <td>
-                                  <a href="javascript:;" class="star"><i class="glyphicon glyphicon-star"></i></a>
+                                  <a href="javascript:;" class="star<?php if ($this->uri->segment(2, '') == 'star') { echo ' star-checked'; }?>"><i class="glyphicon glyphicon-star"></i></a>
                                 </td>
                                 <td width="70px;">
+                                  <?php if ($value['status'] == 1) {?>
                                   <?php if ($value['state'] === '-1') {?>
-                                  <span class="label label-default">反馈无效</span>
+                                  <span class="label label-default">无效反馈</span>
                                   <?php } ?>
                                   <?php if ($value['state'] === '0') {?>
                                   <span class="label label-default">未确认</span>
@@ -95,10 +101,15 @@
                                   <span class="label label-primary">已确认</span>
                                   <?php } ?>
                                   <?php if ($value['state'] === '2') {?>
-                                  <span class="label label-primary">处理中</span>
+                                  <span class="label label-warning">处理中</span>
                                   <?php } ?>
                                   <?php if ($value['state'] === '3') {?>
                                   <span class="label label-success">已处理</span>
+                                  <?php } ?>
+                                  <?php } elseif ($value['status'] == 0) {?>
+                                  <span class="label label-default">已关闭</span>
+                                  <?php } elseif ($value['status'] == -1) {?>
+                                  <span class="label label-default">已删除</span>
                                   <?php } ?>
                                 </td>
                                 <td>
