@@ -26,7 +26,7 @@ class bug extends CI_Controller {
         $this->load->library('pagination');
         $config['total_rows'] = $rows['total'];
         $config['cur_page'] = $offset;
-        $config['base_url'] = '/bug/index/'.$folder.'/'.$state;
+        $config['base_url'] = '/bug/index/'.$folder.'/'.$state.'/'.$status;
         $this->pagination->initialize($config);
         $data['pages'] = $this->pagination->create_links();
         $data['offset'] = $offset;
