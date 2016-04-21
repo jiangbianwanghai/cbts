@@ -115,4 +115,12 @@ class Model_bug extends CI_Model {
     public function del($id) {
         return $this->db->update($this->_table, array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'status' => '-1'), array('id' => $id));
     }
+
+    public function starAdd($data) {
+        return $this->db->insert('star', $data);
+    }
+
+    public function starDel($id) {
+        return $this->db->delete('star', array('star_id' => $id));
+    }
 }
