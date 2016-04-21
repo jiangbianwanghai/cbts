@@ -232,7 +232,7 @@ $(function(){
       dataType: "JSON",
       success: function(data){
         if (data.status) {
-          $("#box").html('<div class="media"><div class="pull-left"><div class="face"><img alt="" src="/static/avatar/'+data.message.username+'.jpg" align="absmiddle" title="'+data.message.realname+'"></div></div><div class="media-body"><span class="media-meta pull-right">'+data.message.addtime+'</span><h4 class="text-primary">'+data.message.realname+'</h4><small class="text-muted">路人甲</small><p>'+data.message.content+'</p></div></div>');
+          $("#box").append('<div class="media"><div class="pull-left"><div class="face"><img alt="" src="/static/avatar/'+data.message.username+'.jpg" align="absmiddle" title="'+data.message.realname+'"></div></div><div class="media-body"><span class="media-meta pull-right">'+data.message.addtime+'</span><h4 class="text-primary">'+data.message.realname+'</h4><small class="text-muted">路人甲</small><p>'+data.message.content+'</p></div></div>');
           editor.setValue('');
         } else {
           alert('fail');
