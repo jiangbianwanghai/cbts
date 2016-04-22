@@ -103,7 +103,7 @@
                               <h4 class="text-primary"><?php echo $users[$value['add_user']]['realname'];?></h4>
                               <small class="text-muted">路人甲</small>
                               <p><?php echo $value['content'];?></p>
-                            </div>
+							  
                           </div>
                           <?php
                               }
