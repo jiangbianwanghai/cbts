@@ -313,7 +313,7 @@ $(function(){
     if(c) {
       id = $(this).attr("ids");
       $.ajax({
-        type: "POST",
+        type: "GET",
         dataType: "JSON",
         url: "/bug/del/"+id,
         success: function(data){

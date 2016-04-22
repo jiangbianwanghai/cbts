@@ -364,6 +364,34 @@ jQuery(document).ready(function() {
       $('.text-primary').removeClass('text-primary').addClass('text-orange');
    }
 
+   $(".ajax-project").click(function(){
+      project_name = $("#project_name").val();
+      project_discription = $("#project_discription").val();
+      if (!project_name) {
+         alert('请填写绩效圈名称');
+         $("#project_name").focus();
+         return false;
+      }
+      if (!project_discription) {
+         alert('请填写绩效圈简介');
+         $("#project_discription").focus();
+         return false;
+      }
+      $.ajax({
+        type: "POST",
+        dataType: "JSON",
+        url: "/project/add_ajax",
+        data: "project_name="+project_name+"&project_discription="+project_discription,
+        success: function(data){
+          if (data.status) {
+            location.href = '/';
+          } else {
+            alert('fail');
+          } 
+        }
+      });
+   });
+
 });
 
 
