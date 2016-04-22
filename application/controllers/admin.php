@@ -175,7 +175,7 @@ class admin extends CI_Controller {
             $config['file_name'] = 'IMG_'.time();
             $config['overwrite'] = TRUE;
             $config["allowed_types"] = 'jpg|jpeg|png|gif';
-            $config["max_size"] = 1024;
+            $config["max_size"] = 2048;
             $this->load->library('upload', $config);
 
             if(!$this->upload->do_upload('upload_file')) {               
