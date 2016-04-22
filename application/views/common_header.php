@@ -75,7 +75,7 @@
       <div class="topnav">
         <ul class="nav nav-horizontal">
           <li class="active"><a href="/"><i class="fa fa-home"></i> <span>控制台</span></a></li>
-          <li class="nav-parent"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-list"></i> 项目 <span class="caret"></span></a>
+          <li class="nav-parent"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-list"></i> 绩效圈 <span class="caret"></span></a>
             <ul class="dropdown-menu children">
               <?php
               if (file_exists('./cache/project.conf.php')) {
@@ -86,7 +86,7 @@
                   echo "<li class=\"divider\"></li>";
               }
               ?>
-              <li><a href="javascript:;" data-toggle="modal" data-target="#myModal-project">添加项目</a></li>
+              <li><a href="javascript:;" data-toggle="modal" data-target="#myModal-project">添加绩效圈</a></li>
             </ul>
           </li>
         </ul>
@@ -123,20 +123,20 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title" id="myModalLabel">创建项目</h4>
+            <h4 class="modal-title" id="myModalLabel">创建绩效圈</h4>
           </div>
           <div class="modal-body">
             <div class="form-group">
-              <label class="col-sm-2 control-label">项目名称 <span class="asterisk">*</span></label>
-              <div class="col-sm-10">
-                <input type="url" name="url" class="form-control" />
+              <label class="col-sm-3 control-label">绩效圈名称 <span class="asterisk">*</span></label>
+              <div class="col-sm-9">
+                <input type="text" name="project_name" id="project_name" class="form-control" required />
               </div>
             </div>
             
             <div class="form-group">
-              <label class="col-sm-2 control-label">项目简介 <span class="asterisk">*</span></label>
-              <div class="col-sm-10">
-                <textarea rows="5" class="form-control" required></textarea>
+              <label class="col-sm-3 control-label">绩效圈简介 <span class="asterisk">*</span></label>
+              <div class="col-sm-9">
+                <textarea rows="5" class="form-control" id="project_discription" name="project_discription" required></textarea>
               </div>
             </div>
           </div>
