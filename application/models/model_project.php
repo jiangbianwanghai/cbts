@@ -9,6 +9,25 @@ class Model_project extends CI_Model {
         parent::__construct();
     }
 
+    public function add($data) {
+        $feedback = array(
+            'status' => false,
+            'message' => ''
+        );
+        $res = $this->db->insert($this->_table, $data);
+        if ($res) {
+            $id = $this->db->insert_id();
+            $salt = substr(uniqid(rand()), -6);
+            $md5 = md5(md5($id).$salt);
+            $this->db->update($this->_table, array('md5' => $md5, 'salt' => $salt), array('id' => $id));
+            $feedback['status'] = true;
+            $feedback['message'] = 'success';
+        } else {
+            $feedback['message'] = $this->db->error();
+        }
+        return $feedback;
+    }
+
     /**
      * 生产缓存
      */

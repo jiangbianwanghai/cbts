@@ -24,7 +24,6 @@
 <script src="/static/js/modernizr.min.js"></script>
 <script src="/static/js/jquery.sparkline.min.js"></script>
 <script src="/static/js/toggles.min.js"></script>
-<script src="/static/js/retina.min.js"></script>
 <script src="/static/js/jquery.cookies.js"></script>
 
 <script src="/static/js/flot/jquery.flot.min.js"></script>
@@ -38,119 +37,5 @@
 
 <script src="/static/js/custom.js"></script>
 
-<script type="text/javascript">
-function load() {
-  setTimeout(function () {
-    //获取我受理的任务量统计
-    $.ajax({
-      type: "GET",
-      url: "/admin/issueAnalytics/my?picker=2016-02-24+-+2016-03-25",
-      dataType: "text",
-      success: function(data){
-        if (data) {
-          $("#stacked-chart_issue_my").html(data);
-        }
-      }
-    });
-  }, 1101);
-}
-load();
-
-jQuery(document).ready(function() {
-  
-  "use strict";
-  
-  /*$.ajax({
-    type: "GET",
-    url: "/admin/issueAnalytics/my?picker=2016-02-24+-+2016-03-25",
-    dataType: "text",
-    success: function(data){
-      if (data) {
-        $("#stacked-chart_issue_my").html(data);
-      }
-    }
-  });*/
-  //获取我受理的提测量统计
-  $.ajax({
-    type: "GET",
-    url: "/admin/testAnalytics/my?picker=2016-02-24+-+2016-03-25",
-    dataType: "text",
-    success: function(data){
-      if (data) {
-        $("#stacked-chart_test_my").html(data);
-      }
-    }
-  });
-  //获取任务提交量统计
-  $.ajax({
-    type: "GET",
-    url: "/admin/issueAnalytics/all?picker=2016-02-24+-+2016-03-25",
-    dataType: "text",
-    success: function(data){
-      if (data) {
-        $("#stacked-chart_issue_all").html(data);
-      }
-    }
-  });
-  //获取提测量统计
-  $.ajax({
-    type: "GET",
-    url: "/admin/testAnalytics/all?picker=2016-02-24+-+2016-03-25",
-    dataType: "text",
-    success: function(data){
-      if (data) {
-        $("#stacked-chart_test_all").html(data);
-      }
-    }
-  });
-
-  $.ajax({
-    type: "GET",
-    url: "/admin/people/test?picker=2016-02-24+-+2016-03-25",
-    dataType: "text",
-    success: function(data){
-      if (data) {
-        $("#donut-chart1").html(data);
-      }
-    }
-  });
-
-  $.ajax({
-    type: "GET",
-    url: "/admin/people/issue?picker=2016-02-24+-+2016-03-25",
-    dataType: "text",
-    success: function(data){
-      if (data) {
-        $("#donut-chart2").html(data);
-      }
-    }
-  });
-
-  $.ajax({
-    type: "GET",
-    url: "/admin/people/testpass?picker=2016-02-24+-+2016-03-25",
-    dataType: "text",
-    success: function(data){
-      if (data) {
-        $("#donut-chart3").html(data);
-      }
-    }
-  });
-
-  $.ajax({
-    type: "GET",
-    url: "/admin/people/testaccept?picker=2016-02-24+-+2016-03-25",
-    dataType: "text",
-    success: function(data){
-      if (data) {
-        $("#donut-chart4").html(data);
-      }
-    }
-  });
-  
-  
-});
-
-</script>
 </body>
 </html>
