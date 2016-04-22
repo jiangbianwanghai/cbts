@@ -141,4 +141,15 @@ class Model_bug extends CI_Model {
     public function starDel($id) {
         return $this->db->delete('star', array('star_id' => $id));
     }
+
+    public function starByBugId($array) {
+        $row = array();
+        $this->db->select('star_id');
+        $this->db->where_in('star_id', $array);
+        $this->db->where('star_type', 3);
+        $this->db->where('add_user', $this->input->cookie('uids'));
+        $query = $this->db->get('star');
+        $row = $query->result_array();
+        return $row;
+    }
 }

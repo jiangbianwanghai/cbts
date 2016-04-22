@@ -85,6 +85,7 @@
                                 <?php } ?>
                               <?php if ($row['level']) {?><?php echo "<strong style='color:#ff0000;' title='".$level[$row['level']]['alt']."'>".$level[$row['level']]['name']."</strong> ";?><?php } ?><?php echo $row['subject'];?></h4>
                               <p><?php echo $row['content'];?></p>
+                              <p>所属任务：<a href="/issue/view/<?php echo $issue['id'];?>" target="_blank"><?php echo $issue['issue_name'];?></a></p>
                             </div>
                           </div>
                           <?php if ($row['state'] >=1) {?><div align="center"><span class="badge"><?php echo $users[$row['accept_user']]['realname'].' 已在 '.date("Y-m-d H:i:s", $row['check_time']).' 确认了这个BUG是有效的';?></span></div><?php } ?>
@@ -232,7 +233,7 @@ $(function(){
       dataType: "JSON",
       success: function(data){
         if (data.status) {
-          $("#box").html('<div class="media"><div class="pull-left"><div class="face"><img alt="" src="/static/avatar/'+data.message.username+'.jpg" align="absmiddle" title="'+data.message.realname+'"></div></div><div class="media-body"><span class="media-meta pull-right">'+data.message.addtime+'</span><h4 class="text-primary">'+data.message.realname+'</h4><small class="text-muted">路人甲</small><p>'+data.message.content+'</p></div></div>');
+          $("#box").append('<div class="media"><div class="pull-left"><div class="face"><img alt="" src="/static/avatar/'+data.message.username+'.jpg" align="absmiddle" title="'+data.message.realname+'"></div></div><div class="media-body"><span class="media-meta pull-right">'+data.message.addtime+'</span><h4 class="text-primary">'+data.message.realname+'</h4><small class="text-muted">路人甲</small><p>'+data.message.content+'</p></div></div>');
           editor.setValue('');
         } else {
           alert('fail');

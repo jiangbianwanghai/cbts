@@ -87,7 +87,7 @@
                                   </div>
                                 </td>
                                 <td>
-                                  <a href="javascript:;" bugid="<?php echo $value['id'];?>" class="star<?php if ($this->uri->segment(2, '') == 'star') { echo ' star-checked'; }?>"><i class="glyphicon glyphicon-star"></i></a>
+                                  <a href="javascript:;" bugid="<?php echo $value['id'];?>" class="star<?php if ($this->uri->segment(2, '') == 'star') { echo ' star-checked'; } else { if (isset($star[$value['id']])) echo ' star-checked'; }?>"><i class="glyphicon glyphicon-star"></i></a>
                                 </td>
                                 <td width="70px;">
                                   <?php if ($value['status'] == 1) {?>
