@@ -86,7 +86,7 @@
                   echo "<li class=\"divider\"></li>";
               }
               ?>
-              <li><a href="javascript:;">添加项目</a></li>
+              <li><a href="javascript:;" data-toggle="modal" data-target="#myModal-project">添加项目</a></li>
             </ul>
           </li>
         </ul>
@@ -116,3 +116,34 @@
       </div><!-- header-right -->
 
     </div><!-- headerbar -->
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal-project" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="myModalLabel">创建项目</h4>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">项目名称 <span class="asterisk">*</span></label>
+              <div class="col-sm-10">
+                <input type="url" name="url" class="form-control" />
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="col-sm-2 control-label">项目简介 <span class="asterisk">*</span></label>
+              <div class="col-sm-10">
+                <textarea rows="5" class="form-control" required></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="button" class="btn btn-primary ajax-project">提交</button>
+          </div>
+        </div><!-- modal-content -->
+      </div><!-- modal-dialog -->
+    </div><!-- modal -->

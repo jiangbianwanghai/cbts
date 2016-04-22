@@ -85,6 +85,7 @@
                                 <?php } ?>
                               <?php if ($row['level']) {?><?php echo "<strong style='color:#ff0000;' title='".$level[$row['level']]['alt']."'>".$level[$row['level']]['name']."</strong> ";?><?php } ?><?php echo $row['subject'];?></h4>
                               <p><?php echo $row['content'];?></p>
+                              <p>所属任务：<a href="/issue/view/<?php echo $issue['id'];?>" target="_blank"><?php echo $issue['issue_name'];?></a></p>
                             </div>
                           </div>
                           <?php if ($row['state'] >=1) {?><div align="center"><span class="badge"><?php echo $users[$row['accept_user']]['realname'].' 已在 '.date("Y-m-d H:i:s", $row['check_time']).' 确认了这个BUG是有效的';?></span></div><?php } ?>

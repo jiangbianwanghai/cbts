@@ -7,6 +7,7 @@ class bug extends CI_Controller {
      */
     public function index() {
         $data['PAGE_TITLE'] = 'BUG列表';
+        $data['star'] = array();
         $folder = $data['folder'] = $this->uri->segment(3, 'all');
         $state = $data['state'] = $this->uri->segment(4, 'all');
         $status = $data['status'] = $this->uri->segment(5, 'all');
@@ -17,6 +18,18 @@ class bug extends CI_Controller {
         $config = $this->config->item('pages', 'extension');
         $rows = $this->bug->searchByMysql($folder, $state, $config['per_page'], $offset, $status);
         $data['rows'] = $rows['data'];
+        if ($rows['data']) {
+            $ids = array();
+            foreach ($rows['data'] as $key => $value) {
+                $ids[]= $value['id'];
+            }
+            $star = $this->bug->starByBugId($ids);
+            if ($star) {
+                foreach ($star as $key => $value) {
+                    $data['star'][$value['star_id']] = $value['star_id'];
+                }
+            }
+        }
         $data['total'] = $rows['total'];
         if (file_exists('./cache/users.conf.php')) {
             require './cache/users.conf.php';
@@ -100,7 +113,9 @@ class bug extends CI_Controller {
         $data['PAGE_TITLE'] = 'Bug详情';
         $id = $this->uri->segment(3, 0);
         $this->load->model('Model_bug', 'bug', TRUE);
+        $this->load->model('Model_issue', 'issue', TRUE);
         $data['row'] = $this->bug->fetchOne($id);
+        $data['issue'] = $this->issue->fetchOne($data['row']['issue_id']);
         $data['pager'] = $this->bug->getPrevNext($id);
         if (file_exists('./cache/users.conf.php')) {
             require './cache/users.conf.php';
