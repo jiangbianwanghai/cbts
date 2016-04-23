@@ -81,7 +81,7 @@
               if (file_exists('./cache/project.conf.php')) {
                   require './cache/project.conf.php';
                   foreach ($project as $key => $value) {
-                    echo "<li><a href=\"/?projectId=".$value['id']."\">".$value['project_name']."</a></li>";
+                    echo "<li><a href=\"/?projectId=".$value['md5']."\">".$value['project_name']."</a></li>";
                   }
                   echo "<li class=\"divider\"></li>";
               }
@@ -129,7 +129,7 @@
             <div class="form-group">
               <label class="col-sm-3 control-label">绩效圈名称 <span class="asterisk">*</span></label>
               <div class="col-sm-9">
-                <input type="text" name="project_name" id="project_name" class="form-control" required />
+                <input type="text" name="project_name" id="project_name" class="form-control project_name" required />
               </div>
             </div>
             
