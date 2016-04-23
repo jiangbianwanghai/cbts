@@ -12,6 +12,36 @@
     </div>
 
     <div class="contentpanel">
+      <div id="bloglist" class="row">
+        <?php
+        if (file_exists('./cache/project.conf.php')) {
+            require './cache/project.conf.php';
+            require './cache/users.conf.php';
+            foreach ($project as $key => $value) {
+        ?>
+        <div class="col-xs-6 col-sm-4 col-md-3">
+          <div class="blog-item blog-quote">
+            <div class="quote quote-primary">
+                <a href="javascript:;">
+                  <strong><?php echo $value['project_name'];?></strong>
+                  <br />
+                  <span style="font-size:13px;"><?php echo $value['project_discription'];?></span>
+                  <small class="quote-author">- <?php echo $users[$value['add_user']]['realname'];?></small>
+                </a>
+              </div>
+            <div class="blog-details">
+              <ul class="blog-meta">
+                <li>Create Time:<?php echo date("D M j G:i:s Y",$value['add_time']);?></li>
+              </ul>
+            </div><!-- blog-details -->
+          </div><!-- blog-item -->
+        </div><!-- col-xs-6 -->
+        <?php
+          }
+        }
+        ?>
+        
+      </div><!-- row -->
     </div><!-- contentpanel -->
   </div><!-- mainpanel -->
   <?php include('common_users.php');?>
@@ -26,16 +56,39 @@
 <script src="/static/js/toggles.min.js"></script>
 <script src="/static/js/jquery.cookies.js"></script>
 
-<script src="/static/js/flot/jquery.flot.min.js"></script>
-<script src="/static/js/flot/jquery.flot.resize.min.js"></script>
-<script src="/static/js/flot/jquery.flot.symbol.min.js"></script>
-<script src="/static/js/flot/jquery.flot.crosshair.min.js"></script>
-<script src="/static/js/flot/jquery.flot.categories.min.js"></script>
-<script src="/static/js/flot/jquery.flot.pie.min.js"></script>
-<script src="/static/js/morris.min.js"></script>
-<script src="/static/js/raphael-2.1.0.min.js"></script>
+<script src="/static/js/masonry.pkgd.min.js"></script>
 
 <script src="/static/js/custom.js"></script>
-
+<script type="text/javascript">
+jQuery(document).ready(function() {
+  $(".ajax-project").click(function(){
+      project_name = $(".project_name").val();
+      project_discription = $("#project_discription").val();
+      if (!project_name) {
+         alert('请填写绩效圈名称');
+         $("#project_name").focus();
+         return false;
+      }
+      if (!project_discription) {
+         alert('请填写绩效圈简介');
+         $("#project_discription").focus();
+         return false;
+      }
+      $.ajax({
+        type: "POST",
+        dataType: "JSON",
+        url: "/project/add_ajax",
+        data: "project_name="+project_name+"&project_discription="+project_discription,
+        success: function(data){
+          if (data.status) {
+            location.href = '/';
+          } else {
+            alert('fail');
+          } 
+        }
+      });
+   });
+});
+</script>
 </body>
 </html>
