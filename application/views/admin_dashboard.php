@@ -89,10 +89,7 @@ jQuery(document).ready(function() {
       });
    });
 
-  $(".set-project").click(function(){
-    projectId = $(this).attr('md5');
-    $.cookie('projectId', projectId, { expires: 7, path: '/' }); 
-  });
+  
 });
 </script>
 </body>

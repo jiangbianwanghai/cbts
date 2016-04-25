@@ -37,6 +37,7 @@
       <h5 class="sidebartitle">快捷导航</h5>
       <ul class="nav nav-pills nav-stacked nav-bracket">
         <li<?php if (($this->uri->segment(1, '') == '' && $this->uri->segment(2, '') == '') || $this->uri->segment(2, '') == 'profile') echo ' class="active"';?>><a href="/"><i class="fa fa-home"></i> <span>我的控制台</span></a></li>
+        <li<?php if ($this->uri->segment(1, '') == 'plan') echo ' class="active"';?>><a href="/plan"><i class="fa fa-thumb-tack"></i> <span>计划管理</span></a></li>
         <li<?php if ($this->uri->segment(1, '') == 'bug') echo ' class="active"';?>><a href="/bug"><i class="fa fa-bug"></i> <span>Bug管理</span></a></li>
         <li class="nav-parent<?php if ($this->uri->segment(1, '') == 'issue') echo ' active';?>"><a href="javascript:;"><i class="fa fa-tasks"></i> <span>任务管理</span></a>
           <ul class="children"<?php if ($this->uri->segment(1, '') == 'issue') echo ' style="display: block"';?>>
@@ -75,13 +76,13 @@
       <div class="topnav">
         <ul class="nav nav-horizontal">
           <li class="active"><a href="/"><i class="fa fa-home"></i> <span>控制台</span></a></li>
-          <li class="nav-parent"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-list"></i> 绩效圈 <span class="caret"></span></a>
+          <li class="nav-parent"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-list"></i> <span id="curr-project"><?php if ($this->input->cookie('projectId')) { require './cache/project.conf.php'; echo $project[$this->input->cookie('projectId')]['project_name']; } else { echo '绩效圈'; }?></span> <span class="caret"></span></a>
             <ul class="dropdown-menu children">
               <?php
               if (file_exists('./cache/project.conf.php')) {
                   require './cache/project.conf.php';
                   foreach ($project as $key => $value) {
-                    echo "<li><a href=\"javascript:;\" class=\"set-project\" md5=\"".$value['md5']."\">".$value['project_name']."</a></li>";
+                    echo "<li><a href=\"javascript:;\" class=\"set-project\" md5=\"".$value['md5']."\" project=\"".$value['project_name']."\">".$value['project_name']."</a></li>";
                   }
                   echo "<li class=\"divider\"></li>";
               }

@@ -2,6 +2,8 @@
 
 class Model_issue extends CI_Model {
 
+    private $_table = 'issue';
+
     public $resolveArr = array(
         'disable' => '1', 
         'able' => '0'
@@ -348,5 +350,17 @@ class Model_issue extends CI_Model {
         }
         //
         return $array;
+    }
+
+    public function listByPlan($planId, $projectId, $limit = 20, $offset = 0) {
+        $row = array();
+        $this->db->select('*');
+        $this->db->where('plan_id', $planId);
+        $this->db->where('project_id', $projectId);
+        $this->db->order_by('id,type', 'desc');
+        $this->db->limit($limit, $offset);
+        $query = $this->db->get($this->_table);
+        $row = $query->result_array();
+        return $row;
     }
 }

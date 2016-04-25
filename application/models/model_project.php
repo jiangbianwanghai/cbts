@@ -35,7 +35,7 @@ class Model_project extends CI_Model {
     {
         $rows = $this->rows(0,20,1);
         foreach ($rows['data'] as $val) {
-            $projectRows[$val['id']] = $val;
+            $projectRows[$val['md5']] = $val;
         }
         $this->load->helper('file');
         $file = "<?php\n//项目信息\n\$project = ".var_export($projectRows, true).";";
