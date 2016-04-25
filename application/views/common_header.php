@@ -81,7 +81,7 @@
               if (file_exists('./cache/project.conf.php')) {
                   require './cache/project.conf.php';
                   foreach ($project as $key => $value) {
-                    echo "<li><a href=\"/?projectId=".$value['md5']."\">".$value['project_name']."</a></li>";
+                    echo "<li><a href=\"javascript:;\" class=\"set-project\" md5=\"".$value['md5']."\">".$value['project_name']."</a></li>";
                   }
                   echo "<li class=\"divider\"></li>";
               }
