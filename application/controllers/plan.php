@@ -37,6 +37,16 @@ class plan extends CI_Controller {
      * 新增计划接口
      */
     public function add_ajax() {
+        $this->load->library('form_validation');
+        if ($this->form_validation->run() == FALSE) {
+            $callBack = array(
+                'status' => false,
+                'message' => validation_errors(),
+                'url' => '/plan'
+            );
+            echo json_encode($callBack);
+            exit();
+        }
     	$this->load->model('Model_plan', 'plan', TRUE);
     	if (file_exists('./cache/project.conf.php'))
     		require './cache/project.conf.php';
@@ -44,6 +54,8 @@ class plan extends CI_Controller {
         	'project_id' => $this->_project[$this->_projectId]['id'],
             'plan_name' => $this->input->post('plan_name'),
             'plan_discription' => $this->input->post('plan_discription'),
+            'startime' => strtotime($this->input->post('startime')),
+            'endtime' => strtotime($this->input->post('endtime')),
             'add_user' => $this->input->cookie('uids'),
             'add_time' => time()
         );

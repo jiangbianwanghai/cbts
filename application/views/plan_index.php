@@ -1,4 +1,5 @@
 <?php include('common_header.php');?>
+<link rel="stylesheet" type="text/css" href="/static/css/jquery.datetimepicker.css"/>
     <div class="pageheader">
       <h2><i class="fa fa-thumb-tack"></i> 计划管理 <span>当前计划列表</span></h2>
       <div class="breadcrumb-wrapper">
@@ -96,17 +97,41 @@
         <div class="form-group">
           <label class="col-sm-3 control-label">计划名称 <span class="asterisk">*</span></label>
           <div class="col-sm-9">
-            <input type="text" name="plan_name" id="plan_name" class="form-control" required />
+            <input type="text" name="plan_name" id="plan_name" class="form-control" placeholder="最少5个字符，最长40个字符" required />
           </div>
         </div>
-        
         <div class="form-group">
           <label class="col-sm-3 control-label">计划简介 <span class="asterisk">*</span></label>
           <div class="col-sm-9">
-            <textarea rows="5" class="form-control" id="plan_discription" name="plan_discription" required></textarea>
+            <textarea rows="5" class="form-control" id="plan_discription" name="plan_discription" placeholder="最少5个字符，最长300个字符" required></textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">开始时间 <span class="asterisk">*</span></label>
+          <div class="col-sm-9">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+              <input type="text" class="form-control" style="width:150px;" placeholder="yyyy/mm/dd 00:00" id="startime" name="startime" required>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">结束时间 <span class="asterisk">*</span></label>
+          <div class="col-sm-9">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+              <input type="text" class="form-control" style="width:150px;" placeholder="yyyy/mm/dd 00:00" id="endtime" name="endtime" required>
+            </div>
           </div>
         </div>
       </div>
+      <?php
+      $csrf = array(
+          'name' => $this->security->get_csrf_token_name(),
+          'hash' => $this->security->get_csrf_hash()
+      );
+      ?>
+      <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
         <button class="btn btn-primary" id="btnSubmit">提交</button>
@@ -130,6 +155,8 @@
 
 <script src="/static/js/jquery.datatables.min.js"></script>
 <script src="/static/js/select2.min.js"></script>
+
+<script src="/static/js/jquery.datetimepicker.full.js"></script>
 
 <script src="/static/js/custom.js"></script>
 <script>
@@ -161,7 +188,7 @@ function callBack(data) {
     });
     setTimeout(function(){
       location.href = data.url;
-    }, 2000);
+    }, 3000);
   }
 }
 
@@ -180,13 +207,11 @@ jQuery(document).ready(function(){
     return false;
   });
 
-  $("#basicForm").validate({
-    highlight: function(element) {
-      jQuery(element).closest('.form-group').removeClass('has-success').addClass('has-error');
-    },
-    success: function(element) {
-      jQuery(element).closest('.form-group').removeClass('has-error');
-    },
+  $('#startime').datetimepicker({
+    minDate:'<?php echo date("Y/m/d", time());?>',
+  });
+  $('#endtime').datetimepicker({
+    minDate:'<?php echo date("Y/m/d", time()+86400);?>',
   });
   
 });
