@@ -31,7 +31,7 @@
           <?php if ($planId && $currPlan) {?>
           <div class="alert alert-warning">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            计划全称：<strong><?php echo $currPlan['plan_name']?></strong> / 起至时间：<?php echo date("Y-m-d H:i", $currPlan['startime']).' - '.date("Y-m-d H:i", $currPlan['endtime']);?>
+            计划全称：<strong><?php echo $currPlan['plan_name']?></strong> / 起至时间：<?php echo date("Y-m-d H:i", $currPlan['startime']).' - '.date("Y-m-d H:i", $currPlan['endtime']);?> / 时长：<?php echo timediff($currPlan['startime'], $currPlan['endtime']);?>
           </div>
           <?php } ?>
           <?php if ($planId) {?>

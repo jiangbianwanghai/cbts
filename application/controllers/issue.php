@@ -2,6 +2,21 @@
 
 class issue extends CI_Controller {
 
+    private $projectId = '';
+    private $project = '';
+
+    public function __construct() {
+        parent::__construct();
+        $this->_projectId = $this->input->cookie('projectId');
+        if (!$this->_projectId) {
+            exit('无法获取项目信息，请 <a href="/">返回首页</a> 选择项目');
+        }
+        if (file_exists('./cache/project.conf.php')) {
+            require './cache/project.conf.php';
+            $this->_project = $project;
+        }
+    }
+
     public function add() {
     	$data['PAGE_TITLE'] = '申请提测';
         $aclUsers = array('71','72','69','60','73','74','20','1','75', '76');//只允许吕云毅，彭明明，张智龙，李奎，师旭，孟伟，樊贺，吴英豪

@@ -37,6 +37,7 @@ class plan extends CI_Controller {
         $data['rows'] = $this->issue->listByPlan($data['planId'], $this->_project[$this->_projectId]['id']);
         $this->config->load('extension', TRUE);
         $data['level'] = $this->config->item('level', 'extension');
+        $this->load->helper('timediff');
         $this->load->view('plan_index', $data);
     }
 
