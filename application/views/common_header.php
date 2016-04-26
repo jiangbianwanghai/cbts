@@ -7,7 +7,7 @@
   <meta name="author" content="">
   <link rel="shortcut icon" href="images/favicon.png" type="image/png">
 
-  <title><?php echo $PAGE_TITLE;?> - 巧克力(cbts)提测系统-Beta</title>
+  <title><?php echo $PAGE_TITLE;?> - CITS</title>
 
   <link href="/static/css/style.default.css" rel="stylesheet">
   <link href="/static/css/jquery.gritter.css" rel="stylesheet">
@@ -17,6 +17,7 @@
 
   <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!--[if lt IE 9]>
+  <script>alert("您的浏览器版本过低，建议您使用Chrome,Firefox,IE9及以上版本")</script>
   <script src="/static/js/html5shiv.js"></script>
   <script src="/static/js/respond.min.js"></script>
   <![endif]-->
@@ -29,37 +30,21 @@
   <div class="leftpanel">
 
     <div class="logopanel" align="center">
-        <strong style="font-family: Arial, Helvetica; ">CBTS-巧克力任务跟踪系统</strong> <sup><a target="_blank" href="http://192.168.8.91/markdown/" title="点击查看版本更新日志"><span class="badge badge-info">2.2.0</span></a></sup>
+        <strong style="font-family: Arial, Helvetica; ">CITS-巧克力任务跟踪系统</strong> <sup><a target="_blank" href="http://192.168.8.91/markdown/" title="点击查看版本更新日志"><span class="badge badge-info">2.2.0</span></a></sup>
     </div><!-- logopanel -->
 
     <div class="leftpanelinner">
 
       <h5 class="sidebartitle">快捷导航</h5>
       <ul class="nav nav-pills nav-stacked nav-bracket">
-        <li<?php if (($this->uri->segment(1, '') == '' && $this->uri->segment(2, '') == '') || $this->uri->segment(2, '') == 'profile') echo ' class="active"';?>><a href="/"><i class="fa fa-home"></i> <span>我的控制台</span></a></li>
+        <li<?php if (($this->uri->segment(1, 'admin') == 'admin' && $this->uri->segment(2, 'index') == 'index') || $this->uri->segment(2, '') == 'profile') echo ' class="active"';?>><a href="/"><i class="fa fa-home"></i> <span>我的面板</span></a></li>
+        <li<?php if ($this->uri->segment(1, '') == 'plan') echo ' class="active"';?>><a href="/plan"><i class="fa fa-thumb-tack"></i> <span>计划管理</span></a></li>
         <li<?php if ($this->uri->segment(1, '') == 'bug') echo ' class="active"';?>><a href="/bug"><i class="fa fa-bug"></i> <span>Bug管理</span></a></li>
-        <li class="nav-parent<?php if ($this->uri->segment(1, '') == 'issue') echo ' active';?>"><a href="javascript:;"><i class="fa fa-tasks"></i> <span>任务管理</span></a>
-          <ul class="children"<?php if ($this->uri->segment(1, '') == 'issue') echo ' style="display: block"';?>>
-            <li<?php if ($this->uri->segment(2, '') == 'add') echo ' class="active"';?>><a href="/issue/add"><i class="fa fa-caret-right"></i> 添加任务</a></li>
-            <li<?php if ($this->uri->segment(1, '') == 'issue' && ($this->uri->segment(2, '') == 'my' || $this->uri->segment(2, '') == 'edit')) echo ' class="active"';?>><a href="/issue/my"><i class="fa fa-caret-right"></i> 我的任务</a></li>
-            <li<?php if ($this->uri->segment(1, '') == 'issue' && $this->uri->segment(2, '') == 'todo') echo ' class="active"';?>><a href="/issue/todo"><i class="fa fa-caret-right"></i> 我的受理</a></li>
-            <li<?php if ($this->uri->segment(1, '') == 'issue' && ($this->uri->segment(2, '') == 'plaza' || $this->uri->segment(2, '') == 'view')) echo ' class="active"';?>><a href="/issue/plaza"><i class="fa fa-caret-right"></i> 任务广场</a></li>
-            <li<?php if ($this->uri->segment(1, '') == 'issue' && $this->uri->segment(2, '') == 'analytics') echo ' class="active"';?>><a href="/issue/analytics"><i class="fa fa-caret-right"></i> 任务统计</a></li>
-          </ul>
+        <li<?php if ($this->uri->segment(1, '') == 'issue') echo ' class="active"';?>><a href="/issue"><i class="fa fa-tasks"></i> <span>任务管理</span></a>
         </li>
-        <li class="nav-parent<?php if ($this->uri->segment(1, '') == 'test') echo ' active';?>"><a href="javascript:;"><i class="fa fa-medkit"></i> <span>提测管理</span></a>
-          <ul class="children"<?php if ($this->uri->segment(1, '') == 'test') echo ' style="display: block"';?>>
-            <li<?php if (($this->uri->segment(2, '') == 'my' || $this->uri->segment(2, '') == 'add') && $this->uri->segment(1, '') == 'test') echo ' class="active"';?>><a href="/test/my"><i class="fa fa-caret-right"></i> 我的提测</a></li>
-            <li<?php if ($this->uri->segment(1, '') == 'test' && ($this->uri->segment(2, '') == 'plaza' || $this->uri->segment(2, '') == 'edit'  || $this->uri->segment(2, '') == 'repos')) echo ' class="active"';?>><a href="/test/plaza"><i class="fa fa-caret-right"></i> 提测广场</a></li>
-            <li<?php if ($this->uri->segment(1, '') == 'test' && $this->uri->segment(2, '') == 'todo') echo ' class="active"';?>><a href="/test/todo"><i class="fa fa-caret-right"></i> 我的待测</a></li>
-            <li<?php if ($this->uri->segment(1, '') == 'test' && $this->uri->segment(2, '') == 'analytics') echo ' class="active"';?>><a href="/test/analytics"><i class="fa fa-caret-right"></i> 提测统计</a></li>
-          </ul>
+        <li<?php if ($this->uri->segment(1, '') == 'test') echo ' class="active"';?>><a href="/test"><i class="fa fa-medkit"></i> <span>提测管理</span></a>
         </li>
-        <li class="nav-parent<?php if ($this->uri->segment(1, '') == 'conf' && $this->uri->segment(2, '') != 'profile') echo ' active';?>"><a href="javascript:;"><i class="fa fa-suitcase"></i> <span>代码库管理</span></a>
-          <ul class="children"<?php if ($this->uri->segment(1, '') == 'conf' && $this->uri->segment(2, '') != 'profile') echo ' style="display: block"';?>>
-            <li<?php if ($this->uri->segment(2, '') == 'repos') echo ' class="active"';?>><a href="/conf/repos"><i class="fa fa-caret-right"></i> 添加代码库</a></li>
-            <li<?php if ($this->uri->segment(2, '') == 'repos_list' || $this->uri->segment(2, '') == 'repos_edit') echo ' class="active"';?>><a href="/conf/repos_list"><i class="fa fa-caret-right"></i> 代码库管理</a></li>
-          </ul>
+        <li<?php if ($this->uri->segment(1, '') == 'conf' && $this->uri->segment(2, '') != 'profile') echo ' class="active"';?>><a href="/conf/repos_list"><i class="fa fa-suitcase"></i> <span>代码库管理</span></a>
         </li>
       </ul>
 
@@ -74,14 +59,14 @@
 
       <div class="topnav">
         <ul class="nav nav-horizontal">
-          <li class="active"><a href="/"><i class="fa fa-home"></i> <span>控制台</span></a></li>
-          <li class="nav-parent"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-list"></i> 绩效圈 <span class="caret"></span></a>
+          <li class="active"><a href="/"><i class="fa fa-home"></i> <span>我的面板</span></a></li>
+          <li class="nav-parent"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-list"></i> <span id="curr-project"><?php if ($this->input->cookie('projectId')) { require './cache/project.conf.php'; echo $project[$this->input->cookie('projectId')]['project_name']; } else { echo '绩效圈'; }?></span> <span class="caret"></span></a>
             <ul class="dropdown-menu children">
               <?php
               if (file_exists('./cache/project.conf.php')) {
                   require './cache/project.conf.php';
                   foreach ($project as $key => $value) {
-                    echo "<li><a href=\"javascript:;\" class=\"set-project\" md5=\"".$value['md5']."\">".$value['project_name']."</a></li>";
+                    echo "<li><a href=\"javascript:;\" class=\"set-project\" md5=\"".$value['md5']."\" project=\"".$value['project_name']."\">".$value['project_name']."</a></li>";
                   }
                   echo "<li class=\"divider\"></li>";
               }
@@ -103,7 +88,7 @@
               </button>
               <ul class="dropdown-menu dropdown-menu-usermenu pull-right">
                 <li><a href="http://192.168.8.91/markdown/"><i class="glyphicon glyphicon-question-sign"></i> 更新日志</a></li>
-                <li><a href="<?php echo site_url("admin/logout");?>"><i class="glyphicon glyphicon-log-out"></i> 退出</a></li>
+                <li><a href="/admin/logout"><i class="glyphicon glyphicon-log-out"></i> 退出</a></li>
               </ul>
             </div>
           </li>
@@ -119,6 +104,7 @@
 
     <!-- Modal -->
     <div class="modal fade" id="myModal-project" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <form method="POST" id="addProject" action="/project/add_ajax" class="form-horizontal">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -140,10 +126,18 @@
               </div>
             </div>
           </div>
+          <?php
+          $csrf = array(
+              'name' => $this->security->get_csrf_token_name(),
+              'hash' => $this->security->get_csrf_hash()
+          );
+          ?>
+          <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-            <button type="button" class="btn btn-primary ajax-project">提交</button>
+            <button class="btn btn-primary" id="btnSubmit-project">提交</button>
           </div>
         </div><!-- modal-content -->
       </div><!-- modal-dialog -->
+      </form>
     </div><!-- modal -->
