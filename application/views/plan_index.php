@@ -133,13 +133,7 @@
           </div>
         </div>
       </div>
-      <?php
-      $csrf = array(
-          'name' => $this->security->get_csrf_token_name(),
-          'hash' => $this->security->get_csrf_hash()
-      );
-      ?>
-      <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
+      <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>" />
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
         <button class="btn btn-primary" id="btnSubmit">提交</button>

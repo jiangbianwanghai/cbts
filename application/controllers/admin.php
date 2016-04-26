@@ -4,8 +4,7 @@ class admin extends CI_Controller {
 
     public function index()
     {
-        $data['PAGE_TITLE'] = '我的控制台';
-        $this->load->library('strendecode');
+        $data['PAGE_TITLE'] = '我的面板';
         $this->load->view('admin_dashboard', $data);
     }
 

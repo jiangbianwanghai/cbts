@@ -1,47 +1,18 @@
 <?php include('common_header.php');?>
 
     <div class="pageheader">
-      <h2><i class="fa fa-home"></i> 我的控制台 <span>了解一些统计数据，全面掌握提测状态</span></h2>
+      <h2><i class="fa fa-home"></i> 我的面板 <span>通过快捷面板快速掌握我的任务信息</span></h2>
       <div class="breadcrumb-wrapper">
         <span class="label">我的位置:</span>
         <ol class="breadcrumb">
-          <li><a href="/">巧克力提测系统</a></li>
-          <li class="active">我的控制台</li>
+          <li><a href="/">CITS</a></li>
+          <li class="active">我的面板</li>
         </ol>
       </div>
     </div>
 
     <div class="contentpanel">
-      <div id="bloglist" class="row">
-        <?php
-        if (file_exists('./cache/project.conf.php')) {
-            require './cache/project.conf.php';
-            require './cache/users.conf.php';
-            foreach ($project as $key => $value) {
-        ?>
-        <div class="col-xs-6 col-sm-4 col-md-3">
-          <div class="blog-item blog-quote">
-            <div class="quote quote-primary">
-                <a href="javascript:;">
-                  <strong><?php echo $value['project_name'];?></strong>
-                  <br />
-                  <span style="font-size:13px;"><?php echo $value['project_discription'];?></span>
-                  <small class="quote-author">- <?php echo $users[$value['add_user']]['realname'];?></small>
-                </a>
-              </div>
-            <div class="blog-details">
-              <ul class="blog-meta">
-                <li>Create Time:<?php echo date("D M j G:i:s Y",$value['add_time']);?></li>
-              </ul>
-            </div><!-- blog-details -->
-          </div><!-- blog-item -->
-        </div><!-- col-xs-6 -->
-        <?php
-          }
-        }
-        ?>
-        
-      </div><!-- row -->
+
     </div><!-- contentpanel -->
   </div><!-- mainpanel -->
   <?php include('common_users.php');?>
