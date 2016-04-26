@@ -3,6 +3,15 @@
 class project extends CI_Controller {
 
     public function add_ajax() {
+        $this->load->library('form_validation');
+        if ($this->form_validation->run() == FALSE) {
+            $callBack = array(
+                'status' => false,
+                'message' => validation_errors(),
+            );
+            echo json_encode($callBack);
+            exit();
+        }
     	$this->load->model('Model_project', 'project', TRUE);
         $post = array(
             'project_name' => $this->input->post('project_name'),

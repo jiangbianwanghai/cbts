@@ -17,6 +17,7 @@
 
   <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!--[if lt IE 9]>
+  <script>alert("您的浏览器版本过低，建议您使用Chrome,Firefox,IE9及以上版本")</script>
   <script src="/static/js/html5shiv.js"></script>
   <script src="/static/js/respond.min.js"></script>
   <![endif]-->
@@ -120,6 +121,7 @@
 
     <!-- Modal -->
     <div class="modal fade" id="myModal-project" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <form method="POST" id="addProject" action="/project/add_ajax" class="form-horizontal">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -141,10 +143,18 @@
               </div>
             </div>
           </div>
+          <?php
+          $csrf = array(
+              'name' => $this->security->get_csrf_token_name(),
+              'hash' => $this->security->get_csrf_hash()
+          );
+          ?>
+          <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-            <button type="button" class="btn btn-primary ajax-project">提交</button>
+            <button class="btn btn-primary" id="btnSubmit-project">提交</button>
           </div>
         </div><!-- modal-content -->
       </div><!-- modal-dialog -->
+      </form>
     </div><!-- modal -->

@@ -31,6 +31,7 @@ class plan extends CI_Controller {
                 break;
             }
         }
+        $data['currPlan'] = $this->plan->fetchOne($data['planId'], $this->_project[$this->_projectId]['id']);
         $data['planFolder'] = $row;
         $this->load->model('Model_issue', 'issue', TRUE);
         $data['rows'] = $this->issue->listByPlan($data['planId'], $this->_project[$this->_projectId]['id']);

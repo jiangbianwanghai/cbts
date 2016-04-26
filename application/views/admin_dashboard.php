@@ -56,41 +56,14 @@
 <script src="/static/js/toggles.min.js"></script>
 <script src="/static/js/jquery.cookies.js"></script>
 
+<script src="/static/js/jquery.validate.min.js"></script>
+<script src="/static/js/jquery.form.js"></script>
+<script src="/static/js/jquery.gritter.min.js"></script>
+
 <script src="/static/js/masonry.pkgd.min.js"></script>
 
 <script src="/static/js/custom.js"></script>
-<script type="text/javascript">
-jQuery(document).ready(function() {
-  $(".ajax-project").click(function(){
-      project_name = $(".project_name").val();
-      project_discription = $("#project_discription").val();
-      if (!project_name) {
-         alert('请填写绩效圈名称');
-         $("#project_name").focus();
-         return false;
-      }
-      if (!project_discription) {
-         alert('请填写绩效圈简介');
-         $("#project_discription").focus();
-         return false;
-      }
-      $.ajax({
-        type: "POST",
-        dataType: "JSON",
-        url: "/project/add_ajax",
-        data: "project_name="+project_name+"&project_discription="+project_discription,
-        success: function(data){
-          if (data.status) {
-            location.href = '/';
-          } else {
-            alert('fail');
-          } 
-        }
-      });
-   });
+<script src="/static/js/cits.js"></script>
 
-  
-});
-</script>
 </body>
 </html>

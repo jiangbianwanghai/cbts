@@ -29,7 +29,19 @@ $config = array(
             'label'   => '结束时间', 
             'rules'   => 'trim|required|xss_clean'
         )
-    )
+    ),
+    'project/add_ajax' => array(
+        array(
+            'field'   => 'project_name', 
+            'label'   => '名称', 
+            'rules'   => 'trim|required|min_length[5]|max_length[40]|xss_clean'
+        ),
+        array(
+            'field'   => 'project_discription', 
+            'label'   => '简介', 
+            'rules'   => 'trim|required|min_length[5]|max_length[300]|xss_clean'
+        )
+    ),
 );
 
 /* End of file form_validation.php */

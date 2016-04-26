@@ -28,6 +28,13 @@
           <?php } ?>
         </div><!-- col-sm-3 -->
         <div class="col-sm-9 col-lg-10">
+          <?php if ($planId && $currPlan) {?>
+          <div class="alert alert-warning">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            计划全称：<strong><?php echo $currPlan['plan_name']?></strong> / 起至时间：<?php echo date("Y-m-d H:i", $currPlan['startime']).' - '.date("Y-m-d H:i", $currPlan['endtime']);?>
+          </div>
+          <?php } ?>
+          <?php if ($planId) {?>
           <div class="panel panel-default">
             <div class="panel-body">
               <h5 class="subtitle mb5">计划内容</h5>
@@ -80,7 +87,7 @@
         </div><!-- col-sm-9 -->
       </div><!-- row -->
     </div><!-- contentpanel -->
-    
+    <?php } ?>
   </div><!-- mainpanel -->
   <?php include('common_users.php');?>
 </section>
