@@ -5,6 +5,26 @@ class admin extends CI_Controller {
     public function index()
     {
         $data['PAGE_TITLE'] = '我的面板';
+        $this->load->model('Model_issue', 'issue', TRUE);
+        $this->config->load('extension', TRUE);
+        $data['level'] = $this->config->item('level', 'extension');
+        $config = $this->config->item('pages', 'extension');
+        $offset = $this->uri->segment(4, 0);
+        if ($this->uri->segment(3, 'to_me') == 'over') {
+            exit('功能开发中...');
+        } else {
+            $rows = $this->issue->listByUserId($this->input->cookie('uids'), $this->uri->segment(3, 'to_me'), $config['per_page'], $offset);
+        }
+        $data['rows'] = $rows['data'];
+        $data['total'] = $rows['total'];
+        $this->load->library('pagination');
+        $config['total_rows'] = $rows['total'];
+        $config['cur_page'] = $offset;
+        $config['base_url'] = '/admin/index/'.$this->uri->segment(3, 'to_me');
+        $this->pagination->initialize($config);
+        $data['pages'] = $this->pagination->create_links();
+        $data['offset'] = $offset;
+        $data['per_page'] = $config['per_page'];
         $this->load->view('admin_dashboard', $data);
     }
 

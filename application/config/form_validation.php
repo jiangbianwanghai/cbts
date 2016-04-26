@@ -42,6 +42,33 @@ $config = array(
             'rules'   => 'trim|required|min_length[5]|max_length[300]|xss_clean'
         )
     ),
+    'issue/add_ajax' => array(
+        array(
+            'field'   => 'issue_name', 
+            'label'   => '任务全称', 
+            'rules'   => 'trim|required|min_length[5]|max_length[40]|xss_clean'
+        ),
+        array(
+            'field'   => 'type', 
+            'label'   => '任务类型', 
+            'rules'   => 'trim|required|xss_clean'
+        ),
+        array(
+            'field'   => 'type', 
+            'label'   => '紧急程度', 
+            'rules'   => 'trim|required|xss_clean'
+        ),
+        array(
+            'field'   => 'issue_summary', 
+            'label'   => '简介', 
+            'rules'   => 'trim|xss_clean'
+        ),
+        array(
+            'field'   => 'plan_id', 
+            'label'   => '计划', 
+            'rules'   => 'trim|required|xss_clean'
+        )
+    ),
 );
 
 /* End of file form_validation.php */

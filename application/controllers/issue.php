@@ -18,7 +18,7 @@ class issue extends CI_Controller {
     }
 
     public function add() {
-    	$data['PAGE_TITLE'] = '申请提测';
+    	$data['PAGE_TITLE'] = '新增任务';
         $aclUsers = array('71','72','69','60','73','74','20','1','75', '76');//只允许吕云毅，彭明明，张智龙，李奎，师旭，孟伟，樊贺，吴英豪
         if (!in_array($this->input->cookie('uids'), $aclUsers))
             exit('只有各个绩效圈的Leader才有发起任务的权限，请联系@吕云毅，@彭明明，@张智龙，@李奎，@师旭');
@@ -29,12 +29,23 @@ class issue extends CI_Controller {
      * 异步添加
      */
     public function add_ajax() {
+        $this->load->library('form_validation');
+        if ($this->form_validation->run() == FALSE) {
+            $callBack = array(
+                'status' => false,
+                'message' => validation_errors(),
+            );
+            echo json_encode($callBack);
+            exit();
+        }
         $this->load->model('Model_issue', 'issue', TRUE);
         $post = array(
+            'project_id' => $this->_project[$this->_projectId]['id'],
+            'plan_id' => $this->input->post('plan_id'),
             'type' => $this->input->post('type'),
             'level' => $this->input->post('level'),
             'issue_name' => $this->input->post('issue_name'),
-            'url' => $this->input->post('issue_url'),
+            'url' => serialize(explode(PHP_EOL, $this->input->post('issue_url'))),
             'issue_summary' => $this->input->post('issue_summary'),
             'deadline' => strtotime($this->input->post('deadline'))
         );

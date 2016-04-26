@@ -20,7 +20,6 @@
               <li<?php if ($this->uri->segment(2, '') == 'trash') {?> class="active"<?php } ?>><a href="/bug/trash"><i class="glyphicon glyphicon-trash"></i> 已删除</a></li>
           </ul>
           <div class="mb30"></div>
-          
           <h5 class="subtitle">快捷方式</h5>
           <ul class="nav nav-pills nav-stacked nav-email mb20">
             <li<?php if ($this->uri->segment(3, '') == 'to_me') {?> class="active"<?php } ?>><a href="/bug/index/to_me"><i class="glyphicon glyphicon-folder-open"></i> 我负责的</a></li>

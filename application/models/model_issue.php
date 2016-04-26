@@ -357,10 +357,27 @@ class Model_issue extends CI_Model {
         $this->db->select('*');
         $this->db->where('plan_id', $planId);
         $this->db->where('project_id', $projectId);
-        $this->db->order_by('id,type', 'desc');
+        $this->db->order_by('last_time', 'desc');
         $this->db->limit($limit, $offset);
         $query = $this->db->get($this->_table);
         $row = $query->result_array();
         return $row;
+    }
+
+    public function listByUserId($uid, $folder = 'to_me', $limit = 20, $offset = 0) {
+        $rows = array('total' => 0, 'data' => false);
+        $this->db->select('*');
+        if ($folder == 'to_me')
+            $this->db->where('accept_user', $uid);
+        if ($folder == 'from_me')
+            $this->db->where('add_user', $uid);
+        $db = clone($this->db);
+        $rows['total'] = $this->db->count_all_results($this->_table);
+        $this->db = $db;
+        $this->db->order_by('id', 'desc');
+        $this->db->limit($limit, $offset);
+        $query = $this->db->get($this->_table);
+        $rows['data'] = $query->result_array();
+        return $rows;
     }
 }

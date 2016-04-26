@@ -30,38 +30,21 @@
   <div class="leftpanel">
 
     <div class="logopanel" align="center">
-        <strong style="font-family: Arial, Helvetica; ">CBTS-巧克力任务跟踪系统</strong> <sup><a target="_blank" href="http://192.168.8.91/markdown/" title="点击查看版本更新日志"><span class="badge badge-info">2.2.0</span></a></sup>
+        <strong style="font-family: Arial, Helvetica; ">CITS-巧克力任务跟踪系统</strong> <sup><a target="_blank" href="http://192.168.8.91/markdown/" title="点击查看版本更新日志"><span class="badge badge-info">2.2.0</span></a></sup>
     </div><!-- logopanel -->
 
     <div class="leftpanelinner">
 
       <h5 class="sidebartitle">快捷导航</h5>
       <ul class="nav nav-pills nav-stacked nav-bracket">
-        <li<?php if (($this->uri->segment(1, '') == '' && $this->uri->segment(2, '') == '') || $this->uri->segment(2, '') == 'profile') echo ' class="active"';?>><a href="/"><i class="fa fa-home"></i> <span>我的面板</span></a></li>
+        <li<?php if (($this->uri->segment(1, 'admin') == 'admin' && $this->uri->segment(2, 'index') == 'index') || $this->uri->segment(2, '') == 'profile') echo ' class="active"';?>><a href="/"><i class="fa fa-home"></i> <span>我的面板</span></a></li>
         <li<?php if ($this->uri->segment(1, '') == 'plan') echo ' class="active"';?>><a href="/plan"><i class="fa fa-thumb-tack"></i> <span>计划管理</span></a></li>
         <li<?php if ($this->uri->segment(1, '') == 'bug') echo ' class="active"';?>><a href="/bug"><i class="fa fa-bug"></i> <span>Bug管理</span></a></li>
-        <li class="nav-parent<?php if ($this->uri->segment(1, '') == 'issue') echo ' active';?>"><a href="javascript:;"><i class="fa fa-tasks"></i> <span>任务管理</span></a>
-          <ul class="children"<?php if ($this->uri->segment(1, '') == 'issue') echo ' style="display: block"';?>>
-            <li<?php if ($this->uri->segment(2, '') == 'add') echo ' class="active"';?>><a href="/issue/add"><i class="fa fa-caret-right"></i> 添加任务</a></li>
-            <li<?php if ($this->uri->segment(1, '') == 'issue' && ($this->uri->segment(2, '') == 'my' || $this->uri->segment(2, '') == 'edit')) echo ' class="active"';?>><a href="/issue/my"><i class="fa fa-caret-right"></i> 我的任务</a></li>
-            <li<?php if ($this->uri->segment(1, '') == 'issue' && $this->uri->segment(2, '') == 'todo') echo ' class="active"';?>><a href="/issue/todo"><i class="fa fa-caret-right"></i> 我的受理</a></li>
-            <li<?php if ($this->uri->segment(1, '') == 'issue' && ($this->uri->segment(2, '') == 'plaza' || $this->uri->segment(2, '') == 'view')) echo ' class="active"';?>><a href="/issue/plaza"><i class="fa fa-caret-right"></i> 任务广场</a></li>
-            <li<?php if ($this->uri->segment(1, '') == 'issue' && $this->uri->segment(2, '') == 'analytics') echo ' class="active"';?>><a href="/issue/analytics"><i class="fa fa-caret-right"></i> 任务统计</a></li>
-          </ul>
+        <li<?php if ($this->uri->segment(1, '') == 'issue') echo ' class="active"';?>><a href="/issue"><i class="fa fa-tasks"></i> <span>任务管理</span></a>
         </li>
-        <li class="nav-parent<?php if ($this->uri->segment(1, '') == 'test') echo ' active';?>"><a href="javascript:;"><i class="fa fa-medkit"></i> <span>提测管理</span></a>
-          <ul class="children"<?php if ($this->uri->segment(1, '') == 'test') echo ' style="display: block"';?>>
-            <li<?php if (($this->uri->segment(2, '') == 'my' || $this->uri->segment(2, '') == 'add') && $this->uri->segment(1, '') == 'test') echo ' class="active"';?>><a href="/test/my"><i class="fa fa-caret-right"></i> 我的提测</a></li>
-            <li<?php if ($this->uri->segment(1, '') == 'test' && ($this->uri->segment(2, '') == 'plaza' || $this->uri->segment(2, '') == 'edit'  || $this->uri->segment(2, '') == 'repos')) echo ' class="active"';?>><a href="/test/plaza"><i class="fa fa-caret-right"></i> 提测广场</a></li>
-            <li<?php if ($this->uri->segment(1, '') == 'test' && $this->uri->segment(2, '') == 'todo') echo ' class="active"';?>><a href="/test/todo"><i class="fa fa-caret-right"></i> 我的待测</a></li>
-            <li<?php if ($this->uri->segment(1, '') == 'test' && $this->uri->segment(2, '') == 'analytics') echo ' class="active"';?>><a href="/test/analytics"><i class="fa fa-caret-right"></i> 提测统计</a></li>
-          </ul>
+        <li<?php if ($this->uri->segment(1, '') == 'test') echo ' class="active"';?>><a href="/test"><i class="fa fa-medkit"></i> <span>提测管理</span></a>
         </li>
-        <li class="nav-parent<?php if ($this->uri->segment(1, '') == 'conf' && $this->uri->segment(2, '') != 'profile') echo ' active';?>"><a href="javascript:;"><i class="fa fa-suitcase"></i> <span>代码库管理</span></a>
-          <ul class="children"<?php if ($this->uri->segment(1, '') == 'conf' && $this->uri->segment(2, '') != 'profile') echo ' style="display: block"';?>>
-            <li<?php if ($this->uri->segment(2, '') == 'repos') echo ' class="active"';?>><a href="/conf/repos"><i class="fa fa-caret-right"></i> 添加代码库</a></li>
-            <li<?php if ($this->uri->segment(2, '') == 'repos_list' || $this->uri->segment(2, '') == 'repos_edit') echo ' class="active"';?>><a href="/conf/repos_list"><i class="fa fa-caret-right"></i> 代码库管理</a></li>
-          </ul>
+        <li<?php if ($this->uri->segment(1, '') == 'conf' && $this->uri->segment(2, '') != 'profile') echo ' class="active"';?>><a href="/conf/repos_list"><i class="fa fa-suitcase"></i> <span>代码库管理</span></a>
         </li>
       </ul>
 
@@ -105,7 +88,7 @@
               </button>
               <ul class="dropdown-menu dropdown-menu-usermenu pull-right">
                 <li><a href="http://192.168.8.91/markdown/"><i class="glyphicon glyphicon-question-sign"></i> 更新日志</a></li>
-                <li><a href="<?php echo site_url("admin/logout");?>"><i class="glyphicon glyphicon-log-out"></i> 退出</a></li>
+                <li><a href="/admin/logout"><i class="glyphicon glyphicon-log-out"></i> 退出</a></li>
               </ul>
             </div>
           </li>

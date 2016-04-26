@@ -31,28 +31,20 @@
           <?php if ($planId && $currPlan) {?>
           <div class="alert alert-warning">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            计划全称：<strong><?php echo $currPlan['plan_name']?></strong> / 起至时间：<?php echo date("Y-m-d H:i", $currPlan['startime']).' - '.date("Y-m-d H:i", $currPlan['endtime']);?> / 时长：<?php echo timediff($currPlan['startime'], $currPlan['endtime']);?>
+            计划全称：<strong><?php echo $currPlan['plan_name']?></strong> / 起至时间：<?php echo date("Y-m-d H:i", $currPlan['startime']).' - '.date("Y-m-d H:i", $currPlan['endtime']);?> / 时长：<?php echo timediff($currPlan['startime'], $currPlan['endtime']);?> <a href="/issue/add?planId=<?php echo $currPlan['id'];?>"><i class="fa fa-plus"></i> 添加任务</a>
           </div>
           <?php } ?>
           <?php if ($planId) {?>
           <div class="panel panel-default">
             <div class="panel-body">
               <h5 class="subtitle mb5">计划内容</h5>
-              
               <div class="table-responsive">
                 <table class="table table-email">
-                  <thead>
-                    <tr>
-                      <th width="40px">#</th>
-                      <th width="30px"><i class="glyphicon glyphicon-star"></i></th>
-                      <th width="80px">处理进度</th>
-                      <th>任务主题</th>
-                      <th width="150px">添加时间</th>
-                    </tr>
-                  </thead>
                   <tbody>
                     <?php
                       if ($rows) {
+                        if (file_exists('./cache/users.conf.php'))
+                            require './cache/users.conf.php';
                         foreach ($rows as $value) {
                     ?>
                     <tr class="unread">
@@ -65,11 +57,25 @@
                       <td>
                         
                       </td>
-                      <td>
+                      <td width="80px">
                         处理进度
                       </td>
+                      <td align="center" width="30px">
+                        <?php if ($value['type'] == 2) {?><i class="fa fa-bug tooltips" data-toggle="tooltip" title="BUG"></i><?php } ?><?php if ($value['type'] == 1) {?><i class="fa fa-magic tooltips" data-toggle="tooltip" title="TASK"></i><?php } ?>
+                      </td>
                       <td><?php if ($value['level']) {?><?php echo "<strong style='color:#ff0000;' title='".$level[$value['level']]['alt']."'>".$level[$value['level']]['name']."</strong> ";?><?php } ?> <a href="/issue/view/<?php echo $value['id'];?>" target="_blank"><?php echo $value['issue_name'];?></a></span></td>
-                      <td><?php echo date("Y/m/d H:i", $value['add_time']);?></td>
+                      <td align="center" width="40px">
+                        <a href="#" class="pull-left">
+                          <div class="face"><img alt="" src="/static/avatar/<?php echo $users[$value['add_user']]['username']?>.jpg" align="absmiddle" title="添加人：<?php echo $users[$value['add_user']]['realname'];?>"></div>
+                        </a>
+                      </td>
+                      <td align="center" width="40px">
+                      <?php if ($value['accept_user']) {?>
+                      <a href="/conf/profile/<?php echo $value['accept_user'];?>" class="pull-left" target="_blank">
+                        <div class="face"><img alt="" src="/static/avatar/<?php echo $users[$value['accept_user']]['username']?>.jpg" align="absmiddle" title="当前受理人：<?php echo $users[$value['accept_user']]['realname'];?>"></div>
+                      </a>
+                      <?php } else { echo '-'; } ?>
+                    </td>
                     </tr>
                     <?php
                         }
