@@ -22,10 +22,16 @@ class plan extends CI_Controller {
      */
     public function index() {
         $data['PAGE_TITLE'] = '计划列表';
+        $data['planId'] = $this->input->get('planId', TRUE);
         $this->load->model('Model_plan', 'plan', TRUE);
         $row = $this->plan->planFolder($this->_project[$this->_projectId]['id']);
+        if ($row && !$data['planId']) {
+            foreach ($row as $key => $value) {
+                $data['planId'] = $value['id'];
+                break;
+            }
+        }
         $data['planFolder'] = $row;
-        $data['planId'] = $this->input->get('planId', TRUE);
         $this->load->model('Model_issue', 'issue', TRUE);
         $data['rows'] = $this->issue->listByPlan($data['planId'], $this->_project[$this->_projectId]['id']);
         $this->config->load('extension', TRUE);

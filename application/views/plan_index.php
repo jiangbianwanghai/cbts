@@ -21,6 +21,7 @@
           <h5 class="subtitle">已有计划</h5>
           <ul class="nav nav-pills nav-stacked nav-email mb20">
             <?php foreach ($planFolder as $key => $value) {?>
+            
             <li<?php if ($planId == $value['id']) {?> class="active"<?php } ?>><a href="/plan?planId=<?php echo $value['id'];?>"><i class="glyphicon glyphicon-folder-<?php if ($planId == $value['id']) { echo 'open';} else { echo 'close';}?>"></i> <?php echo $value['plan_name'];?></a></li>
             <?php } ?>
           </ul>
