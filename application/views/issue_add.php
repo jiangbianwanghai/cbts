@@ -15,11 +15,11 @@
     <div class="contentpanel">
       <div class="row">
         <div class="col-sm-3 col-lg-2">
+          <h5 class="subtitle">快捷方式</h5>
           <ul class="nav nav-pills nav-stacked nav-email">
-            <li<?php if ($this->uri->segment(1, 'index') == 'issue' && $this->uri->segment(2, 'index') == 'add') {?> class="active"<?php } ?>><a href="/issue/add"><i class="fa fa-plus"></i> 新增任务</a></li>
-            <li<?php if ($this->uri->segment(3, '') == 'all') {?> class="active"<?php } ?>><a href="/issue/index/all"><i class="glyphicon glyphicon-folder-close"></i> 任务列表</a></li>
-            <li<?php if ($this->uri->segment(3, '') == 'to_me') {?> class="active"<?php } ?>><a href="/issue/index/to_me"><i class="glyphicon glyphicon-folder-close"></i> 我负责的</a></li>
-            <li<?php if ($this->uri->segment(3, '') == 'from_me') {?> class="active"<?php } ?>><a href="/issue/index/from_me"><i class="glyphicon glyphicon-folder-close"></i> 我创建的</a></li>
+            <li<?php if ($this->uri->segment(3, '') == 'all') {?> class="active"<?php } ?>><a href="/issue/plaza"><i class="glyphicon glyphicon-folder-close"></i> 任务列表</a></li>
+            <li<?php if ($this->uri->segment(3, '') == 'to_me') {?> class="active"<?php } ?>><a href="/issue/todo"><i class="glyphicon glyphicon-folder-close"></i> 我负责的</a></li>
+            <li<?php if ($this->uri->segment(3, '') == 'from_me') {?> class="active"<?php } ?>><a href="/issue/my"><i class="glyphicon glyphicon-folder-close"></i> 我创建的</a></li>
           </ul>
         </div><!-- col-sm-3 -->
         <div class="col-sm-9 col-lg-10">
@@ -200,7 +200,7 @@ jQuery(document).ready(function(){
     defaultImage : '/static/simditor-2.3.6/images/image.png', //编辑器插入图片时使用的默认图片
     upload: {
         url: '/admin/upload',
-        params: null, //键值对,指定文件上传接口的额外参数,上传的时候随文件一起提交  
+        params: {'<?php echo $this->security->get_csrf_token_name();?>':'<?php echo $this->security->get_csrf_hash();?>'}, //键值对,指定文件上传接口的额外参数,上传的时候随文件一起提交  
         fileKey: 'upload_file', //服务器端获取文件数据的参数名  
         connectionCount: 3,  
         leaveConfirm: '正在上传文件'

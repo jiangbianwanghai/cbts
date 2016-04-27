@@ -19,6 +19,7 @@ class admin extends CI_Controller {
         $this->load->model('Model_issue', 'issue', TRUE);
         $this->config->load('extension', TRUE);
         $data['level'] = $this->config->item('level', 'extension');
+        $data['workflow'] = $this->config->item('workflow', 'extension');
         $config = $this->config->item('pages', 'extension');
         $data['projectMd5'] = $projectId = $this->uri->segment(4, 0);
         $data['planId'] = $projectId = $this->uri->segment(5, 0);

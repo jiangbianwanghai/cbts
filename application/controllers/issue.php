@@ -115,6 +115,11 @@ class issue extends CI_Controller {
             $data['users'] = $users;
         }
 
+        //读取任务相关的评论
+        $this->load->model('Model_issuecomment', 'issuecomment', TRUE);
+        $rows = $this->issuecomment->rows($id);
+        $data['comment'] = $rows['data'];
+
         //获取贡献代码的用户信息
         $data['shareUsers'] = $this->test->shareUsers($id);
         $this->load->view('issue_view', $data);
@@ -576,6 +581,72 @@ class issue extends CI_Controller {
             $callBack = array(
                 'status' => false,
                 'message' => '取消标记失败'
+            );
+        }
+        echo json_encode($callBack);
+    }
+
+    public function coment_add_ajax() {
+        $this->load->model('Model_issue', 'issue', TRUE);
+        $this->load->model('Model_issuecomment', 'issuecomment', TRUE);
+        $row = $this->issue->fetchOne($this->input->post('issue_id'));
+        if (!$row) {
+            $callBack = array(
+                'status' => false,
+                'message' => '无此数据',
+                'url' => '/'
+            );
+            exit();
+        }
+        $post = array(
+            'issue_id' => $this->input->post('issue_id'),
+            'content' => $this->input->post('content'),
+            'add_user' => $this->input->cookie('uids'),
+            'add_time' => time(),
+        );
+        $feedback = $this->issuecomment->add($post);
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+        }
+        $this->load->helper('friendlydate');
+        if ($feedback['status']) {
+            if ($this->input->cookie('uids') == $row['accept_user']) {
+                $usertype = '当前受理人';
+            } else {
+                $usertype = '路人甲';
+            }
+            $callBack = array(
+                'status' => true,
+                'message' => array(
+                    'content'=>$this->input->post('content'),
+                    'username'=>$users[$this->input->cookie('uids')]['username'],
+                    'realname'=>$users[$this->input->cookie('uids')]['realname'],
+                    'addtime' => friendlydate(time()),
+                    'usertype' => $usertype
+                )
+            );
+        } else {
+            $callBack = array(
+                'status' => false,
+                'message' => '提交失败'
+            );
+        }
+        echo json_encode($callBack);
+    }
+
+    public function del_comment() {
+        $id = $this->uri->segment(3, 0);
+        $this->load->model('Model_issuecomment', 'issuecomment', TRUE);
+        $flag = $this->issuecomment->del($id);
+        if ($flag) {
+            $callBack = array(
+                'status' => true,
+                'message' => '删除成功'
+            );
+        } else {
+            $callBack = array(
+                'status' => false,
+                'message' => '删除失败'
             );
         }
         echo json_encode($callBack);

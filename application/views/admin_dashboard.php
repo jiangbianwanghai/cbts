@@ -109,11 +109,14 @@
                     <td>
                       <a href="javascript:;" item-id="<?php echo $value['id'];?>" class="star<?php if ($this->uri->segment(2, '') == 'star') { echo ' star-checked'; } else { if (isset($star[$value['id']])) echo ' star-checked'; }?>"><i class="glyphicon glyphicon-star"></i></a>
                     </td>
+                    <?php if ($this->uri->segment(3, 'to_me') == 'to_me') {?>
                     <td align="center" width="40px">
                       <a href="/conf/profile/<?php echo $value['add_user'];?>" class="pull-left" target="_blank">
                         <div class="face"><img alt="" src="/static/avatar/<?php echo $users[$value['add_user']]['username']?>.jpg" align="absmiddle" title="添加人：<?php echo $users[$value['add_user']]['realname'];?>"></div>
                       </a>
                     </td>
+                    <?php } ?>
+                    <?php if ($this->uri->segment(3, 'to_me') == 'from_me') {?>
                     <td align="center" width="40px">
                       <?php if ($value['accept_user']) {?>
                       <a href="/conf/profile/<?php echo $value['accept_user'];?>" class="pull-left" target="_blank">
@@ -121,8 +124,9 @@
                       </a>
                       <?php } else { echo '-'; } ?>
                     </td>
+                    <?php } ?>
                     <td width="80px">
-                      处理进度
+                      <?php echo '<span class="label label-'.$workflow[$value['workflow']]['span_color'].'">'.$workflow[$value['workflow']]['name'].'</span>'; ?>
                     </td>
                     <td align="center" width="30px">
                       <?php if ($value['type'] == 2) {?><i class="fa fa-bug tooltips" data-toggle="tooltip" title="BUG"></i><?php } ?><?php if ($value['type'] == 1) {?><i class="fa fa-magic tooltips" data-toggle="tooltip" title="TASK"></i><?php } ?>

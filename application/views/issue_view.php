@@ -12,6 +12,15 @@
     </div>
     
     <div class="contentpanel">
+      <div class="row">
+        <div class="col-sm-3 col-lg-2">
+          <ul class="nav nav-pills nav-stacked nav-email">
+            <li<?php if ($this->uri->segment(3, '') == 'all') {?> class="active"<?php } ?>><a href="/issue/plaza"><i class="glyphicon glyphicon-folder-close"></i> 任务列表</a></li>
+            <li<?php if ($this->uri->segment(3, '') == 'to_me') {?> class="active"<?php } ?>><a href="/issue/todo"><i class="glyphicon glyphicon-folder-close"></i> 我负责的</a></li>
+            <li<?php if ($this->uri->segment(3, '') == 'from_me') {?> class="active"<?php } ?>><a href="/issue/my"><i class="glyphicon glyphicon-folder-close"></i> 我创建的</a></li>
+          </ul>
+        </div><!-- col-sm-3 -->
+        <div class="col-sm-9 col-lg-10">
       <?php if ($row['status'] == '-1') { ?>
       <div class="alert alert-warning">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -275,12 +284,43 @@
                                 </div><!-- panel-body -->
                             </div><!-- panel -->
                       <?php } ?>
-                  </div>
+                      <?php
+                        if ($comment) {
+                          foreach ($comment as $value) {
+                      ?>
+                      <div class="media" id="comment-<?php echo $value['id'];?>">
+                        <div class="pull-left">
+                          <div class="face"><img alt="" src="/static/avatar/<?php echo $users[$value['add_user']]['username']?>.jpg" align="absmiddle" title="<?php echo $users[$value['add_user']]['realname'];?>"></div>
+                        </div>
+                        <div class="media-body">
+                          <span class="media-meta pull-right"><?php echo friendlydate($value['add_time']);?><?php if ($value['add_user'] == $this->input->cookie('uids')) {?><br /><a class="del" ids="<?php echo $value['id'];?>" href="javascript:;">删除</a></span><?php } ?>
+                          <h4 class="text-primary"><?php echo $users[$value['add_user']]['realname'];?></h4>
+                          <small class="text-muted"><?php if ($this->input->cookie('uids') == $row['accept_user']) { echo '当前受理人'; } else { echo '路人甲'; }?></small>
+                          <p><?php echo $value['content'];?></p>
+                        </div>
+                      </div>
+                      <?php
+                          }
+                        }
+                      ?>
+                      <div id="box"></div>
+                      <div class="media">
+                        <div class="pull-left">
+                          <div class="face"><img alt="" src="/static/avatar/<?php echo $users[$this->input->cookie('uids')]['username']?>.jpg" align="absmiddle" title="<?php echo $users[$this->input->cookie('uids')]['realname'];?>"></div>
+                        </div>
+                        <div class="media-body">
+                          <textarea id="content" name="content"></textarea>
+                          <div class="mb10"></div>
+                          <input type="hidden" value="<?php echo $row['id'];?>" id="issue_id" name="issue_id">
+                          <button class="btn btn-primary" id="btnSubmit">提交</button>
+                        </div>
+                      </div>
+                  
               </div><!-- row -->
               
           </div><!-- panel-body -->
       </div><!-- panel -->
-      
+    </div>  
   </div><!-- contentpanel -->
     
   </div><!-- mainpanel -->
@@ -300,12 +340,15 @@
 </div>
 
 <script src="/static/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="/static/simditor-2.3.6/scripts/module.js"></script>
+<script type="text/javascript" src="/static/simditor-2.3.6/scripts/uploader.js"></script>
+<script type="text/javascript" src="/static/simditor-2.3.6/scripts/hotkeys.js"></script>
+<script type="text/javascript" src="/static/simditor-2.3.6/scripts/simditor.js"></script>
 <script src="/static/js/jquery-migrate-1.2.1.min.js"></script>
 <script src="/static/js/bootstrap.min.js"></script>
 <script src="/static/js/modernizr.min.js"></script>
 <script src="/static/js/jquery.sparkline.min.js"></script>
 <script src="/static/js/toggles.min.js"></script>
-<script src="/static/js/retina.min.js"></script>
 <script src="/static/js/jquery.cookies.js"></script>
 
 <script src="/static/js/jquery.datatables.min.js"></script>
@@ -789,6 +832,71 @@
     });
 
   });
+</script>
+
+<script type="text/javascript">
+$(function(){
+  toolbar = [ 'title', 'bold', 'italic', 'underline', 'strikethrough',
+    'color', '|', 'ol', 'ul', 'blockquote', 'code', 'table', '|',
+    'link', 'image', 'hr', '|', 'indent', 'outdent' ];
+  var editor = new Simditor({
+    textarea : $('#content'),
+    toolbar : toolbar,  //工具栏
+    defaultImage : '/static/simditor-2.3.6/images/image.png', //编辑器插入图片时使用的默认图片
+    upload: {
+        url: '/admin/upload',
+        params: {'<?php echo $this->security->get_csrf_token_name();?>':'<?php echo $this->security->get_csrf_hash();?>'}, //键值对,指定文件上传接口的额外参数,上传的时候随文件一起提交  
+        fileKey: 'upload_file', //服务器端获取文件数据的参数名  
+        connectionCount: 3,  
+        leaveConfirm: '正在上传文件'
+      }
+  });
+
+  $("#btnSubmit").click(function(){
+    content = $("#content").val();
+    issue_id = $("#issue_id").val();
+    if (!content) {
+      editor.focus();
+      return false;
+    }
+    $.ajax({
+      type: "POST",
+      url: "/issue/coment_add_ajax",
+      data: "content="+content+"&issue_id="+issue_id+"&<?php echo $this->security->get_csrf_token_name();?>=<?php echo $this->security->get_csrf_hash();?>",
+      dataType: "JSON",
+      success: function(data){
+        if (data.status) {
+          $("#box").append('<div class="media"><div class="pull-left"><div class="face"><img alt="" src="/static/avatar/'+data.message.username+'.jpg" align="absmiddle" title="'+data.message.realname+'"></div></div><div class="media-body"><span class="media-meta pull-right">'+data.message.addtime+'</span><h4 class="text-primary">'+data.message.realname+'</h4><small class="text-muted">'+data.message.usertype+'</small><p>'+data.message.content+'</p></div></div>');
+          editor.setValue('');
+        } else {
+          alert('fail');
+        };
+      }
+    });
+  });
+
+  $(".del").click(function(){
+    var c = confirm('你确定要删除吗？');
+      if(c) {
+        id = $(this).attr("ids");
+        $.ajax({
+          type: "GET",
+          url: "/issue/del_comment/"+id,
+          dataType: "JSON",
+          success: function(data){
+            if (data.status) {
+              setTimeout(function () {
+                $("#comment-"+id).hide();
+              }, 500);
+            } else {
+              alert('fail');
+            }
+          }
+        });
+      }
+  });
+
+});
 </script>
 
 </body>
