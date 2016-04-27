@@ -96,6 +96,7 @@
                 </div>
               </div><!-- panel-body -->
               <input type="hidden" value="<?php echo $row['id'];?>" id="issue_id" name="issue_id">
+              <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>" />
               <div class="panel-footer">
                 <div class="row">
                   <div class="col-sm-9 col-sm-offset-3">
