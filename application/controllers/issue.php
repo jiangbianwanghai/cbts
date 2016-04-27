@@ -19,9 +19,6 @@ class issue extends CI_Controller {
 
     public function add() {
     	$data['PAGE_TITLE'] = '新增任务';
-        $aclUsers = array('71','72','69','60','73','74','20','1','75', '76');//只允许吕云毅，彭明明，张智龙，李奎，师旭，孟伟，樊贺，吴英豪
-        if (!in_array($this->input->cookie('uids'), $aclUsers))
-            exit('只有各个绩效圈的Leader才有发起任务的权限，请联系@吕云毅，@彭明明，@张智龙，@李奎，@师旭');
         $this->load->view('issue_add', $data);
     }
 
@@ -545,6 +542,43 @@ class issue extends CI_Controller {
         $subject = $users[$this->input->cookie('uids')]['realname']."指派了一个任务给你";
         $this->rtx($username,$url,$subject);
         echo 1;
+    }
+
+    public function star_ajax() {
+        $id = $this->uri->segment(3, 0);
+        $this->load->model('Model_issue', 'issue', TRUE);
+        $data = array('add_user' => $this->input->cookie('uids'), 'add_time' => time(), 'star_id' => $id, 'star_type' => 1);
+        $flag = $this->issue->starAdd($data);
+        if ($flag) {
+            $callBack = array(
+                    'status' => true,
+                    'message' => '标记成功'
+                );
+        } else {
+            $callBack = array(
+                'status' => false,
+                'message' => '标记失败'
+            );
+        }
+        echo json_encode($callBack);
+    }
+
+    public function star_del() {
+        $id = $this->uri->segment(3, 0);
+        $this->load->model('Model_issue', 'issue', TRUE);
+        $flag = $this->issue->starDel($id);
+        if ($flag) {
+            $callBack = array(
+                    'status' => true,
+                    'message' => '取消标记成功'
+                );
+        } else {
+            $callBack = array(
+                'status' => false,
+                'message' => '取消标记失败'
+            );
+        }
+        echo json_encode($callBack);
     }
 
     private function rtx($toList,$url,$subject)

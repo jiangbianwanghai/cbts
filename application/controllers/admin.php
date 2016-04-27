@@ -2,25 +2,72 @@
 
 class admin extends CI_Controller {
 
+    private $project = '';
+
+    public function __construct() {
+        parent::__construct();
+        if (file_exists('./cache/project.conf.php')) {
+            require './cache/project.conf.php';
+            $this->_project = $project;
+        }
+    }
+
     public function index()
     {
         $data['PAGE_TITLE'] = '我的面板';
+        $data['planListByIssue'] = array();
         $this->load->model('Model_issue', 'issue', TRUE);
         $this->config->load('extension', TRUE);
         $data['level'] = $this->config->item('level', 'extension');
         $config = $this->config->item('pages', 'extension');
-        $offset = $this->uri->segment(4, 0);
+        $data['projectMd5'] = $projectId = $this->uri->segment(4, 0);
+        $data['planId'] = $projectId = $this->uri->segment(5, 0);
+        $data['taskType'] = $this->uri->segment(6, 0);
+        $taskTypeArr = array('task' => 1, 'bug' => 2);
+        if (isset($taskTypeArr[$data['taskType']])) {
+            $taskType = $taskTypeArr[$data['taskType']];
+        } else {
+            $taskType = 0;
+        }
+        if ($data['projectMd5'] && isset($this->_project[$data['projectMd5']])) {
+            $projectId = $this->_project[$data['projectMd5']]['id'];
+        } else {
+            $data['projectMd5'] = 0;
+        }
+        $offset = $this->uri->segment(7, 0);
         if ($this->uri->segment(3, 'to_me') == 'over') {
             exit('功能开发中...');
         } else {
-            $rows = $this->issue->listByUserId($this->input->cookie('uids'), $this->uri->segment(3, 'to_me'), $config['per_page'], $offset);
+            $rows = $this->issue->listByUserId($this->input->cookie('uids'), $this->uri->segment(3, 'to_me'), $projectId, $data['planId'], $taskType, $config['per_page'], $offset);
+            //获取任务所涉及到的项目列表
+            $data['projectListByIssue'] = $this->issue->projectListByIssue($this->input->cookie('uids'), $this->uri->segment(3, 'to_me'));
+            if ($projectId) {
+                $data['planListByIssue'] = $this->issue->planListByIssue($this->input->cookie('uids'), $projectId, $this->uri->segment(3, 'to_me'));
+                if ($data['planListByIssue']) {
+                    foreach ($data['planListByIssue'] as $key => $value) {
+                        $data['planArr'][$value['id']] = $value;
+                    }
+                }
+            }
+            if ($rows['data']) {
+                $ids = array();
+                foreach ($rows['data'] as $key => $value) {
+                    $ids[]= $value['id'];
+                }
+                $star = $this->issue->starByBugId($ids);
+                if ($star) {
+                    foreach ($star as $key => $value) {
+                        $data['star'][$value['star_id']] = $value['star_id'];
+                    }
+                }
+            }
         }
         $data['rows'] = $rows['data'];
         $data['total'] = $rows['total'];
         $this->load->library('pagination');
         $config['total_rows'] = $rows['total'];
         $config['cur_page'] = $offset;
-        $config['base_url'] = '/admin/index/'.$this->uri->segment(3, 'to_me');
+        $config['base_url'] = '/admin/index/'.$this->uri->segment(3, 'to_me').'/'.$data['projectMd5'].'/'.$data['planId'].'/'.$data['taskType'];
         $this->pagination->initialize($config);
         $data['pages'] = $this->pagination->create_links();
         $data['offset'] = $offset;

@@ -41,6 +41,16 @@ jQuery(document).ready(function() {
       return false;
    });
 
+   //Check
+  jQuery('.ckbox input').click(function(){
+      var t = jQuery(this);
+      if(t.is(':checked')){
+          t.closest('tr').addClass('selected');
+      } else {
+          t.closest('tr').removeClass('selected');
+      }
+  });
+
 });
 
 //验证项目表单
