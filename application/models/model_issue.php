@@ -364,13 +364,19 @@ class Model_issue extends CI_Model {
         return $row;
     }
 
-    public function listByUserId($uid, $folder = 'to_me', $limit = 20, $offset = 0) {
+    public function listByUserId($uid, $folder = 'to_me', $projectId = 0, $planId = 0, $taskType = 0, $limit = 20, $offset = 0) {
         $rows = array('total' => 0, 'data' => false);
         $this->db->select('*');
         if ($folder == 'to_me')
             $this->db->where('accept_user', $uid);
         if ($folder == 'from_me')
             $this->db->where('add_user', $uid);
+        if ($projectId)
+            $this->db->where('project_id', $projectId);
+        if ($planId)
+            $this->db->where('plan_id', $planId);
+        if ($taskType)
+            $this->db->where('type', $taskType);
         $db = clone($this->db);
         $rows['total'] = $this->db->count_all_results($this->_table);
         $this->db = $db;
@@ -379,5 +385,71 @@ class Model_issue extends CI_Model {
         $query = $this->db->get($this->_table);
         $rows['data'] = $query->result_array();
         return $rows;
+    }
+
+    public function projectListByIssue($uid, $folder = '') {
+        $this->db->select('project_id');
+        $this->db->where('project_id > ', 0);
+        if ($folder == 'to_me')
+            $this->db->where('accept_user', $uid);
+        if ($folder == 'from_me')
+            $this->db->where('add_user', $uid);
+        $this->db->group_by('project_id');
+        $query = $this->db->get($this->_table);
+        $rows = $query->result_array();
+        if ($rows) {
+            $idArr = '';
+            foreach ($rows as $key => $value) {
+                $idArr[] = $value['project_id'];
+            }
+            $this->db->select('id, md5, project_name');
+            $this->db->where_in('id', $idArr);
+            $query = $this->db->get('project');
+            $rows = $query->result_array();
+        }
+        return $rows;
+    }
+
+    public function planListByIssue($uid, $projectId, $folder = '') {
+        $this->db->select('plan_id');
+        $this->db->where('plan_id > ', 0);
+        $this->db->where('project_id', $projectId);
+        if ($folder == 'to_me')
+            $this->db->where('accept_user', $uid);
+        if ($folder == 'from_me')
+            $this->db->where('add_user', $uid);
+        $this->db->group_by('plan_id');
+        $query = $this->db->get($this->_table);
+        $rows = $query->result_array();
+        if ($rows) {
+            $idArr = '';
+            foreach ($rows as $key => $value) {
+                $idArr[] = $value['plan_id'];
+            }
+            $this->db->select('id, plan_name');
+            $this->db->where_in('id', $idArr);
+            $query = $this->db->get('plan');
+            $rows = $query->result_array();
+        }
+        return $rows;
+    }
+
+    public function starAdd($data) {
+        return $this->db->insert('star', $data);
+    }
+
+    public function starDel($id) {
+        return $this->db->delete('star', array('star_id' => $id));
+    }
+
+    public function starByBugId($array) {
+        $row = array();
+        $this->db->select('star_id');
+        $this->db->where_in('star_id', $array);
+        $this->db->where('star_type', 1);
+        $this->db->where('add_user', $this->input->cookie('uids'));
+        $query = $this->db->get('star');
+        $row = $query->result_array();
+        return $row;
     }
 }
