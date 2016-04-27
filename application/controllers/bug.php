@@ -2,8 +2,8 @@
 
 class bug extends CI_Controller {
 
-    private $projectId = '';
-    private $project = '';
+    private $_projectId = 0;
+    private $_projectCache = array();
 
     public function __construct() {
         parent::__construct();
@@ -13,7 +13,7 @@ class bug extends CI_Controller {
         }
         if (file_exists('./cache/project.conf.php')) {
             require './cache/project.conf.php';
-            $this->_project = $project;
+            $this->_projectCache = $project;
         }
     }
 

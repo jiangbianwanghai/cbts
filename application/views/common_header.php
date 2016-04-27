@@ -60,7 +60,13 @@
       <div class="topnav">
         <ul class="nav nav-horizontal">
           <li class="active"><a href="/"><i class="fa fa-home"></i> <span>我的面板</span></a></li>
-          <li class="nav-parent"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-list"></i> <span id="curr-project"><?php if ($this->input->cookie('projectId')) { require './cache/project.conf.php'; echo $project[$this->input->cookie('projectId')]['project_name']; } else { echo '绩效圈'; }?></span> <span class="caret"></span></a>
+          <li class="nav-parent"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-list"></i> <span id="curr-project">
+            <?php
+            require './cache/project.conf.php';
+            if ($this->input->cookie('projectId')&& isset($project[$this->input->cookie('projectId')])) {
+              echo $project[$this->input->cookie('projectId')]['project_name']; 
+            } else { echo '绩效圈'; }
+            ?></span> <span class="caret"></span></a>
             <ul class="dropdown-menu children">
               <?php
               if (file_exists('./cache/project.conf.php')) {

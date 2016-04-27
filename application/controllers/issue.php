@@ -2,8 +2,8 @@
 
 class issue extends CI_Controller {
 
-    private $projectId = '';
-    private $project = '';
+    private $_projectId = 0;
+    private $_projectCache = array();
 
     public function __construct() {
         parent::__construct();
@@ -13,7 +13,7 @@ class issue extends CI_Controller {
         }
         if (file_exists('./cache/project.conf.php')) {
             require './cache/project.conf.php';
-            $this->_project = $project;
+            $this->_projectCache = $project;
         }
     }
 
@@ -37,7 +37,7 @@ class issue extends CI_Controller {
         }
         $this->load->model('Model_issue', 'issue', TRUE);
         $post = array(
-            'project_id' => $this->_project[$this->_projectId]['id'],
+            'project_id' => $this->_projectCache[$this->_projectId]['id'],
             'plan_id' => $this->input->post('plan_id'),
             'type' => $this->input->post('type'),
             'level' => $this->input->post('level'),

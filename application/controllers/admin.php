@@ -2,13 +2,13 @@
 
 class admin extends CI_Controller {
 
-    private $project = '';
+    private $_projectCache = array();
 
     public function __construct() {
         parent::__construct();
         if (file_exists('./cache/project.conf.php')) {
             require './cache/project.conf.php';
-            $this->_project = $project;
+            $this->_projectCache = $project;
         }
     }
 
@@ -29,8 +29,8 @@ class admin extends CI_Controller {
         } else {
             $taskType = 0;
         }
-        if ($data['projectMd5'] && isset($this->_project[$data['projectMd5']])) {
-            $projectId = $this->_project[$data['projectMd5']]['id'];
+        if ($data['projectMd5'] && isset($this->_projectCache[$data['projectMd5']])) {
+            $projectId = $this->_projectCache[$data['projectMd5']]['id'];
         } else {
             $data['projectMd5'] = 0;
         }

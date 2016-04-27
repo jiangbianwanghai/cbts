@@ -2,8 +2,8 @@
 
 class plan extends CI_Controller {
 
-	private $projectId = '';
-	private $project = '';
+	private $_projectId = 0;
+    private $_projectCache = array();
 
 	public function __construct() {
 		parent::__construct();
@@ -13,7 +13,7 @@ class plan extends CI_Controller {
 		}
 		if (file_exists('./cache/project.conf.php')) {
 			require './cache/project.conf.php';
-			$this->_project = $project;
+			$this->_projectCache = $project;
 		}
 	}
 
@@ -24,17 +24,17 @@ class plan extends CI_Controller {
         $data['PAGE_TITLE'] = '计划列表';
         $data['planId'] = $this->input->get('planId', TRUE);
         $this->load->model('Model_plan', 'plan', TRUE);
-        $row = $this->plan->planFolder($this->_project[$this->_projectId]['id']);
+        $row = $this->plan->planFolder($this->_projectCache[$this->_projectId]['id']);
         if ($row && !$data['planId']) {
             foreach ($row as $key => $value) {
                 $data['planId'] = $value['id'];
                 break;
             }
         }
-        $data['currPlan'] = $this->plan->fetchOne($data['planId'], $this->_project[$this->_projectId]['id']);
+        $data['currPlan'] = $this->plan->fetchOne($data['planId'], $this->_projectCache[$this->_projectId]['id']);
         $data['planFolder'] = $row;
         $this->load->model('Model_issue', 'issue', TRUE);
-        $data['rows'] = $this->issue->listByPlan($data['planId'], $this->_project[$this->_projectId]['id']);
+        $data['rows'] = $this->issue->listByPlan($data['planId'], $this->_projectCache[$this->_projectId]['id']);
         $this->config->load('extension', TRUE);
         $data['level'] = $this->config->item('level', 'extension');
         $this->load->helper('timediff');
@@ -59,7 +59,7 @@ class plan extends CI_Controller {
     	if (file_exists('./cache/project.conf.php'))
     		require './cache/project.conf.php';
         $post = array(
-        	'project_id' => $this->_project[$this->_projectId]['id'],
+        	'project_id' => $this->_projectCache[$this->_projectId]['id'],
             'plan_name' => $this->input->post('plan_name'),
             'plan_discription' => $this->input->post('plan_discription'),
             'startime' => strtotime($this->input->post('startime')),
