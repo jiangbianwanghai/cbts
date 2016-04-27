@@ -373,6 +373,9 @@ class Model_test extends CI_Model {
         if ($status == 'pass') {
             return $this->db->update('test', array('tice' => 1,'state' => -3, 'rank' => 0, 'last_time' => time(), 'last_user' => $this->input->cookie('uids')), array('id' => $id));
         }
+        if ($status == 'launch') {
+            return $this->db->update('test', array('tice' => 1,'state' => 3, 'rank' => 1, 'last_time' => time(), 'last_user' => $this->input->cookie('uids')), array('id' => $id));
+        }
     }
 
     /**
