@@ -8,36 +8,65 @@
 |
 */
 $config = array(
-
-    //用户登录
-    'admin/signin' => array(
+    'plan/add_ajax' => array(
         array(
-            'field'   => 'username', 
-            'label'   => '账号', 
-            'rules'   => 'trim|required|min_length[5]|max_length[12]|xss_clean'
+            'field'   => 'plan_name', 
+            'label'   => '名称', 
+            'rules'   => 'trim|required|min_length[5]|max_length[40]|xss_clean'
         ),
         array(
-            'field'   => 'password', 
-            'label'   => '密码', 
-            'rules'   => 'trim|required|md5'
+            'field'   => 'plan_discription', 
+            'label'   => '简介', 
+            'rules'   => 'trim|required|min_length[5]|max_length[300]|xss_clean'
+        ),
+        array(
+            'field'   => 'startime', 
+            'label'   => '开始时间', 
+            'rules'   => 'trim|required|xss_clean'
+        ),
+        array(
+            'field'   => 'endtime', 
+            'label'   => '结束时间', 
+            'rules'   => 'trim|required|xss_clean'
         )
     ),
-    
-    //添加分类
-    'category/add' => array(
+    'project/add_ajax' => array(
         array(
-            'field'   => 'repos_ver', 
-            'label'   => '属性名称', 
-            'rules'   => 'trim|required|min_length[1]|max_length[12]|xss_clean'
+            'field'   => 'project_name', 
+            'label'   => '名称', 
+            'rules'   => 'trim|required|min_length[5]|max_length[40]|xss_clean'
+        ),
+        array(
+            'field'   => 'project_discription', 
+            'label'   => '简介', 
+            'rules'   => 'trim|required|min_length[5]|max_length[300]|xss_clean'
         )
     ),
-    
-    //添加号码
-    'number/add' => array(
+    'issue/add_ajax' => array(
         array(
-            'field'   => 'number', 
-            'label'   => '号码名称', 
-            'rules'   => 'trim|required|min_length[11]|max_length[11]|xss_clean'
+            'field'   => 'issue_name', 
+            'label'   => '任务全称', 
+            'rules'   => 'trim|required|min_length[5]|max_length[40]|xss_clean'
+        ),
+        array(
+            'field'   => 'type', 
+            'label'   => '任务类型', 
+            'rules'   => 'trim|required|xss_clean'
+        ),
+        array(
+            'field'   => 'type', 
+            'label'   => '紧急程度', 
+            'rules'   => 'trim|required|xss_clean'
+        ),
+        array(
+            'field'   => 'issue_summary', 
+            'label'   => '简介', 
+            'rules'   => 'trim|xss_clean'
+        ),
+        array(
+            'field'   => 'plan_id', 
+            'label'   => '计划', 
+            'rules'   => 'trim|required|xss_clean'
         )
     ),
 );

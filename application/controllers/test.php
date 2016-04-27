@@ -2,6 +2,21 @@
 
 class test extends CI_Controller {
 
+    private $projectId = '';
+    private $project = '';
+
+    public function __construct() {
+        parent::__construct();
+        $this->_projectId = $this->input->cookie('projectId');
+        if (!$this->_projectId) {
+            exit('无法获取项目信息，请 <a href="/">返回首页</a> 选择项目');
+        }
+        if (file_exists('./cache/project.conf.php')) {
+            require './cache/project.conf.php';
+            $this->_project = $project;
+        }
+    }
+
     /**
      * 添加表单
      */

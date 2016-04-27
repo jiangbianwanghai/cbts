@@ -7,14 +7,15 @@
   <meta name="author" content="">
   <link rel="shortcut icon" href="images/favicon.png" type="image/png">
 
-  <title>巧克力(CBTS)提测系统-Beta</title>
+  <title>CITS - Chocolate Issue Tracker System</title>
 
   <link href="/static/css/style.default.css" rel="stylesheet">
 
   <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!--[if lt IE 9]>
-  <script src="js/html5shiv.js"></script>
-  <script src="js/respond.min.js"></script>
+  <script>alert("您的浏览器版本过低，建议您使用Chrome,Firefox,IE9及以上版本")</script>
+  <script src="/static/js/html5shiv.js"></script>
+  <script src="/static/js/respond.min.js"></script>
   <![endif]-->
 </head>
 
@@ -30,18 +31,18 @@
                 
                 <div class="signin-info">
                     <div class="logopanel">
-                        <h1><span>[</span> CBTS <sup>beta</sup> <span>]</span></h1>
+                        <h1><span>{</span> 巧克力任务跟踪系统 <span>}</span></h1>
                     </div><!-- logopanel -->
                 
                     <div class="mb20"></div>
                 
-                    <h5><strong>Chocolate Bug Tracker System</strong></h5>
+                    <h5><strong>CITS - Chocolate Issue Tracker System</strong></h5>
                     <ul>
-                        <li><i class="fa fa-arrow-circle-o-right mr5"></i> 跟踪提测代码进度</li>
-                        <li><i class="fa fa-arrow-circle-o-right mr5"></i> 提测状态Rtx提醒</li>
-                        <li><i class="fa fa-arrow-circle-o-right mr5"></i> 一键合并代码</li>
-                        <li><i class="fa fa-arrow-circle-o-right mr5"></i> 一键提测到测试环境</li>
-                        <li><i class="fa fa-arrow-circle-o-right mr5"></i> 全面了解每个产品线的健康状况</li>
+                        <li><i class="fa fa-arrow-circle-o-right mr5"></i> 产品迭代计划制定</li>
+                        <li><i class="fa fa-arrow-circle-o-right mr5"></i> 任务执行情况跟踪</li>
+                        <li><i class="fa fa-arrow-circle-o-right mr5"></i> 一键部署代码到测试环境</li>
+                        <li><i class="fa fa-arrow-circle-o-right mr5"></i> 工作数据统计与分析</li>
+                        <li><i class="fa fa-arrow-circle-o-right mr5"></i> 掌握每个产品线的开发计划</li>
                     </ul>
                     <div class="mb20"></div>
                     <strong>不需要注册，可以直接使用Rtx帐号登录本系统</strong>
@@ -98,7 +99,7 @@
     $.ajax({
       type: "POST",
       url: "/admin/login",
-      data: "username="+username+"&password="+password,
+      data: "username="+username+"&password="+password+"&<?php echo $this->security->get_csrf_token_name();?>=<?php echo $this->security->get_csrf_hash();?>",
       dataType: "JSON",
       success: function(data){
         if (data.status) {
