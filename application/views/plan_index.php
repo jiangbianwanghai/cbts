@@ -92,6 +92,7 @@
           </div><!-- panel -->
         </div><!-- col-sm-9 -->
       </div><!-- row -->
+      <p class="text-right"><small>页面执行时间 <em>{elapsed_time}</em> 秒 使用内存 {memory_usage}</small></p>
     </div><!-- contentpanel -->
     <?php } ?>
   </div><!-- mainpanel -->
@@ -167,6 +168,7 @@
 <script src="/static/js/jquery.datetimepicker.full.js"></script>
 
 <script src="/static/js/custom.js"></script>
+<script src="/static/js/cits.js"></script>
 <script>
 function validForm(formData,jqForm,options){
   return $("#basicForm").valid();

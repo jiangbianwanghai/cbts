@@ -52,16 +52,19 @@ class issue extends CI_Controller {
             exit();
         }
         $this->load->model('Model_issue', 'issue', TRUE);
+
         $post = array(
             'project_id' => $this->_projectCache[$this->_projectId]['id'],
             'plan_id' => $this->input->post('plan_id'),
             'type' => $this->input->post('type'),
             'level' => $this->input->post('level'),
             'issue_name' => $this->input->post('issue_name'),
-            'url' => serialize(explode(PHP_EOL, $this->input->post('issue_url'))),
             'issue_summary' => $this->input->post('issue_summary'),
             'deadline' => strtotime($this->input->post('deadline'))
         );
+        if ($this->input->post('issue_url')) {
+            $post['url'] = serialize(explode(PHP_EOL, $this->input->post('issue_url')));
+        }
         $feedback = $this->issue->add($post);
         if ($feedback['status']) {
             $callBack = array(

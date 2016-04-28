@@ -18,7 +18,10 @@ jQuery(document).ready(function() {
       var projectName = jQuery(this).attr('project');
       jQuery('#curr-project').text(projectName);
       jQuery.cookie('projectId', projectId, { expires: 15, path: '/' }); 
-      location.href = window.location.href;
+      var url = window.location.href;
+      var arr = url.split('?');
+      var ar = arr[0];
+      location.href = ar;
    });
 
    // Toggle Left Menu
