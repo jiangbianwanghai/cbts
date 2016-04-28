@@ -72,6 +72,7 @@ class admin extends CI_Controller {
         $data['pages'] = $this->pagination->create_links();
         $data['offset'] = $offset;
         $data['per_page'] = $config['per_page'];
+
         $this->load->view('admin_dashboard', $data);
     }
 

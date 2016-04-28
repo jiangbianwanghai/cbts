@@ -4634,3 +4634,13 @@ div.error label.error:before {
     border-radius: 50px;
     float: left;
 }
+
+.abc{
+    display: none;
+}
+.open{
+    display: block;
+}
+.deploy{
+    cursor: pointer;
+}

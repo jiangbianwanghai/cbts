@@ -165,20 +165,21 @@ class bug extends CI_Controller {
      * 添加表单
      */
     public function add() {
-    	$data['PAGE_TITLE'] = '提交BUG';
+
+        //页面标题初始化
+    	$data['PAGE_TITLE'] = '新增BUG反馈';
+
+        //验证ID是否合法
         $issueId = $this->uri->segment(3, 0);
         $this->load->model('Model_issue', 'issue', TRUE);
         $data['row'] = $this->issue->fetchOne($issueId);
         if (!$data['row'])
-            exit("无此数据.");
-        if (file_exists('./cache/repos.conf.php')) {
-            require './cache/repos.conf.php';
-            $data['repos'] = $repos;
-        }
-        if (file_exists('./cache/users.conf.php')) {
-            require './cache/users.conf.php';
-            $data['users'] = $users;
-        }
+            show_error('参数错误，无此数据！<a href="/">去首页</a>', 500, '错误');
+
+        //载入配置信息
+        $this->config->load('extension', TRUE);
+        $data['level'] = $this->config->item('level', 'extension');
+
         $this->load->view('bug_add', $data);
     }
 
