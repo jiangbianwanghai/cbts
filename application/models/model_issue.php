@@ -459,4 +459,8 @@ class Model_issue extends CI_Model {
         $row = $query->result_array();
         return $row;
     }
+
+    public function changeFlow($id, $flow) {
+        return $this->db->update($this->_table, array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'accept_time' => time(), 'workflow' => $flow), array('id' => $id));
+    }
 }

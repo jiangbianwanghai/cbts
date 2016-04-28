@@ -58,8 +58,12 @@
                 <td>-</td>
               </tr>
               <tr>
-                <td style="background-color:#1caf9a;color:#fff">新建</td>
-                <td style="text-align:center;">开发中</td>
+                <td class="blue" width="150px">新建</td>
+                <?php if ($row['workflow'] >= 1 ) {?>
+                <td class="blue">开发中</td>
+                <?php } else {?>
+                <td style="text-align:center;" id="td-dev"><a href="javascript:;" ids="<?php echo $row['id']; ?>" class="label label-danger dev">我要开发</a></td>
+                <?php } ?>
                 <td style="text-align:center;">开发完毕</td>
                 <td style="text-align:center;">修复中</td>
                 <td style="text-align:center;">测试中</td>
@@ -861,6 +865,46 @@ $(function(){
     else
       $(obj).removeClass('open');
     return false;
+  });
+
+  $(".dev").click(function(){
+    $(this).attr("disabled", true);
+    id = $(this).attr("ids");
+    $.ajax({
+      type: "GET",
+      url: "/issue/change_flow/"+id+"/dev",
+      dataType: "JSON",
+      success: function(data){
+        if (data.status) {
+          $(this).hide();
+          $("#td-dev").addClass('blue');
+          $("#td-dev").text('开发中');
+          jQuery.gritter.add({
+            title: '提醒',
+            text: data.message,
+              class_name: 'growl-success',
+              image: '/static/images/screen.png',
+            sticky: false,
+            time: ''
+          });
+          setTimeout(function(){
+            location.href = data.url;
+          }, 2000);
+        } else {
+          jQuery.gritter.add({
+            title: '提醒',
+            text: data.message,
+              class_name: 'growl-danger',
+              image: '/static/images/screen.png',
+            sticky: false,
+            time: ''
+          });
+          setTimeout(function(){
+            location.href = data.url;
+          }, 2000);
+        };
+      }
+    });
   });
 
 });
