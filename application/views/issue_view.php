@@ -72,7 +72,19 @@
                             </div>
                             <div class="row">
                                 <div class="col-xs-6">相关链接：</div>
-                                <div class="col-xs-6"><?php if ($row['url']) { echo "<a href=\"".$row['url']."\" target=\"_blank\">点击查看</a>";}?></div>
+                                <div class="col-xs-6">
+                                  <?php if ($row['url']) {
+
+                                    if (strrpos($row['url'], '{')) {
+                                      $url = unserialize($row['url']);
+                                      foreach ($url as $key => $value) {
+                                        echo "<a href=\"".$value."\" target=\"_blank\">链接".($key+1)."</a> ";
+                                      }
+                                    } else {
+                                      echo "<a href=\"".$row['url']."\" target=\"_blank\">链接</a>";
+                                    }
+                                  }?>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-xs-6">所属产品版本</div>
@@ -782,6 +794,9 @@
         source: countries,
         type: 'text',
         pk: 1,
+        ajaxOptions: {
+          type: 'GET'
+        },
         url: '/issue/change_accept/<?php echo $row["id"];?>',
         send: 'always',
         select2: {
@@ -796,6 +811,9 @@
         source: countries,
         type: 'text',
         pk: 1,
+        ajaxOptions: {
+          type: 'GET'
+        },
         url: '/test/change_accept',
         send: 'always',
         select2: {
