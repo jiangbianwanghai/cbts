@@ -74,7 +74,6 @@
                                 <div class="col-xs-6">相关链接：</div>
                                 <div class="col-xs-6">
                                   <?php if ($row['url']) {
-
                                     if (strrpos($row['url'], '{')) {
                                       $url = unserialize($row['url']);
                                       foreach ($url as $key => $value) {
