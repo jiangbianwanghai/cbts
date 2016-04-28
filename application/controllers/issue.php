@@ -35,6 +35,17 @@ class issue extends CI_Controller {
 
     public function add() {
     	$data['PAGE_TITLE'] = '新增任务';
+
+        //载入用户缓存文件
+        if (file_exists(FCPATH.'/cache/users.conf.php')) {
+            require FCPATH.'/cache/users.conf.php';
+            $data['users'] = $users;
+        }
+
+        //载入配置信息
+        $this->config->load('extension', TRUE);
+        $data['level'] = $this->config->item('level', 'extension');
+
         $this->load->view('issue_add', $data);
     }
 
@@ -75,7 +86,8 @@ class issue extends CI_Controller {
             'level' => $this->input->post('level'),
             'issue_name' => $this->input->post('issue_name'),
             'issue_summary' => $this->input->post('issue_summary'),
-            'deadline' => strtotime($this->input->post('deadline'))
+            'deadline' => strtotime($this->input->post('deadline')),
+            'accept_user' => $this->input->post('accept_user'),
         );
 
         //如果有相关链接就序列化它
