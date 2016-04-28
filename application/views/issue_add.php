@@ -46,38 +46,44 @@
                 </div>
                 <div class="col-sm-4 col-lg-3" style="padding-left:50px;">
                   <div class="form-group">
+                    <label class="control-label">指派给谁 <span class="asterisk">*</span></label>
+                    <div>
+                      <select id="accept_user" name="accept_user" class="select2" data-placeholder="请选择受理人" required>
+                        <option value=""></option>
+                        <?php
+                        if (isset($users) && $users) {
+                          foreach ($users as $value) {
+                        ?>
+                        <option value="<?php echo $value['uid'];?>"><?php echo $value['realname'];?></option>
+                        <?php
+                          }
+                        }
+                        ?>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group">
                     <label class="control-label">任务类型 <span class="asterisk">*</span></label>
-                    <div class="mb10"></div>
-                    <div class="rdio rdio-primary">
-                      <input type="radio" id="task" value="1" name="type" required />
-                      <label for="task">TASK</label>
-                    </div><!-- rdio -->
-                    <div class="rdio rdio-primary">
-                      <input type="radio" value="2" id="bug" name="type">
-                      <label for="bug">BUG</label>
-                    </div><!-- rdio -->
-                    <label class="error" for="type"></label>
+                    <div>
+                      <select id="type" name="type" class="select3" data-placeholder="请选择任务类型" required>
+                        <option value=""></option>
+                        <option value="1">TASK</option>
+                        <option value="2">BUG</option>
+                      </select>
+                    </div>
                   </div>
                   <div class="form-group">
                     <label class="control-label">紧急程度 <span class="asterisk">*</span></label>
-                    <div class="mb10"></div>
-                    <div class="rdio rdio-primary">
-                      <input type="radio" id="level4" value="4" name="level" required />
-                      <label for="level4">非常紧急 - !!!!</label>
-                    </div><!-- rdio -->
-                    <div class="rdio rdio-primary">
-                      <input type="radio" id="level3" value="3" name="level" required />
-                      <label for="level3">优先处理 - !!!</label>
-                    </div><!-- rdio -->
-                    <div class="rdio rdio-primary">
-                      <input type="radio" id="level2" value="2" name="level" required />
-                      <label for="level2">正常迭代 - !!</label>
-                    </div><!-- rdio -->
-                    <div class="rdio rdio-primary">
-                      <input type="radio" id="level1" value="1" name="level" required />
-                      <label for="level1">抽空处理 - !</label>
-                    </div><!-- rdio -->
-                    <label class="error" for="level"></label>
+                    <div>
+                      <select id="level" name="level" class="select3" data-placeholder="请选择紧急程度" required>
+                        <option value=""></option>
+                        <?php
+                        foreach ($level as $key => $value) {
+                          echo '<option value="'.$key.'">'.$value['name'].' - '.$value['task'].'</option>';
+                        }
+                        ?>
+                      </select>
+                    </div>
                   </div>
                 </div>
               </div><!-- panel-body -->
@@ -185,6 +191,14 @@ jQuery(document).ready(function(){
     minDate:'<?php echo date("Y/m/d", time());?>',
   });
   
+  jQuery(".select2").select2({
+      width: '100%'
+  });
+
+  jQuery(".select3").select2({
+      width: '100%',
+      minimumResultsForSearch: -1
+  });
 
 });
 </script>
