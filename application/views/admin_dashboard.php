@@ -73,7 +73,7 @@
                   <?php } ?>
                 </div>
                 <div class="btn-group nomargin">
-                  <button data-toggle="dropdown" class="btn btn-sm btn-white dropdown-toggle tooltips" type="button" title="根据绩效圈筛选" style="text-transform:uppercase;">
+                  <button data-toggle="dropdown" class="btn btn-sm btn-white dropdown-toggle tooltips" type="button" title="根据类型筛选" style="text-transform:uppercase;">
                     <i class="glyphicon glyphicon-folder-<?php if ($taskType) { echo 'open'; } else { echo 'close'; }?> mr5"></i> <?php if ($taskType) { echo $taskType; } else { echo '类型筛选'; }?>
                     <span class="caret"></span>
                   </button>

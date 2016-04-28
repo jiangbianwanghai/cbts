@@ -42,6 +42,8 @@ class issue extends CI_Controller {
      * 异步添加
      */
     public function add_ajax() {
+
+        //验证表单项
         $this->load->library('form_validation');
         if ($this->form_validation->run() == FALSE) {
             $callBack = array(
@@ -51,10 +53,23 @@ class issue extends CI_Controller {
             echo json_encode($callBack);
             exit();
         }
-        $this->load->model('Model_issue', 'issue', TRUE);
 
+        //验证计划ID的合法性
+        $this->load->model('Model_plan', 'plan', TRUE);
+        $currPlan = $this->plan->fetchOne($this->input->post('plan_id'));
+        if (!$currPlan) {
+            $callBack = array(
+                'status' => false,
+                'message' => '获取计划信息失败，请确认你的信息。',
+            );
+            echo json_encode($callBack);
+            exit();
+        }
+
+        //准备提交数据
+        $this->load->model('Model_issue', 'issue', TRUE);
         $post = array(
-            'project_id' => $this->_projectCache[$this->_projectId]['id'],
+            'project_id' => $currPlan['project_id'],
             'plan_id' => $this->input->post('plan_id'),
             'type' => $this->input->post('type'),
             'level' => $this->input->post('level'),
@@ -62,21 +77,25 @@ class issue extends CI_Controller {
             'issue_summary' => $this->input->post('issue_summary'),
             'deadline' => strtotime($this->input->post('deadline'))
         );
+
+        //如果有相关链接就序列化它
         if ($this->input->post('issue_url')) {
             $post['url'] = serialize(explode(PHP_EOL, $this->input->post('issue_url')));
         }
+
+        //入库
         $feedback = $this->issue->add($post);
         if ($feedback['status']) {
             $callBack = array(
                 'status' => true,
                 'message' => '提交成功',
-                'url' => '/issue/my'
+                'url' => '/plan?planId='.$this->input->post('plan_id')
             );
         } else {
             $callBack = array(
                 'status' => false,
                 'message' => '提交失败'.$feedback['message'],
-                'url' => '/issue/add'
+                'url' => '/issue/add?planId='.$this->input->post('plan_id')
             );
         }
         echo json_encode($callBack);
