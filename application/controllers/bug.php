@@ -2,18 +2,34 @@
 
 class bug extends CI_Controller {
 
+    /**
+     * 项目ID
+     */
     private $_projectId = 0;
+
+    /**
+     * 项目缓存数组
+     */
     private $_projectCache = array();
 
     public function __construct() {
+
         parent::__construct();
-        $this->_projectId = $this->input->cookie('projectId');
-        if (!$this->_projectId) {
-            exit('无法获取项目信息，请 <a href="/">返回首页</a> 选择项目');
-        }
-        if (file_exists('./cache/project.conf.php')) {
-            require './cache/project.conf.php';
+
+        //载入项目缓存文件
+        if (file_exists(FCPATH.'/cache/project.conf.php')) {
+            require FCPATH.'/cache/project.conf.php';
             $this->_projectCache = $project;
+        } else {
+            show_error('项目缓存文件载入失败，请联系<a href="mailto:webmaster@jiangbianwanghai.com">江边望海</a>。', 500, '错误');
+        }
+
+        //验证Cookie中的项目ID是否合法
+        $projectId = $this->input->cookie('projectId');
+        if (isset($project[$projectId])) {
+            $this->_projectId = $projectId;
+        } else {
+            show_error('无法获取项目信息，请 <a href="/">返回首页</a> 选择项目', 500, '错误');
         }
     }
 
