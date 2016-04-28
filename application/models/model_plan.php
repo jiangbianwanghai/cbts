@@ -37,10 +37,9 @@ class Model_plan extends CI_Model {
         return $row;
     }
 
-    public function fetchOne($id, $projectId) {
+    public function fetchOne($id) {
         $row = array();
         $this->db->select('*');
-        $this->db->where('project_id', $projectId);
         $this->db->where('id', $id);
         $this->db->limit(1, 0);
         $query = $this->db->get($this->_table);

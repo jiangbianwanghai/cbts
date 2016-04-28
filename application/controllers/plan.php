@@ -37,24 +37,68 @@ class plan extends CI_Controller {
      * 默认列表控制器
      */
     public function index() {
+
+        //页面标题初始化
         $data['PAGE_TITLE'] = '计划列表';
-        $data['planId'] = $this->input->get('planId', TRUE);
+
         $this->load->model('Model_plan', 'plan', TRUE);
-        $row = $this->plan->planFolder($this->_projectCache[$this->_projectId]['id']);
-        if ($row && !$data['planId']) {
-            foreach ($row as $key => $value) {
-                $data['planId'] = $value['id'];
-                break;
+        $this->load->model('Model_project', 'project', TRUE);
+
+        //获取ID
+        $data['planId'] = $this->input->get('planId', TRUE);
+
+        if ($data['planId']) {
+
+            //验证ID是否合法
+            $data['currPlan'] = $this->plan->fetchOne($data['planId']);
+            if (!$data['currPlan']) {
+                show_error('参数错误，无此数据！<a href="/">去首页</a>', 500, '错误');
             }
+
+            //设定Cookie
+            //根据project_id写md5值
+            $currProject = $this->project->fetchOne($data['currPlan']['project_id']);
+            if ($this->input->cookie('projectId') != $currProject['md5']) {
+                $this->input->set_cookie('projectId', $currProject['md5'], 86400*15);
+            }
+
+            //获取项目ID
+            $projectId = $data['currPlan']['project_id'];
+
+            //获取计划列表
+            $data['planFolder'] = $this->plan->planFolder($projectId);
+
+        } else {
+
+            //获取项目ID
+            $projectId = $this->_projectCache[$this->_projectId]['id'];
+
+            //获取计划列表和默认计划ID
+            $data['planFolder'] = $this->plan->planFolder($projectId);
+            if ($data['planFolder']) {
+                foreach ($data['planFolder'] as $key => $value) {
+                    $data['planId'] = $value['id'];
+                    break;
+                }
+            }
+
+            //读取默认计划
+            $data['currPlan'] = $this->plan->fetchOne($data['planId']);
+
         }
-        $data['currPlan'] = $this->plan->fetchOne($data['planId'], $this->_projectCache[$this->_projectId]['id']);
-        $data['planFolder'] = $row;
+
+        //读取任务
         $this->load->model('Model_issue', 'issue', TRUE);
-        $data['rows'] = $this->issue->listByPlan($data['planId'], $this->_projectCache[$this->_projectId]['id']);
+        $data['rows'] = $this->issue->listByPlan($data['planId'], $projectId);
+
+        //载入配置信息
         $this->config->load('extension', TRUE);
         $data['level'] = $this->config->item('level', 'extension');
         $data['workflow'] = $this->config->item('workflow', 'extension');
+
+        //载入助手
         $this->load->helper('timediff');
+
         $this->load->view('plan_index', $data);
     }
 
