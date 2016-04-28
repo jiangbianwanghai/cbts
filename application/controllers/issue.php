@@ -547,12 +547,10 @@ class issue extends CI_Controller {
 
     public function change_accept() {
         $id = $this->uri->segment(3, 0);
-        $uid = $this->input->post("value");
+        $uid = $this->input->get("value", TRUE);
         if (file_exists('./cache/users.conf.php')) {
             require './cache/users.conf.php';
         }
-
-
         $this->load->model('Model_issue', 'issue', TRUE);
         $this->issue->update_accept($id, $uid);
 
