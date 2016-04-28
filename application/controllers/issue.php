@@ -700,6 +700,55 @@ class issue extends CI_Controller {
         echo json_encode($callBack);
     }
 
+    public function change_flow() {
+
+        //获取参数
+        $id = $this->uri->segment(3, 0);
+        $flow = $this->uri->segment(4, 0);
+
+        $this->config->load('extension', TRUE);
+        $workflowfilter = $this->config->item('workflowfilter', 'extension');
+        if (!isset($workflowfilter[$flow])) {
+            $callBack = array(
+                'status' => false,
+                'message' => '数据错误',
+                'url' => '/'
+            );
+            echo json_encode($callBack);
+            exit();
+        }
+
+        //验证ID合法性
+        $this->load->model('Model_issue', 'issue', TRUE);
+        $row = $this->issue->fetchOne($id);
+        if (!$row) {
+            $callBack = array(
+                'status' => false,
+                'message' => '数据错误',
+                'url' => '/'
+            );
+            echo json_encode($callBack);
+            exit();
+        }
+
+        $flag = $this->issue->changeFlow($id, $workflowfilter[$flow]['id']);
+        if ($flag) {
+            $callBack = array(
+                'status' => true,
+                'message' => '操作成功',
+                'url' => '/issue/view/'.$row['id']
+            );
+        } else {
+            $callBack = array(
+                'status' => true,
+                'message' => '操作失败',
+                'url' => '/issue/view/'.$row['id']
+            );
+        }
+        echo json_encode($callBack);
+
+    }
+
     private function rtx($toList,$url,$subject)
     {
         $subject = str_replace(array('#', '&', ' '), '', $subject);

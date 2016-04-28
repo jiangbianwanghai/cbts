@@ -4644,3 +4644,8 @@ div.error label.error:before {
 .deploy{
     cursor: pointer;
 }
+.blue{
+    background-color: #1caf9a;
+    color: #fff;
+    text-align: center;
+}
