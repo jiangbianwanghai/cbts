@@ -352,16 +352,23 @@ class Model_issue extends CI_Model {
         return $array;
     }
 
-    public function listByPlan($planId, $projectId, $limit = 20, $offset = 0) {
-        $row = array();
+    public function listByPlan($planId, $projectId, $flow = '-1', $taskType, $limit = 20, $offset = 0) {
+        $rows = array('total' => 0, 'data' => false);
         $this->db->select('*');
         $this->db->where('plan_id', $planId);
         $this->db->where('project_id', $projectId);
+        if ($flow >= 0)
+            $this->db->where('workflow', $flow);
+        if ($taskType)
+            $this->db->where('type', $taskType);
+        $db = clone($this->db);
+        $rows['total'] = $this->db->count_all_results($this->_table);
+        $this->db = $db;
         $this->db->order_by('last_time', 'desc');
         $this->db->limit($limit, $offset);
         $query = $this->db->get($this->_table);
-        $row = $query->result_array();
-        return $row;
+        $rows['data'] = $query->result_array();
+        return $rows;
     }
 
     public function listByUserId($uid, $folder = 'to_me', $projectId = 0, $planId = 0, $taskType = 0, $limit = 20, $offset = 0) {

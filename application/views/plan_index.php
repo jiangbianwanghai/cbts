@@ -31,12 +31,43 @@
           <?php if ($planId && $currPlan) {?>
           <div class="alert alert-warning">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            计划全称：<strong><?php echo $currPlan['plan_name']?></strong> / 起至时间：<?php echo date("Y-m-d H:i", $currPlan['startime']).' - '.date("Y-m-d H:i", $currPlan['endtime']);?> / 时长：<?php echo timediff($currPlan['startime'], $currPlan['endtime']);?> <a href="/issue/add?planId=<?php echo $currPlan['id'];?>"><i class="fa fa-plus"></i> 添加任务</a>
+            计划全称：<strong><?php echo $currPlan['plan_name']?></strong> / 起至时间：<?php echo date("Y-m-d H:i", $currPlan['startime']).' - '.date("Y-m-d H:i", $currPlan['endtime']);?> / 时长：<?php echo timediff($currPlan['startime'], $currPlan['endtime']);?> / 距离结束：<?php echo timediff(time(), $currPlan['endtime']);?> <a href="/issue/add?planId=<?php echo $currPlan['id'];?>"><i class="fa fa-plus"></i> 添加任务</a>
           </div>
           <?php } ?>
           <?php if ($planId) {?>
           <div class="panel panel-default">
             <div class="panel-body">
+              <div class="pull-right">
+                <div class="btn-group mr10">
+                  <div class="btn-group nomargin">
+                    <button data-toggle="dropdown" class="btn btn-sm btn-white dropdown-toggle tooltips" type="button" title="根据工作流筛选" style="text-transform:uppercase;">
+                      <i class="glyphicon glyphicon-folder-<?php if ($flow) { echo 'open'; } else { echo 'close'; }?> mr5"></i> <?php if ($flow) { echo $workflowfilter[$flow]['name']; } else { echo '类型筛选'; }?>
+                      <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <?php if ($flow) {?>
+                      <li><a href="/plan/index/0/<?php echo $taskType;?><?php if ($planId) echo '?planId='.$planId;?>"><i class="glyphicon glyphicon-folder-open mr5"></i> 查看全部</a></li>
+                      <?php } ?>
+                      <?php foreach ($workflow as $key => $value) {?>
+                      <?php if ($flow != $value['en_name'] || !$flow) {?><li><a href="/plan/index/<?php echo $value['en_name'];?>/<?php echo $taskType;?><?php if ($planId) echo '?planId='.$planId;?>"><i class="glyphicon glyphicon-folder-open mr5"></i> <?php echo $value['name'];?></a></li><?php } ?>
+                      <?php } ?>
+                    </ul>
+                  </div>
+                  <div class="btn-group nomargin">
+                    <button data-toggle="dropdown" class="btn btn-sm btn-white dropdown-toggle tooltips" type="button" title="根据类型筛选" style="text-transform:uppercase;">
+                      <i class="glyphicon glyphicon-folder-<?php if ($taskType) { echo 'open'; } else { echo 'close'; }?> mr5"></i> <?php if ($taskType) { echo $taskType; } else { echo '类型筛选'; }?>
+                      <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <?php if ($taskType) {?>
+                      <li><a href="/plan/index/<?php echo $flow;?>/0<?php if ($planId) echo '?planId='.$planId;?>"><i class="glyphicon glyphicon-folder-open mr5"></i> 查看全部</a></li>
+                      <?php } ?>
+                      <?php if ($taskType != 'task' || !$taskType) {?><li><a href="/plan/index/<?php echo $flow;?>/task<?php if ($planId) echo '?planId='.$planId;?>"><i class="glyphicon glyphicon-folder-open mr5"></i> TASK</a></li><?php } ?>
+                      <?php if ($taskType != 'bug' || !$taskType) {?><li><a href="/plan/index/<?php echo $flow;?>/bug<?php if ($planId) echo '?planId='.$planId;?>"><i class="glyphicon glyphicon-folder-open mr5"></i> BUG</a></li><?php } ?>
+                    </ul>
+                  </div>
+                </div>
+              </div><!-- pull-right -->
               <h5 class="subtitle mb5">计划内容</h5>
               <div class="table-responsive">
                 <table class="table table-email">
@@ -55,7 +86,7 @@
                         </div>
                       </td>
                       <td>
-                        
+                        <a href="javascript:;" item-id="<?php echo $value['id'];?>" class="star<?php if ($this->uri->segment(2, '') == 'star') { echo ' star-checked'; } else { if (isset($star[$value['id']])) echo ' star-checked'; }?>"><i class="glyphicon glyphicon-star"></i></a>
                       </td>
                       <td width="80px">
                         <?php echo '<span class="label label-'.$workflow[$value['workflow']]['span_color'].'">'.$workflow[$value['workflow']]['name'].'</span>'; ?>
@@ -222,6 +253,55 @@ jQuery(document).ready(function(){
   });
   $('#endtime').datetimepicker({
     minDate:'<?php echo date("Y/m/d", time()+86400);?>',
+  });
+
+  $('.star').click(function(){
+      if(!jQuery(this).hasClass('star-checked')) {
+          jQuery(this).addClass('star-checked');
+          var id = jQuery(this).attr('item-id');
+          $.ajax({
+            type: "GET",
+            dataType: "JSON",
+            url: "/issue/star_ajax/"+id,
+            success: function(data){
+              if (data.status) {
+                jQuery.gritter.add({
+                  title: '提醒',
+                  text: data.message,
+                    class_name: 'growl-success',
+                    image: '/static/images/screen.png',
+                  sticky: false,
+                  time: ''
+                });
+              } else {
+                alert(data.message);
+              } 
+            }
+          });
+      } else {
+        jQuery(this).removeClass('star-checked');
+        var id = jQuery(this).attr('item-id');
+        $.ajax({
+          type: "GET",
+          dataType: "JSON",
+          url: "/issue/star_del/"+id,
+          success: function(data){
+            if (data.status) {
+              jQuery.gritter.add({
+                title: '提醒',
+                text: data.message,
+                  class_name: 'growl-success',
+                  image: '/static/images/screen.png',
+                sticky: false,
+                time: ''
+              });
+            } else {
+              alert(data.message);
+            } 
+          }
+        });
+      }
+      return false;
   });
   
 });

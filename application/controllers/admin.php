@@ -20,15 +20,14 @@ class admin extends CI_Controller {
         $this->config->load('extension', TRUE);
         $data['level'] = $this->config->item('level', 'extension');
         $data['workflow'] = $this->config->item('workflow', 'extension');
+        $data['tasktype'] = $this->config->item('tasktype', 'extension');
         $config = $this->config->item('pages', 'extension');
         $data['projectMd5'] = $projectId = $this->uri->segment(4, 0);
         $data['planId'] = $projectId = $this->uri->segment(5, 0);
         $data['taskType'] = $this->uri->segment(6, 0);
-        $taskTypeArr = array('task' => 1, 'bug' => 2);
-        if (isset($taskTypeArr[$data['taskType']])) {
-            $taskType = $taskTypeArr[$data['taskType']];
-        } else {
-            $taskType = 0;
+        $taskType = 0;
+        if (isset($data['tasktype'][$data['taskType']])) {
+            $taskType = $data['tasktype'][$data['taskType']];
         }
         if ($data['projectMd5'] && isset($this->_projectCache[$data['projectMd5']])) {
             $projectId = $this->_projectCache[$data['projectMd5']]['id'];

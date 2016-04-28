@@ -41,6 +41,9 @@ class plan extends CI_Controller {
         //页面标题初始化
         $data['PAGE_TITLE'] = '计划列表';
 
+        $data['flow'] = $this->uri->segment(3, 0);
+        $data['taskType'] = $this->uri->segment(4, 0);
+
         $this->load->model('Model_plan', 'plan', TRUE);
         $this->load->model('Model_project', 'project', TRUE);
 
@@ -87,14 +90,42 @@ class plan extends CI_Controller {
 
         }
 
-        //读取任务
-        $this->load->model('Model_issue', 'issue', TRUE);
-        $data['rows'] = $this->issue->listByPlan($data['planId'], $projectId);
-
         //载入配置信息
         $this->config->load('extension', TRUE);
         $data['level'] = $this->config->item('level', 'extension');
         $data['workflow'] = $this->config->item('workflow', 'extension');
+        $data['workflowfilter'] = $this->config->item('workflowfilter', 'extension');
+        $data['tasktype'] = $this->config->item('tasktype', 'extension');
+
+        //转移筛选值
+        $flow = '-1';
+        if (isset($data['workflowfilter'][$data['flow']])) {
+            $flow = $data['workflowfilter'][$data['flow']]['id'];
+        }
+        $taskType = 0;
+        if (isset($data['tasktype'][$data['taskType']])) {
+            $taskType = $data['tasktype'][$data['taskType']];
+        }
+
+        //读取任务
+        $this->load->model('Model_issue', 'issue', TRUE);
+        $rows = $this->issue->listByPlan($data['planId'], $projectId, $flow, $taskType);
+        $data['total'] = $rows['total'];
+        $data['rows'] = $rows['data'];
+
+        //根据任务
+        if ($rows['data']) {
+            $ids = array();
+            foreach ($rows['data'] as $key => $value) {
+                $ids[]= $value['id'];
+            }
+            $star = $this->issue->starByBugId($ids);
+            if ($star) {
+                foreach ($star as $key => $value) {
+                    $data['star'][$value['star_id']] = $value['star_id'];
+                }
+            }
+        }
 
         //载入助手
         $this->load->helper('timediff');
