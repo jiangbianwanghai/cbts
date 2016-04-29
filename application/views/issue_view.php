@@ -32,11 +32,7 @@
           <div class="pull-right">
             <div class="btn-group mr10">
                 <a href="/issue/edit/<?php echo $row['id'];?>" class="btn btn-sm btn-white"><i class="fa fa-pencil mr5"></i> 编辑</a>
-                <a href="/test/add/<?php echo $row['id'];?>" class="btn btn-sm btn-white"><i class="fa fa-comments mr5"></i> 提交代码</a>
                 <a href="javascript:;" id="del" reposid="<?php echo $row['id'];?>" class="btn btn-sm btn-white"><i class="fa fa-trash-o mr5"></i> 删除</a>
-            </div>
-            <div class="btn-group mr10">
-                <a href="/bug/add/<?php echo $row['id'];?>" class="btn btn-sm btn-white"><i class="fa fa-bug"></i> 反馈BUG</a>
             </div>
           </div>
           <?php if ($row['status'] == 0) {?><div class="panel-btns">
@@ -52,24 +48,87 @@
             <tbody>
               <tr>
                 <td>
-                  <span class="face"><img alt="" src="/static/avatar/<?php echo $users[$row['add_user']]['username']?>.jpg" align="absmiddle" title=""></span> <a href="/conf/profile/<?php echo $row['add_user'];?>" target="_blank"><?php echo $users[$row['add_user']]['realname'];?></a>
+                  <?php if ($acceptUsers && isset($acceptUsers['1'])) { ?>
+                  <span class="face"><img alt="" src="/static/avatar/<?php echo $users[$acceptUsers['1']['accept_user']]['username'];?>.jpg" align="absmiddle" title=""></span> <a href="/conf/profile/<?php echo $acceptUsers['1']['accept_user'];?>" target="_blank"><?php echo $users[$acceptUsers['1']['accept_user']]['realname'];?></a>
+                  <?php } else { echo 'N/A'; } ?>
                 </td>
-                <td colspan="3"><span class="face"><img alt="" src="/static/avatar/<?php echo $users[$row['accept_user']]['username']?>.jpg" align="absmiddle" title=""></span> <a href="/conf/profile/<?php echo $row['accept_user'];?>" target="_blank"><?php echo $users[$row['accept_user']]['realname'];?></a></td>
-                <td colspan="2">-</td>
-                <td>-</td>
+                <td colspan="<?php if ($bug_total_rows) {echo 3;}else{echo 2;}?>">
+                  <?php if ($acceptUsers && isset($acceptUsers['2'])) { ?>
+                  <span class="face"><img alt="" src="/static/avatar/<?php echo $users[$acceptUsers['2']['accept_user']]['username'];?>.jpg" align="absmiddle" title=""></span> <a href="/conf/profile/<?php echo $acceptUsers['1']['accept_user'];?>" target="_blank"><?php echo $users[$acceptUsers['2']['accept_user']]['realname'];?></a>
+                  <?php } else { echo 'N/A'; } ?>
+                </td>
+                <td colspan="2">
+                  <?php if ($acceptUsers && isset($acceptUsers['3'])) { ?>
+                  <span class="face"><img alt="" src="/static/avatar/<?php echo $users[$acceptUsers['3']['accept_user']]['username'];?>.jpg" align="absmiddle" title=""></span> <a href="/conf/profile/<?php echo $acceptUsers['3']['accept_user'];?>" target="_blank"><?php echo $users[$acceptUsers['3']['accept_user']]['realname'];?></a>
+                  <?php } else { echo 'N/A'; } ?>
+                </td>
+                <td>
+                  <?php if ($acceptUsers && isset($acceptUsers['4'])) { ?>
+                  <span class="face"><img alt="" src="/static/avatar/<?php echo $users[$acceptUsers['4']['accept_user']]['username'];?>.jpg" align="absmiddle" title=""></span> <a href="/conf/profile/<?php echo $acceptUsers['4']['accept_user'];?>" target="_blank"><?php echo $users[$acceptUsers['4']['accept_user']]['realname'];?></a>
+                  <?php } else { echo 'N/A'; } ?>
+                </td>
               </tr>
               <tr>
                 <td class="blue" width="150px">新建</td>
-                <?php if ($row['workflow'] >= 1 ) {?>
+                <?php if ($row['workflow'] >= 1) {?>
                 <td class="blue">开发中</td>
                 <?php } else {?>
                 <td style="text-align:center;" id="td-dev"><a href="javascript:;" ids="<?php echo $row['id']; ?>" class="label label-danger dev">我要开发</a></td>
                 <?php } ?>
+                <?php if ($row['workflow'] >= 2) {?>
+                <td class="blue">开发完毕</td>
+                <?php } else {?>
+                <?php if ($row['workflow']  == 1) {?>
+                <td style="text-align:center;" width="200px" id="td-over">
+                  <a href="/test/add/<?php echo $row['id'];?>" class="label label-danger" target="_blank">提交代码</a> 
+                  <a href="javascript:;" ids="<?php echo $row['id']; ?>" class="label label-primary over">提交完毕</a>
+                </td>
+                <?php } else {?>
                 <td style="text-align:center;">开发完毕</td>
-                <td style="text-align:center;">修复中</td>
+                <?php } ?>
+                <?php } ?>
+                <?php if ($bug_total_rows) {?><td style="text-align:center;">修复中</td><?php } ?>
+
+                <!-- #测试-测试中# -->
+                <?php if ($row['workflow'] >= 3) {?>
+                <td class="blue">测试中</td>
+                <?php } else {?>
+                <?php if ($row['workflow'] == 2 && $acceptUsers && isset($acceptUsers['3'])) {?>
+                <td style="text-align:center;" id="td-test"><a href="javascript:;" ids="<?php echo $row['id']; ?>" class="label label-danger test">我要测试</a></td>
+                <?php } elseif ($row['workflow'] == 2) {?>
+                <td style="text-align:center;"><a href="javascript:;" id="test_user" data-type="select2" data-value="0" data-title="指定受理人"></a></td>
+                <?php } else {?>
                 <td style="text-align:center;">测试中</td>
-                <td style="text-align:center;">测试通过</td>
-                <td style="text-align:center;">上线</td>
+                <?php } ?>
+                <?php } ?>
+
+                <!-- #测试-测试通过# -->
+                <?php if ($row['workflow'] >= 4) { ?>
+                  <td class="blue">测试通过</td>
+                <?php } else { ?>
+                  <?php if ($row['workflow']  == 3) {?>
+                  <td style="text-align:center;" width="200px" id="td-wait">
+                    <a href="/bug/add/<?php echo $row['id'];?>" class="label label-danger" target="_blank">反馈BUG</a> 
+                    <a href="javascript:;" ids="<?php echo $row['id']; ?>" class="label label-primary waits">测试通过</a>
+                  </td>
+                  <?php } else {?>
+                  <td style="text-align:center;">测试通过</td>
+                  <?php } ?>
+                <?php } ?>
+
+                <!-- #上线# -->
+                <?php if ($row['workflow'] == 5) { ?>
+                <td class="blue">已上线</td>
+                <?php } else { ?>
+                <?php if ($row['workflow'] == 4 && $acceptUsers && isset($acceptUsers['4'])) {?>
+                <td style="text-align:center;" id="td-online"><a href="javascript:;" ids="<?php echo $row['id']; ?>" class="label label-danger onlines">通知上线</a></td>
+                <?php } elseif ($row['workflow'] == 4) {?>
+                <td style="text-align:center;"><a href="javascript:;" id="test_user" data-type="select2" data-value="0" data-title="指定受理人"></a></td>
+                <?php } else {?>
+                <td style="text-align:center;">已上线</td>
+                <?php } ?>
+                <?php } ?>
+
               </tr>
             </tbody>
           </table>
@@ -744,6 +803,24 @@
     $.each({<?php foreach($users as $val) { ?>"<?php echo $val['uid'];?>": "<?php echo $val['realname'];?>",<?php } ?> }, function(k, v) {
         countries.push({id: k, text: v});
     });
+
+    //指定测试人员
+    jQuery('#test_user').editable({
+        inputclass: 'sel-xs',
+        source: countries,
+        type: 'text',
+        pk: 1,
+        ajaxOptions: {
+          type: 'GET'
+        },
+        url: '/issue/change_accept/<?php echo $row["id"];?>',
+        send: 'always',
+        select2: {
+            width: 150,
+            placeholder: '更改受理人',
+            allowClear: true
+        },
+    });
     
     jQuery('#country').editable({
         inputclass: 'sel-xs',
@@ -882,6 +959,7 @@ $(function(){
     return false;
   });
 
+  //我要开发
   $(".dev").click(function(){
     $(this).attr("disabled", true);
     id = $(this).attr("ids");
@@ -894,35 +972,123 @@ $(function(){
           $(this).hide();
           $("#td-dev").addClass('blue');
           $("#td-dev").text('开发中');
-          jQuery.gritter.add({
-            title: '提醒',
-            text: data.message,
-              class_name: 'growl-success',
-              image: '/static/images/screen.png',
-            sticky: false,
-            time: ''
-          });
-          setTimeout(function(){
-            location.href = data.url;
-          }, 2000);
+          tip(data.message, data.url, 'success', 2000);
         } else {
-          jQuery.gritter.add({
-            title: '提醒',
-            text: data.message,
-              class_name: 'growl-danger',
-              image: '/static/images/screen.png',
-            sticky: false,
-            time: ''
-          });
-          setTimeout(function(){
-            location.href = data.url;
-          }, 2000);
+          tip(data.message, data.url, 'danger', 5000);
         };
       }
     });
   });
 
+  //我要测试
+  $(".test").click(function(){
+    $(this).attr("disabled", true);
+    id = $(this).attr("ids");
+    $.ajax({
+      type: "GET",
+      url: "/issue/change_flow/"+id+"/test",
+      dataType: "JSON",
+      success: function(data){
+        if (data.status) {
+          $(this).hide();
+          $("#td-test").addClass('blue');
+          $("#td-test").text('测试中');
+          tip(data.message, data.url, 'success', 2000);
+        } else {
+          tip(data.message, data.url, 'danger', 5000);
+        };
+      }
+    });
+  });
+
+  //开发完毕
+  $(".over").click(function(){
+    var c = confirm('你确定已经完成代码信息提交了吗？');
+    if(c) {
+      $(this).attr("disabled", true);
+      id = $(this).attr("ids");
+      $.ajax({
+        type: "GET",
+        url: "/issue/change_flow/"+id+"/over",
+        dataType: "JSON",
+        success: function(data){
+          if (data.status) {
+            $(this).hide();
+            $("#td-over").addClass('blue');
+            $("#td-over").text('开发完毕');
+            tip(data.message, data.url, 'success', 2000);
+          } else {
+            tip(data.message, data.url, 'danger', 5000);
+          };
+        }
+      });
+    }
+  });
+
+  //测试通过
+  $(".waits").click(function(){
+    var c = confirm('你确定已经验证通过了吗？');
+    if(c) {
+      $(this).attr("disabled", true);
+      id = $(this).attr("ids");
+      $.ajax({
+        type: "GET",
+        url: "/issue/change_flow/"+id+"/wait",
+        dataType: "JSON",
+        success: function(data){
+          if (data.status) {
+            $(this).hide();
+            $("#td-wait").addClass('blue');
+            $("#td-wait").text('测试通过');
+            tip(data.message, data.url, 'success', 2000);
+          } else {
+            tip(data.message, data.url, 'danger', 5000);
+          };
+        }
+      });
+    }
+  });
+
+  //已上线
+  $(".onlines").click(function(){
+    var c = confirm('你确定已经完成上线了吗？');
+    if(c) {
+      $(this).attr("disabled", true);
+      id = $(this).attr("ids");
+      $.ajax({
+        type: "GET",
+        url: "/issue/change_flow/"+id+"/online",
+        dataType: "JSON",
+        success: function(data){
+          if (data.status) {
+            $(this).hide();
+            $("#td-online").addClass('blue');
+            $("#td-online").text('已上线');
+            tip(data.message, data.url, 'success', 2000);
+          } else {
+            tip(data.message, data.url, 'danger', 5000);
+          };
+        }
+      });
+    }
+  });
+
 });
+
+//消息提醒通用组建配置
+function tip(message, url, color, sec) {
+  jQuery.gritter.add({
+    title: '提醒',
+    text: message,
+      class_name: 'growl-'+color,
+      image: '/static/images/screen.png',
+    sticky: false,
+    time: ''
+  });
+  setTimeout(function(){
+    location.href = url;
+  }, sec);
+}
 </script>
 
 </body>

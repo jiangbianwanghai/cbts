@@ -36,6 +36,18 @@ class issue extends CI_Controller {
     public function add() {
     	$data['PAGE_TITLE'] = '新增任务';
 
+        //读取项目计划
+        $data['planId'] = $this->input->get('planId', TRUE);
+        $data['planRows'] = array();
+        if (!$data['planId']) {
+            $this->load->model('Model_plan', 'plan', TRUE);
+            $data['planRows'] = $this->plan->planFolder($this->_projectCache[$this->_projectId]['id']);
+        }
+
+        if (!$data['planRows'] && !$data['planId']) {
+            show_error('还未创建计划，请 <a href="/plan">创建计划</a> 后再创建任务', 500, '提醒');
+        }
+
         //载入用户缓存文件
         if (file_exists(FCPATH.'/cache/users.conf.php')) {
             require FCPATH.'/cache/users.conf.php';
@@ -86,7 +98,6 @@ class issue extends CI_Controller {
             'level' => $this->input->post('level'),
             'issue_name' => $this->input->post('issue_name'),
             'issue_summary' => $this->input->post('issue_summary'),
-            'deadline' => strtotime($this->input->post('deadline')),
             'accept_user' => $this->input->post('accept_user'),
         );
 
@@ -94,20 +105,29 @@ class issue extends CI_Controller {
         if ($this->input->post('issue_url')) {
             $post['url'] = serialize(explode(PHP_EOL, $this->input->post('issue_url')));
         }
-
+        //echo $this->input->post('plan_id');exit();
         //入库
         $feedback = $this->issue->add($post);
+        $url = '/plan';
+        if ($this->input->post('plan_id')) {
+            $url .= '?planId='.$this->input->post('plan_id');
+        }
         if ($feedback['status']) {
+
+            //写入接受列表
+            $this->load->model('Model_accept', 'accept', TRUE);
+            $this->accept->add(array('accept_user' => $this->input->cookie('uids'), 'accept_time' => time(), 'issue_id' => $feedback['id'], 'flow' => 1));
+            $this->accept->add(array('accept_user' => $this->input->post('accept_user'), 'accept_time' => time(), 'issue_id' => $feedback['id'], 'flow' => 2));
             $callBack = array(
                 'status' => true,
                 'message' => '提交成功',
-                'url' => '/plan?planId='.$this->input->post('plan_id')
+                'url' => $url
             );
         } else {
             $callBack = array(
                 'status' => false,
                 'message' => '提交失败'.$feedback['message'],
-                'url' => '/issue/add?planId='.$this->input->post('plan_id')
+                'url' => '/issue/add'
             );
         }
         echo json_encode($callBack);
@@ -154,7 +174,10 @@ class issue extends CI_Controller {
             $data['bug_total_rows'] = $rows['total_rows'];
         }
         
-
+        //读取受理信息
+        $this->load->model('Model_accept', 'accept', TRUE);
+        $data['acceptUsers'] = $this->accept->users($id);
+        
         //载入文件缓存
         if (file_exists('./cache/repos.conf.php')) {
             require './cache/repos.conf.php';
@@ -579,21 +602,57 @@ class issue extends CI_Controller {
         $this->load->view('issue_analytics', $data);
     }
 
+    /**
+     * 更改受理人
+     */
     public function change_accept() {
+
+        //获取参数
         $id = $this->uri->segment(3, 0);
         $uid = $this->input->get("value", TRUE);
+
+        //载入用户缓存文件
         if (file_exists('./cache/users.conf.php')) {
             require './cache/users.conf.php';
         }
+
+        //更改受理人
         $this->load->model('Model_issue', 'issue', TRUE);
+        $row = $this->issue->fetchOne($id);
         $this->issue->update_accept($id, $uid);
 
-        $username =  $users[$uid]['username'];
-        $this->config->load('extension', TRUE);
-        $home = $this->config->item('home', 'extension');
-        $url = $home."/issue/view/".$id;
-        $subject = $users[$this->input->cookie('uids')]['realname']."指派了一个任务给你";
-        $this->rtx($username,$url,$subject);
+        $this->load->model('Model_accept', 'accept', TRUE);
+
+        //指派研发人员
+        if ($row['workflow'] <= 1) {
+            $acceptRow = $this->accept->fetchOne($row['accept_user']);
+            if ($acceptRow['flow'] == 2) {
+                $this->accept->update($uid, $acceptRow['id']);
+            } else {
+                $this->accept->add(array('accept_user' => $uid, 'accept_time' => time(), 'issue_id' => $id, 'flow' => 2));
+            }
+        }
+
+        //指派测试人员
+        if ($row['workflow'] == 2) {
+            $acceptRow = $this->accept->fetchOne($row['accept_user']);
+            if ($acceptRow['flow'] == 3) {
+                $this->accept->update($uid, $acceptRow['id']);
+            } else {
+                $this->accept->add(array('accept_user' => $uid, 'accept_time' => time(), 'issue_id' => $id, 'flow' => 3));
+            }
+        }
+
+        //指派上线人员
+        if ($row['workflow'] == 4) {
+            $acceptRow = $this->accept->fetchOne($row['accept_user']);
+            if ($acceptRow['flow'] == 4) {
+                $this->accept->update($uid, $acceptRow['id']);
+            } else {
+                $this->accept->add(array('accept_user' => $uid, 'accept_time' => time(), 'issue_id' => $id, 'flow' => 4));
+            }
+        }
+
         echo 1;
     }
 
@@ -700,18 +759,22 @@ class issue extends CI_Controller {
         echo json_encode($callBack);
     }
 
+    /**
+     * 更改工作流
+     */
     public function change_flow() {
 
         //获取参数
         $id = $this->uri->segment(3, 0);
         $flow = $this->uri->segment(4, 0);
 
+        //验证工作流参数合法性
         $this->config->load('extension', TRUE);
         $workflowfilter = $this->config->item('workflowfilter', 'extension');
         if (!isset($workflowfilter[$flow])) {
             $callBack = array(
                 'status' => false,
-                'message' => '数据错误',
+                'message' => '参数不合法',
                 'url' => '/'
             );
             echo json_encode($callBack);
@@ -724,13 +787,25 @@ class issue extends CI_Controller {
         if (!$row) {
             $callBack = array(
                 'status' => false,
-                'message' => '数据错误',
+                'message' => '参数不合法',
                 'url' => '/'
             );
             echo json_encode($callBack);
             exit();
         }
 
+        //验证受理人是否合法
+        if ($row['accept_user'] != $this->input->cookie('uids')) {
+            $callBack = array(
+                'status' => false,
+                'message' => '受理人不是你，你无权操作！',
+                'url' => '/issue/view/'.$id
+            );
+            echo json_encode($callBack);
+            exit();
+        }
+
+        //更改工作流
         $flag = $this->issue->changeFlow($id, $workflowfilter[$flow]['id']);
         if ($flag) {
             $callBack = array(
