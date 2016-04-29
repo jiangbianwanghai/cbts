@@ -173,6 +173,14 @@ class issue extends CI_Controller {
             $data['bug'] = $rows['data'];
             $data['bug_total_rows'] = $rows['total_rows'];
         }
+
+        //读取所属计划
+        $data['plan'] = array();
+        if ($data['row']['plan_id']) {
+            $this->load->model('Model_plan', 'plan', TRUE);
+            $data['plan'] = $this->plan->fetchOne($data['row']['plan_id']);
+        }
+
         
         //读取受理信息
         $this->load->model('Model_accept', 'accept', TRUE);
