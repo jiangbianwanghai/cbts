@@ -45,6 +45,21 @@
                   </div>
                 </div>
                 <div class="col-sm-4 col-lg-3" style="padding-left:50px;">
+                  <?php if ($planRows) { ?>
+                  <div class="form-group">
+                    <label class="control-label">所属计划 <span class="asterisk">*</span></label>
+                    <div>
+                      <select id="plan_id" name="plan_id" class="select3" data-placeholder="请选择所属计划" required>
+                        <option value=""></option>
+                        <?php
+                        foreach ($planRows as $key => $value) {
+                          echo '<option value="'.$value['id'].'">'.$value['plan_name'].'</option>';
+                        }
+                        ?>
+                      </select>
+                    </div>
+                  </div>
+                  <?php } ?>
                   <div class="form-group">
                     <label class="control-label">指派给谁 <span class="asterisk">*</span></label>
                     <div>
@@ -88,7 +103,9 @@
                 </div>
               </div><!-- panel-body -->
               <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>" />
+              <?php if ($planId) {?>
               <input type="hidden" name="plan_id" value="<?php echo $this->input->get('planId', TRUE);?>" />
+              <?php } ?>
               <div class="panel-footer">
                 <div class="row">
                   <button class="btn btn-primary" id="btnSubmit">提交</button>
@@ -117,7 +134,6 @@
 <script src="/static/js/modernizr.min.js"></script>
 <script src="/static/js/jquery.sparkline.min.js"></script>
 <script src="/static/js/toggles.min.js"></script>
-<script src="/static/js/retina.min.js"></script>
 <script src="/static/js/jquery.cookies.js"></script>
 
 <script src="/static/js/jquery.validate.min.js"></script>
@@ -148,7 +164,7 @@ function callBack(data) {
       time: ''
     });
     setTimeout(function(){
-      location.href = '/plan?planId=<?php echo $this->input->get('planId', TRUE);?>';
+      location.href = data.url;
     }, 2000);
   } else {
     jQuery.gritter.add({
