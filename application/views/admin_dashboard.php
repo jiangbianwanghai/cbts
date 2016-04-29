@@ -13,7 +13,7 @@
 
     <div class="contentpanel">
       <div class="col-sm-3 col-lg-2">
-        <h5 class="subtitle">快捷方式</h5>
+        <h5 class="subtitle">我的任务</h5>
         <ul class="nav nav-pills nav-stacked nav-email mb20">
           <li<?php if ($this->uri->segment(3, 'to_me') == 'to_me') {?> class="active"<?php } ?>><a href="/admin/index/to_me"><i class="glyphicon glyphicon-folder-<?php if ($this->uri->segment(3, 'to_me') == 'to_me') { echo 'open';} else { echo 'close';}?>"></i> 我负责的</a></li>
           <li<?php if ($this->uri->segment(3, '') == 'from_me') {?> class="active"<?php } ?>><a href="/admin/index/from_me"><i class="glyphicon glyphicon-folder-<?php if ($this->uri->segment(3, '') == 'from_me') { echo 'open';} else { echo 'close';}?>"></i> 我创建的</a></li>

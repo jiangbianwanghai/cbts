@@ -52,6 +52,7 @@ class Model_issue extends CI_Model {
         }
         $res = $this->db->insert('issue', $data);
         if ($res) {
+            $feedback['id'] = $this->db->insert_id();
             $feedback['status'] = true;
             $feedback['message'] = 'success';
         } else {
