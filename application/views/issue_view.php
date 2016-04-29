@@ -32,6 +32,7 @@
           <div class="pull-right">
             <div class="btn-group mr10">
                 <a href="/issue/edit/<?php echo $row['id'];?>" class="btn btn-sm btn-white"><i class="fa fa-pencil mr5"></i> 编辑</a>
+                <a href="/test/add/<?php echo $row['id'];?>" class="btn btn-sm btn-white"><i class="fa fa-comments mr5"></i> 提交代码</a>
                 <a href="javascript:;" id="del" reposid="<?php echo $row['id'];?>" class="btn btn-sm btn-white"><i class="fa fa-trash-o mr5"></i> 删除</a>
             </div>
             <div class="btn-group mr10">
@@ -85,7 +86,7 @@
                   if ($test) {
                     foreach ($test as $value) {
                 ?>
-                <tr id="tr-<?php echo $value['id'];?>" class="deploy" ids="<?php echo $value['id'];?>">
+                <tr id="tr-<?php echo $value['id'];?>">
                  <td><?php echo $value['id'];?></td>
                   <td><?php if ($value['status'] == '-1') { echo '<s><a title="'.$repos[$value['repos_id']]['repos_url'].'" href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a></s>'; } else { echo '<a title="'.$repos[$value['repos_id']]['repos_url'].'" href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a>'; }?></span>
                   </td>
@@ -134,6 +135,7 @@
                         <li><a href="javascript:;" class="online" testid="<?php echo $value['id']?>">代码已上线</a></li>
                       </ul>
                     </div>
+                    <button class="btn btn-white btn-xs deploy" ids="<?php echo $value['id'];?>">查看部署代码</button>
                     <?php if ($row['status'] == 1) {?>
                     <?php if ($value['tice'] < 1) {?>
                     <a class="btn btn-white btn-xs" href="/test/edit/<?php echo $row['id'];?>/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 编辑</a>
@@ -186,7 +188,20 @@
               </tr>
               <tr>
                 <td width="100px">相关链接</td>
-                <td>-</td>
+                <td>
+                  <?php
+                  if ($row['url']) {
+                    if (strrpos($row['url'], '{')) {
+                     $url = unserialize($row['url']);
+                      foreach ($url as $key => $value) {
+                        echo "<a href=\"".$value."\" target=\"_blank\">链接".($key+1)."</a> ";
+                      }
+                    } else {
+                      echo "<a href=\"".$row['url']."\" target=\"_blank\">链接</a>";
+                    }
+                  }
+                  ?>
+                </td>
                 <td width="120px">标签</td>
                 <td>-</td>
               </tr>
@@ -726,7 +741,7 @@
 
     // Select 2 (dropdown mode)
     var countries = [];
-    $.each({<?php foreach($users as $val) { if ($val['role'] == 1) {?>"<?php echo $val['uid'];?>": "<?php echo $val['realname'];?>",<?php } }?> }, function(k, v) {
+    $.each({<?php foreach($users as $val) { ?>"<?php echo $val['uid'];?>": "<?php echo $val['realname'];?>",<?php } ?> }, function(k, v) {
         countries.push({id: k, text: v});
     });
     
