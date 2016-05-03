@@ -70,15 +70,19 @@
               </tr>
               <tr>
                 <td class="blue" width="150px">新建</td>
+                <!-- #开发-我要开发# -->
                 <?php if ($row['workflow'] >= 1) {?>
                 <td class="blue">开发中</td>
-                <?php } else {?>
+                <?php } elseif ($row['accept_user'] == $this->input->cookie('uids')) {?>
                 <td style="text-align:center;" id="td-dev"><a href="javascript:;" ids="<?php echo $row['id']; ?>" class="label label-danger dev">我要开发</a></td>
-                <?php } ?>
+                <?php } else { ?>
+                <td style="text-align:center;">开发中</td>
+                <?php }?>
+                <!-- #开发-开发完毕# -->
                 <?php if ($row['workflow'] >= 2) {?>
                 <td class="blue">开发完毕</td>
                 <?php } else {?>
-                <?php if ($row['workflow']  == 1) {?>
+                <?php if ($row['workflow']  == 1 && $row['accept_user'] == $this->input->cookie('uids')) {?>
                 <td style="text-align:center;" width="200px" id="td-over">
                   <a href="/test/add/<?php echo $row['id'];?>" class="label label-danger" target="_blank">提交代码</a> 
                   <a href="javascript:;" ids="<?php echo $row['id']; ?>" class="label label-primary over">提交完毕</a>
@@ -87,15 +91,30 @@
                 <td style="text-align:center;">开发完毕</td>
                 <?php } ?>
                 <?php } ?>
-                <?php if ($bug_total_rows) {?><td style="text-align:center;">修复中</td><?php } ?>
+                <!-- #开发-修复中# -->
+                <?php if ($bug_total_rows) {?>
+                <?php if ($row['workflow'] >= 4) {?>
+                <td class="blue">修复中</td>
+                <?php } else {?>
+                <?php if ($acceptUsers && isset($acceptUsers['2']) && $acceptUsers['2']['accept_user'] == $this->input->cookie('uids') && !$fixedFlag) { ?>
+                <td style="text-align:center;" width="200px" id="td-over">
+                  <a href="/test/add/<?php echo $row['id'];?>" class="label label-danger" target="_blank">提交代码</a> 
+                  <a href="javascript:;" ids="<?php echo $row['id']; ?>" class="label label-primary over">提交完毕</a>
+                </td>
+                <?php }else { ?>
+                <td style="text-align:center;">修复中
+                </td>
+                <?php } ?>
+                <?php } ?>
+                <?php } ?>
 
                 <!-- #测试-测试中# -->
                 <?php if ($row['workflow'] >= 3) {?>
                 <td class="blue">测试中</td>
                 <?php } else {?>
-                <?php if ($row['workflow'] == 2 && $acceptUsers && isset($acceptUsers['3'])) {?>
+                <?php if ($row['workflow'] == 2 && $acceptUsers && isset($acceptUsers['3']) && $row['accept_user'] == $this->input->cookie('uids')) {?>
                 <td style="text-align:center;" id="td-test"><a href="javascript:;" ids="<?php echo $row['id']; ?>" class="label label-danger test">我要测试</a></td>
-                <?php } elseif ($row['workflow'] == 2) {?>
+                <?php } elseif ($row['workflow'] == 2 && $row['accept_user'] == $this->input->cookie('uids')) {?>
                 <td style="text-align:center;"><a href="javascript:;" id="test_user" data-type="select2" data-value="0" data-title="指定受理人"></a></td>
                 <?php } else {?>
                 <td style="text-align:center;">测试中</td>
@@ -276,50 +295,51 @@
         </div>
       </div>
 
+      <?php if ($bug_total_rows) {?>
+      <div class="panel panel-default panel-alt">
+        <div class="panel-heading">
+          <h5 class="panel-title">反馈BUG列表</h5>
+        </div><!-- panel-heading -->
+        <div class="panel-body panel-table">
+         <div class="table-responsive">
+            <table class="table table-buglist">
+              <tbody>
+                <?php
+                  if ($bug) {
+                    foreach ($bug as $value) {
+                ?>
+                  <tr>
+                    <td><i class="fa fa-bug tooltips" data-toggle="tooltip" title="Bug"></i></td>
+                    <td><?php echo $value['id']?></td>
+                    <td><?php if ($value['level']) { $level = array(1=>'!',2=>'!!',3=>'!!!',4=>'!!!!');?><?php echo "<strong style='color:#ff0000;'>".$level[$value['level']]."</strong> ";?><?php } ?><a href="/bug/view/<?php echo $value['id'];?>" target="_blank"><?php echo $value['subject']?></a></td>
+                    <td><?php echo $value['add_user'] ? '<a href="/conf/profile/'.$value['add_user'].'">'.$users[$value['add_user']]['realname'].'</a>' : '-';?></td>
+                    <td><?php echo friendlydate($value['add_time']);?>
+                    <td><?php if ($value['state'] === '0') {?>
+                    <span class="label label-default">未确认</span>
+                    <?php } ?>
+                    <?php if ($value['state'] === '1') {?>
+                    <span class="label label-primary">处理中</span>
+                    <?php } ?>
+                    <?php if ($value['state'] === '3') {?>
+                    <span class="label label-success">已处理</span>
+                    <?php } ?>
+                    </td>
+                  </tr>
+                  <?php
+                      }
+                    } else {
+                  ?>
+                  <tr><td colspan="6" align="center">无提测信息</td></tr>
+                  <?php } ?>
+              </tbody>
+            </table>
+          </div><!-- table-responsive -->
+        </div><!-- panel-body -->
+      </div><!-- panel -->
+      <?php } ?>
+
       <div class="panel">
         <div class="panel-body">
-          <?php if ($bug_total_rows) {?>
-          <div class="panel panel-danger panel-alt">
-            <div class="panel-heading">
-              <h5 class="panel-title">反馈BUG列表</h5>
-            </div><!-- panel-heading -->
-            <div class="panel-body panel-table">
-             <div class="table-responsive">
-                <table class="table table-buglist">
-                  <tbody>
-                    <?php
-                      if ($bug) {
-                        foreach ($bug as $value) {
-                    ?>
-                      <tr>
-                          <td><i class="fa fa-bug tooltips" data-toggle="tooltip" title="Bug"></i></td>
-                          <td><?php echo $value['id']?></td>
-                          <td><?php if ($value['level']) { $level = array(1=>'!',2=>'!!',3=>'!!!',4=>'!!!!');?><?php echo "<strong style='color:#ff0000;'>".$level[$value['level']]."</strong> ";?><?php } ?><a href="/bug/view/<?php echo $value['id'];?>" target="_blank"><?php echo $value['subject']?></a></td>
-                          <td><?php echo $value['add_user'] ? '<a href="/conf/profile/'.$value['add_user'].'">'.$users[$value['add_user']]['realname'].'</a>' : '-';?></td>
-                          <td><?php echo friendlydate($value['add_time']);?>
-                          <td><?php if ($value['state'] === '0') {?>
-                          <span class="label label-default">未确认</span>
-                          <?php } ?>
-                          <?php if ($value['state'] === '1') {?>
-                          <span class="label label-primary">处理中</span>
-                          <?php } ?>
-                          <?php if ($value['state'] === '3') {?>
-                          <span class="label label-success">已处理</span>
-                          <?php } ?>
-                        </td>
-                      </tr>
-                      <?php
-                          }
-                        } else {
-                      ?>
-                      <tr><td colspan="6" align="center">无提测信息</td></tr>
-                      <?php } ?>
-                  </tbody>
-                </table>
-              </div><!-- table-responsive -->
-            </div><!-- panel-body -->
-          </div><!-- panel -->
-          <?php } ?>
           <?php
             if ($comment) {
               foreach ($comment as $value) {

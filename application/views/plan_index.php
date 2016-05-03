@@ -38,7 +38,7 @@
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="pull-right">
-                <div class="btn-group mr10">
+                <div class="btn-group">
                   <div class="btn-group nomargin">
                     <button data-toggle="dropdown" class="btn btn-sm btn-white dropdown-toggle tooltips" type="button" title="根据工作流筛选" style="text-transform:uppercase;">
                       <i class="glyphicon glyphicon-folder-<?php if ($flow) { echo 'open'; } else { echo 'close'; }?> mr5"></i> <?php if ($flow) { echo $workflowfilter[$flow]['name']; } else { echo '工作流筛选'; }?>

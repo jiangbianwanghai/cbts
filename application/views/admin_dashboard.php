@@ -29,7 +29,7 @@
           <div class="panel-body">
             <?php if ($this->uri->segment(2, 'index') == 'index') { ?>
             <div class="pull-right">
-              <div class="btn-group mr10">
+              <div class="btn-group">
                 <?php if ($projectListByIssue) {
                   if (file_exists('./cache/project.conf.php'))
                     require './cache/project.conf.php';

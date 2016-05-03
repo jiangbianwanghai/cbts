@@ -17,9 +17,9 @@
         <div class="col-sm-3 col-lg-2">
           <h5 class="subtitle">快捷方式</h5>
           <ul class="nav nav-pills nav-stacked nav-email">
-            <li<?php if ($this->uri->segment(3, '') == 'all') {?> class="active"<?php } ?>><a href="/issue/plaza"><i class="glyphicon glyphicon-folder-close"></i> 任务列表</a></li>
-            <li<?php if ($this->uri->segment(3, '') == 'to_me') {?> class="active"<?php } ?>><a href="/issue/todo"><i class="glyphicon glyphicon-folder-close"></i> 我负责的</a></li>
-            <li<?php if ($this->uri->segment(3, '') == 'from_me') {?> class="active"<?php } ?>><a href="/issue/my"><i class="glyphicon glyphicon-folder-close"></i> 我创建的</a></li>
+            <li><a href="/issue"><i class="glyphicon glyphicon-folder-close"></i> 任务列表</a></li>
+            <li><a href="/issue/index/to_me"><i class="glyphicon glyphicon-folder-close"></i> 我负责的</a></li>
+            <li><a href="/issue/index/from_me"><i class="glyphicon glyphicon-folder-close"></i> 我创建的</a></li>
           </ul>
         </div><!-- col-sm-3 -->
         <div class="col-sm-9 col-lg-10">
@@ -109,7 +109,6 @@
               <div class="panel-footer">
                 <div class="row">
                   <button class="btn btn-primary" id="btnSubmit">提交</button>
-                  <button type="reset" class="btn btn-default">重置</button>
                 </div>
               </div>
           </div><!-- panel -->
