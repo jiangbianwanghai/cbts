@@ -33,8 +33,146 @@ class issue extends CI_Controller {
         }
     }
 
+    /**
+     * 任务列表
+     */
+    public function index() {
+
+        //设置页面标题
+        $data['PAGE_TITLE'] = '新增任务';
+
+        //获取项目ID
+        $projectId = $this->_projectCache[$this->_projectId]['id'];
+
+        //获取筛选项
+        $folder = $this->uri->segment(3, 'all');
+        if (in_array($folder, array('all', 'to_me', 'from_me'))) {
+            $folder = $this->uri->segment(3, 'all');
+        } else {
+            $folder = 'all';
+        }
+        $data['folder'] = $folder;
+        $data['planId'] = $this->uri->segment(4, 0);
+        $data['flow'] = $this->uri->segment(5, 0);
+        $data['taskType'] = $this->uri->segment(6, 0);
+        $offset = $this->uri->segment(7, 0);
+
+        //载入配置信息
+        $this->config->load('extension', TRUE);
+        $data['level'] = $this->config->item('level', 'extension');
+        $data['workflow'] = $this->config->item('workflow', 'extension');
+        $data['workflowfilter'] = $this->config->item('workflowfilter', 'extension');
+        $data['tasktype'] = $this->config->item('tasktype', 'extension');
+        $config = $this->config->item('pages', 'extension');
+
+        //查询数据
+        $this->load->model('Model_issue', 'issue', TRUE);
+        $uid = 0;
+        if (in_array($folder, array('to_me', 'from_me'))) {
+            $uid = $this->input->cookie('uids');
+        }
+
+        //转移筛选值
+        $flow = '-1';
+        if (isset($data['workflowfilter'][$data['flow']])) {
+            $flow = $data['workflowfilter'][$data['flow']]['id'];
+        }
+        $taskType = 0;
+        if (isset($data['tasktype'][$data['taskType']])) {
+            $taskType = $data['tasktype'][$data['taskType']];
+        }
+
+        //获取计划
+        $data['planListByIssue'] = $this->issue->planListByIssue($uid, $projectId, $folder);
+        if ($data['planListByIssue']) {
+            foreach ($data['planListByIssue'] as $key => $value) {
+                $data['planArr'][$value['id']] = $value;
+            }
+        }
+
+        //查询数据
+        $rows = $this->issue->listByUserId($uid, $folder, $projectId, $data['planId'], $flow, $taskType, $config['per_page'], $offset);
+        $data['rows'] = $rows['data'];
+        $data['total'] = $rows['total'];
+
+        //获取已经星标的ID
+        if ($rows['data']) {
+            $ids = array();
+            foreach ($rows['data'] as $key => $value) {
+                $ids[]= $value['id'];
+            }
+            $star = $this->issue->starByBugId($ids);
+            if ($star) {
+                foreach ($star as $key => $value) {
+                    $data['star'][$value['star_id']] = $value['star_id'];
+                }
+            }
+        }
+
+        //分页
+        $this->load->library('pagination');
+        $config['total_rows'] = $rows['total'];
+        $config['cur_page'] = $offset;
+        $config['base_url'] = '/issue/index/'.$folder.'/'.$data['planId'].'/'.$data['flow'].'/'.$data['taskType'];
+        $this->pagination->initialize($config);
+        $data['pages'] = $this->pagination->create_links();
+        $data['offset'] = $offset;
+        $data['per_page'] = $config['per_page'];
+
+        $this->load->view('issue_index', $data);
+    }
+
+    /**
+     * 星标列表控制器
+     */
+    public function star() {
+
+        //设置页面标题
+        $data['PAGE_TITLE'] = '星标记录';
+
+        //获取筛选参数
+        $offset = $this->uri->segment(3, 0);
+
+        //获取项目ID
+        $projectId = $this->_projectCache[$this->_projectId]['id'];
+
+        //载入配置信息
+        $this->config->load('extension', TRUE);
+        $data['level'] = $this->config->item('level', 'extension');
+        $data['workflow'] = $this->config->item('workflow', 'extension');
+        $data['workflowfilter'] = $this->config->item('workflowfilter', 'extension');
+        $data['tasktype'] = $this->config->item('tasktype', 'extension');
+        $config = $this->config->item('pages', 'extension');
+
+        //读取数据
+        $this->load->model('Model_issue', 'issue', TRUE);
+        $rows = $this->issue->starList($projectId, $config['per_page'], $offset);
+
+        $data['rows'] = $rows['data'];
+        $data['total'] = $rows['total'];
+
+        if (file_exists('./cache/users.conf.php')) {
+            require './cache/users.conf.php';
+            $data['users'] = $users;
+        }
+        $this->load->helper('friendlydate');
+
+        //分页
+        $this->load->library('pagination');
+        $config['total_rows'] = $rows['total'];
+        $config['cur_page'] = $offset;
+        $config['base_url'] = '/issue/star/';
+        $this->pagination->initialize($config);
+        $data['pages'] = $this->pagination->create_links();
+        $data['offset'] = $offset;
+        $data['per_page'] = $config['per_page'];
+        $data['folder'] = 'index';
+
+        $this->load->view('issue_index', $data);
+    }
+
     public function add() {
-    	$data['PAGE_TITLE'] = '新增任务';
+        $data['PAGE_TITLE'] = '新增任务';
 
         //读取项目计划
         $data['planId'] = $this->input->get('planId', TRUE);
@@ -173,6 +311,14 @@ class issue extends CI_Controller {
             $data['bug'] = $rows['data'];
             $data['bug_total_rows'] = $rows['total_rows'];
         }
+
+        //读取所属计划
+        $data['plan'] = array();
+        if ($data['row']['plan_id']) {
+            $this->load->model('Model_plan', 'plan', TRUE);
+            $data['plan'] = $this->plan->fetchOne($data['row']['plan_id']);
+        }
+
         
         //读取受理信息
         $this->load->model('Model_accept', 'accept', TRUE);

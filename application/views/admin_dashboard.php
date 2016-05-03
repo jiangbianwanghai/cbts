@@ -15,14 +15,19 @@
       <div class="col-sm-3 col-lg-2">
         <h5 class="subtitle">我的任务</h5>
         <ul class="nav nav-pills nav-stacked nav-email mb20">
-          <li<?php if ($this->uri->segment(3, 'to_me') == 'to_me') {?> class="active"<?php } ?>><a href="/admin/index/to_me"><i class="glyphicon glyphicon-folder-<?php if ($this->uri->segment(3, 'to_me') == 'to_me') { echo 'open';} else { echo 'close';}?>"></i> 我负责的</a></li>
-          <li<?php if ($this->uri->segment(3, '') == 'from_me') {?> class="active"<?php } ?>><a href="/admin/index/from_me"><i class="glyphicon glyphicon-folder-<?php if ($this->uri->segment(3, '') == 'from_me') { echo 'open';} else { echo 'close';}?>"></i> 我创建的</a></li>
-          <li<?php if ($this->uri->segment(3, '') == 'over') {?> class="active"<?php } ?>><a href="/admin/index/over"><i class="glyphicon glyphicon-folder-<?php if ($this->uri->segment(3, '') == 'over') { echo 'open';} else { echo 'close';}?>"></i> 已完成的</a></li>
+          <li<?php if ($folder == 'to_me') {?> class="active"<?php } ?>><a href="/admin/index/to_me"><i class="glyphicon glyphicon-folder-<?php if ($folder == 'to_me') { echo 'open';} else { echo 'close';}?>"></i> 我负责的</a></li>
+          <li<?php if ($folder == 'from_me') {?> class="active"<?php } ?>><a href="/admin/index/from_me"><i class="glyphicon glyphicon-folder-<?php if ($folder == 'from_me') { echo 'open';} else { echo 'close';}?>"></i> 我创建的</a></li>
+          <li<?php if ($folder == 'over') {?> class="active"<?php } ?>><a href="/admin/index/over"><i class="glyphicon glyphicon-folder-<?php if ($folder == 'over') { echo 'open';} else { echo 'close';}?>"></i> 已完成的</a></li>
+        </ul>
+        <div class="mb10"></div>
+        <ul class="nav nav-pills nav-stacked nav-email">
+          <li<?php if ($this->uri->segment(2, '') == 'star') {?> class="active"<?php } ?>><a href="/admin/star"><i class="glyphicon glyphicon-star"></i> 星标</a></li>
         </ul>
       </div><!-- col-sm-3 -->
       <div class="col-sm-9 col-lg-10">
         <div class="panel panel-default">
           <div class="panel-body">
+            <?php if ($this->uri->segment(2, 'index') == 'index') { ?>
             <div class="pull-right">
               <div class="btn-group mr10">
                 <?php if ($projectListByIssue) {
@@ -36,13 +41,13 @@
                   </button>
                   <ul class="dropdown-menu">
                     <?php if ($projectMd5) {?>
-                    <li><a href="/admin/index/<?php echo $this->uri->segment(3, 'to_me');?>/0/0/<?php echo $taskType;?>"><i class="glyphicon glyphicon-folder-open mr5"></i> 查看全部</a></li>
+                    <li><a href="/admin/index/<?php echo $folder;?>/0/0/<?php echo $flow;?>/<?php echo $taskType;?>"><i class="glyphicon glyphicon-folder-open mr5"></i> 查看全部</a></li>
                     <?php } ?>
                     <?php 
                     foreach ($projectListByIssue as $key => $value) {
                       if ($projectMd5 != $value['md5'] || !$projectMd5) {
                     ?>
-                    <li><a href="/admin/index/<?php echo $this->uri->segment(3, 'to_me');?>/<?php echo $value['md5'];?>/<?php echo $planId;?>/<?php echo $taskType;?>"><i class="glyphicon glyphicon-folder-open mr5"></i> <?php echo $value['project_name'];?></a></li>
+                    <li><a href="/admin/index/<?php echo $folder;?>/<?php echo $value['md5'];?>/<?php echo $planId;?>/<?php echo $flow;?>/<?php echo $taskType;?>"><i class="glyphicon glyphicon-folder-open mr5"></i> <?php echo $value['project_name'];?></a></li>
                     <?php
                       }
                     } 
@@ -58,13 +63,13 @@
                   <?php if ($projectMd5) {?>
                   <ul class="dropdown-menu">
                     <?php if ($planId) {?>
-                    <li><a href="/admin/index/<?php echo $this->uri->segment(3, 'to_me');?>/<?php echo $projectMd5;?>/0/<?php echo $taskType;?>"><i class="glyphicon glyphicon-folder-open mr5"></i> 查看全部</a></li>
+                    <li><a href="/admin/index/<?php echo $folder;?>/<?php echo $projectMd5;?>/0/<?php echo $flow;?>/<?php echo $taskType;?>"><i class="glyphicon glyphicon-folder-open mr5"></i> 查看全部</a></li>
                     <?php } ?>
                     <?php 
                     foreach ($planListByIssue as $key => $value) {
                       if ($planId != $value['id'] || !$planId) {
                     ?>
-                    <li><a href="/admin/index/<?php echo $this->uri->segment(3, 'to_me');?>/<?php echo $projectMd5;?>/<?php echo $value['id'];?>/<?php echo $taskType;?>"><i class="glyphicon glyphicon-folder-open mr5"></i> <?php echo $value['plan_name'];?></a></li>
+                    <li><a href="/admin/index/<?php echo $folder;?>/<?php echo $projectMd5;?>/<?php echo $value['id'];?>/<?php echo $flow;?>/<?php echo $taskType;?>"><i class="glyphicon glyphicon-folder-open mr5"></i> <?php echo $value['plan_name'];?></a></li>
                     <?php
                       }
                     } 
@@ -73,21 +78,36 @@
                   <?php } ?>
                 </div>
                 <div class="btn-group nomargin">
+                    <button data-toggle="dropdown" class="btn btn-sm btn-white dropdown-toggle tooltips" type="button" title="根据工作流筛选" style="text-transform:uppercase;">
+                      <i class="glyphicon glyphicon-folder-<?php if ($flow) { echo 'open'; } else { echo 'close'; }?> mr5"></i> <?php if ($flow) { echo $workflowfilter[$flow]['name']; } else { echo '类型筛选'; }?>
+                      <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <?php if ($flow) {?>
+                      <li><a href="/admin/index/<?php echo $folder;?>/<?php echo $projectMd5;?>/<?php echo $planId;?>/0/<?php echo $taskType;?>"><i class="glyphicon glyphicon-folder-open mr5"></i> 查看全部</a></li>
+                      <?php } ?>
+                      <?php foreach ($workflow as $key => $value) {?>
+                      <?php if ($flow != $value['en_name'] || !$flow) {?><li><a href="/admin/index/<?php echo $folder;?>/<?php echo $projectMd5;?>/<?php echo $planId;?>/<?php echo $value['en_name'];?>/<?php echo $taskType;?>"><i class="glyphicon glyphicon-folder-open mr5"></i> <?php echo $value['name'];?></a></li><?php } ?>
+                      <?php } ?>
+                    </ul>
+                  </div>
+                <div class="btn-group nomargin">
                   <button data-toggle="dropdown" class="btn btn-sm btn-white dropdown-toggle tooltips" type="button" title="根据类型筛选" style="text-transform:uppercase;">
                     <i class="glyphicon glyphicon-folder-<?php if ($taskType) { echo 'open'; } else { echo 'close'; }?> mr5"></i> <?php if ($taskType) { echo $taskType; } else { echo '类型筛选'; }?>
                     <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu">
                     <?php if ($taskType) {?>
-                    <li><a href="/admin/index/<?php echo $this->uri->segment(3, 'to_me');?>/<?php echo $projectMd5;?>/<?php echo $planId;?>"><i class="glyphicon glyphicon-folder-open mr5"></i> 查看全部</a></li>
+                    <li><a href="/admin/index/<?php echo $folder;?>/<?php echo $projectMd5;?>/<?php echo $planId;?>"><i class="glyphicon glyphicon-folder-open mr5"></i> 查看全部</a></li>
                     <?php } ?>
-                    <?php if ($taskType != 'task' || !$taskType) {?><li><a href="/admin/index/<?php echo $this->uri->segment(3, 'to_me');?>/<?php echo $projectMd5;?>/<?php echo $planId;?>/task"><i class="glyphicon glyphicon-folder-open mr5"></i> TASK</a></li><?php } ?>
-                    <?php if ($taskType != 'bug' || !$taskType) {?><li><a href="/admin/index/<?php echo $this->uri->segment(3, 'to_me');?>/<?php echo $projectMd5;?>/<?php echo $planId;?>/bug"><i class="glyphicon glyphicon-folder-open mr5"></i> BUG</a></li><?php } ?>
+                    <?php if ($taskType != 'task' || !$taskType) {?><li><a href="/admin/index/<?php echo $folder;?>/<?php echo $projectMd5;?>/<?php echo $planId;?>/<?php echo $flow;?>/task"><i class="glyphicon glyphicon-folder-open mr5"></i> TASK</a></li><?php } ?>
+                    <?php if ($taskType != 'bug' || !$taskType) {?><li><a href="/admin/index/<?php echo $folder;?>/<?php echo $projectMd5;?>/<?php echo $planId;?>/<?php echo $flow;?>/bug"><i class="glyphicon glyphicon-folder-open mr5"></i> BUG</a></li><?php } ?>
                   </ul>
                 </div>
               </div>
             </div><!-- pull-right -->
-            <h5 class="subtitle mb5"><?php if ($this->uri->segment(3, 'to_me') == 'to_me') { echo '我负责的'; }?><?php if ($this->uri->segment(3, '') == 'from_me') { echo '我创建的'; }?><?php if ($this->uri->segment(3, '') == 'over') { echo '已完成的'; }?> <span class="badge badge-info"><?php echo $total;?></span></h5>
+            <?php } ?>
+            <h5 class="subtitle mb5"><?php if ($folder == 'to_me') { echo '我负责的'; }?><?php if ($folder == 'from_me') { echo '我创建的'; }?><?php if ($folder == 'over') { echo '已完成的'; }?><?php if ($this->uri->segment(2, '') == 'star') { echo '星标'; }?> <span class="badge badge-info"><?php echo $total;?></span></h5>
             <?php if (($total-$offset) < $per_page) { $per_page_end = $total-$offset; } else { $per_page_end = $per_page; }?>
             <p class="text-muted">查询结果：<?php echo ($offset+1).' - '.($per_page_end+$offset).' of '.$total;?></p>
             <div class="table-responsive">

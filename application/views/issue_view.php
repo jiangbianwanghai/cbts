@@ -241,9 +241,15 @@
               </tr>
               <tr>
                 <td width="100px">所属计划</td>
-                <td>-</td>
+                <td><?php if ($plan) { echo '<a href="/plan?planId='.$plan['id'].'" target="_blank">'.$plan['plan_name'].'</a>'; }?></td>
                 <td width="120px">贡献者</td>
-                <td>-</td>
+                <td>
+                  <?php if ($acceptUsers) {
+                    foreach ($acceptUsers as $key => $value) {
+                      echo ' <a href="/conf/profile/'.$value['accept_user'].'">'.$users[$value['accept_user']]['realname'].'</a>';
+                    }
+                  }?>
+                </td>
               </tr>
               <tr>
                 <td width="100px">相关链接</td>
