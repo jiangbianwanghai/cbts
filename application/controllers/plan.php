@@ -137,6 +137,8 @@ class plan extends CI_Controller {
      * 新增计划接口
      */
     public function add_ajax() {
+
+        //验证表单
         $this->load->library('form_validation');
         if ($this->form_validation->run() == FALSE) {
             $callBack = array(
@@ -147,9 +149,19 @@ class plan extends CI_Controller {
             echo json_encode($callBack);
             exit();
         }
+
+        //验证结束时间不能小于开始时间
+        if ($this->input->post('endime') <= $this->input->post('startime')) {
+            $callBack = array(
+                'status' => false,
+                'message' => '结束时间不能小于等于开始时间',
+                'url' => '/plan'
+            );
+            echo json_encode($callBack);
+            exit();
+        }
+
     	$this->load->model('Model_plan', 'plan', TRUE);
-    	if (file_exists('./cache/project.conf.php'))
-    		require './cache/project.conf.php';
         $post = array(
         	'project_id' => $this->_projectCache[$this->_projectId]['id'],
             'plan_name' => $this->input->post('plan_name'),
