@@ -29,7 +29,7 @@
         <div class="col-sm-9 col-lg-10">
           <div class="panel panel-default">
             <div class="panel-body">
-              <?php if ($this->uri->segment(2, '') == 'index') { ?>
+              <?php if ($this->uri->segment(2, 'index') == 'index') { ?>
               <div class="pull-right">
                 <div class="btn-group">
                   <div class="btn-group nomargin">
