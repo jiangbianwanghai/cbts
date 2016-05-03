@@ -311,6 +311,16 @@ class issue extends CI_Controller {
             $data['bug'] = $rows['data'];
             $data['bug_total_rows'] = $rows['total_rows'];
         }
+        //验证BUG是否都已经处理
+        $data['fixedFlag'] = 1;
+        if ($rows['data']) {
+            foreach ($rows['data'] as $key => $value) {
+                if ($value['state'] == '0' || $value['state'] == '1') {
+                    $data['fixedFlag'] = 0;
+                    break;
+                }
+            }
+        }
 
         //读取所属计划
         $data['plan'] = array();

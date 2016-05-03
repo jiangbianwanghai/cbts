@@ -33,7 +33,7 @@
                     <div class="panel-body">
                         <?php if ($this->uri->segment(2, 'index') == 'index') {?>
                         <div class="pull-right">
-                          <div class="btn-group mr10">
+                          <div class="btn-group">
                                 <div class="btn-group nomargin">
                                     <button data-toggle="dropdown" class="btn btn-sm btn-white dropdown-toggle tooltips" type="button" title="根据处理状态筛选">
                                       <i class="glyphicon glyphicon-folder-close mr5"></i> <?php if ($state == 'all') { echo '处理状态筛选'; }?><?php if ($state == 'uncheck') { echo '未处理'; }?><?php if ($state == 'checkin') { echo '已确认'; }?><?php if ($state == 'doing') { echo '处理中'; }?><?php if ($state == 'over') { echo '已处理'; }?><?php if ($state == 'invalid') { echo '无效反馈'; }?>
