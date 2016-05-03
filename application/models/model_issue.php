@@ -372,7 +372,7 @@ class Model_issue extends CI_Model {
         return $rows;
     }
 
-    public function listByUserId($uid, $folder = 'to_me', $projectId = 0, $planId = 0, $taskType = 0, $limit = 20, $offset = 0) {
+    public function listByUserId($uid = 0, $folder = 'to_me', $projectId = 0, $planId = 0, $flow = '-1', $taskType = 0, $limit = 20, $offset = 0) {
         $rows = array('total' => 0, 'data' => false);
         $this->db->select('*');
         if ($folder == 'to_me')
@@ -383,6 +383,8 @@ class Model_issue extends CI_Model {
             $this->db->where('project_id', $projectId);
         if ($planId)
             $this->db->where('plan_id', $planId);
+        if ($flow >= 0)
+            $this->db->where('workflow', $flow);
         if ($taskType)
             $this->db->where('type', $taskType);
         $db = clone($this->db);
@@ -463,5 +465,28 @@ class Model_issue extends CI_Model {
 
     public function changeFlow($id, $flow) {
         return $this->db->update($this->_table, array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'accept_user' => $this->input->cookie('uids'), 'accept_time' => time(), 'workflow' => $flow), array('id' => $id));
+    }
+
+    public function starList($projectId = 0, $limit = 20, $offset = 0) {
+        $rows = array('total' => 0, 'data' => false);
+        $this->db->select('id');
+        $this->db->where('star.add_user', $this->input->cookie('uids'));
+        $this->db->where('star.star_type', 1);
+        if ($projectId)
+            $this->db->where('issue.project_id', $projectId);
+        $this->db->join($this->_table, 'star.star_id = issue.id', 'left');
+        $rows['total'] = $this->db->count_all_results('star');
+
+        $this->db->select('issue.id,issue.issue_name,issue.add_user,issue.add_time,accept_user,accept_time,level,status,workflow,type');
+        $this->db->from('star');
+        $this->db->where('star.add_user', $this->input->cookie('uids'));
+        $this->db->where('star.star_type', 1);
+        if ($projectId)
+            $this->db->where('issue.project_id', $projectId);
+        $this->db->join($this->_table, 'star.star_id = issue.id', 'left');
+        $this->db->limit($limit, $offset);
+        $query = $this->db->get();
+        $rows['data'] = $query->result_array();
+        return $rows;
     }
 }

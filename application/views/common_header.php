@@ -37,10 +37,10 @@
 
       <h5 class="sidebartitle">快捷导航</h5>
       <ul class="nav nav-pills nav-stacked nav-bracket">
-        <li<?php if (($this->uri->segment(1, 'admin') == 'admin' && $this->uri->segment(2, 'index') == 'index') || $this->uri->segment(2, '') == 'profile') echo ' class="active"';?>><a href="/"><i class="fa fa-home"></i> <span>我的面板</span></a></li>
+        <li<?php if (($this->uri->segment(1, 'admin') == 'admin') || $this->uri->segment(2, '') == 'profile') echo ' class="active"';?>><a href="/"><i class="fa fa-home"></i> <span>我的面板</span></a></li>
         <li<?php if ($this->uri->segment(1, '') == 'plan') echo ' class="active"';?>><a href="/plan"><i class="fa fa-thumb-tack"></i> <span>计划管理</span></a></li>
         <li<?php if ($this->uri->segment(1, '') == 'bug') echo ' class="active"';?>><a href="/bug"><i class="fa fa-bug"></i> <span>Bug管理</span></a></li>
-        <li<?php if ($this->uri->segment(1, '') == 'issue') echo ' class="active"';?>><a href="/issue/plaza"><i class="fa fa-tasks"></i> <span>任务管理</span></a>
+        <li<?php if ($this->uri->segment(1, '') == 'issue') echo ' class="active"';?>><a href="/issue"><i class="fa fa-tasks"></i> <span>任务管理</span></a>
         </li>
         <li<?php if ($this->uri->segment(1, '') == 'test') echo ' class="active"';?>><a href="/test/plaza"><i class="fa fa-medkit"></i> <span>提测管理</span></a>
         </li>
