@@ -802,7 +802,7 @@ class issue extends CI_Controller {
         }
 
         //指派上线人员
-        if ($row['workflow'] == 5) {
+        if ($row['workflow'] == 6) {
             $acceptRow = $this->accept->rowByIssue($row['id'], 4);
             print_r($acceptRow);
             if ($acceptRow) {
@@ -954,7 +954,7 @@ class issue extends CI_Controller {
         }
 
         //验证受理人是否合法
-        if ($row['accept_user'] != $this->input->cookie('uids')) {
+        /**if ($row['accept_user'] != $this->input->cookie('uids')) {
             $callBack = array(
                 'status' => false,
                 'message' => '受理人不是你，你无权操作！',
@@ -962,10 +962,18 @@ class issue extends CI_Controller {
             );
             echo json_encode($callBack);
             exit();
-        }
+        }*/
 
         //更改工作流
-        $flag = $this->issue->changeFlow($id, $workflowfilter[$flow]['id']);
+        $user = $this->input->cookie('uids');
+        if ($flow == 'fixed') {
+            $this->load->model('Model_accept', 'accept', TRUE);
+            $acceptRow = $this->accept->rowByIssue($id, 3);
+            if ($acceptRow) {
+                $user = $acceptRow['accept_user'];
+            }
+        }
+        $flag = $this->issue->changeFlow($id, $workflowfilter[$flow]['id'], $user);
         if ($flag) {
             $callBack = array(
                 'status' => true,

@@ -15,9 +15,9 @@
       <div class="row">
         <div class="col-sm-3 col-lg-2">
           <ul class="nav nav-pills nav-stacked nav-email">
-            <li<?php if ($this->uri->segment(3, '') == 'all') {?> class="active"<?php } ?>><a href="/issue/plaza"><i class="glyphicon glyphicon-folder-close"></i> 任务列表</a></li>
-            <li<?php if ($this->uri->segment(3, '') == 'to_me') {?> class="active"<?php } ?>><a href="/issue/todo"><i class="glyphicon glyphicon-folder-close"></i> 我负责的</a></li>
-            <li<?php if ($this->uri->segment(3, '') == 'from_me') {?> class="active"<?php } ?>><a href="/issue/my"><i class="glyphicon glyphicon-folder-close"></i> 我创建的</a></li>
+            <li><a href="/issue"><i class="glyphicon glyphicon-folder-close"></i> 任务列表</a></li>
+            <li><a href="/issue/index/to_me"><i class="glyphicon glyphicon-folder-close"></i> 我负责的</a></li>
+            <li><a href="/issue/from_me"><i class="glyphicon glyphicon-folder-close"></i> 我创建的</a></li>
           </ul>
         </div><!-- col-sm-3 -->
         <div class="col-sm-9 col-lg-10">
@@ -52,7 +52,7 @@
                   <span class="face"><img alt="" src="/static/avatar/<?php echo $users[$acceptUsers['1']['accept_user']]['username'];?>.jpg" align="absmiddle" title=""></span> <a href="/conf/profile/<?php echo $acceptUsers['1']['accept_user'];?>" target="_blank"><?php echo $users[$acceptUsers['1']['accept_user']]['realname'];?></a>
                   <?php } else { echo 'N/A'; } ?>
                 </td>
-                <td colspan="<?php if ($bug_total_rows) {echo 3;}else{echo 2;}?>">
+                <td colspan="<?php if ($bug_total_rows) {echo 4;}else{echo 2;}?>">
                   <?php if ($acceptUsers && isset($acceptUsers['2'])) { ?>
                   <span class="face"><img alt="" src="/static/avatar/<?php echo $users[$acceptUsers['2']['accept_user']]['username'];?>.jpg" align="absmiddle" title=""></span> <a href="/conf/profile/<?php echo $acceptUsers['1']['accept_user'];?>" target="_blank"><?php echo $users[$acceptUsers['2']['accept_user']]['realname'];?></a>
                   <?php } else { echo 'N/A'; } ?>
@@ -93,28 +93,33 @@
                 <?php } ?>
                 <!-- #开发-修复中# -->
                 <?php if ($bug_total_rows) {?>
-                <?php if ($row['workflow'] >= 4) {?>
+                <?php if ($row['workflow'] >= 3) {?>
                 <td class="blue">修复中</td>
                 <?php } else {?>
-                <?php if ($row['workflow'] == 3 && $acceptUsers && isset($acceptUsers['2']) && $acceptUsers['2']['accept_user'] == $this->input->cookie('uids') && !$fixedFlag) { ?>
-                <td style="text-align:center;" width="200px" id="td-over">
+                <td style="text-align:center;">修复中</td>
+                <?php } ?>
+
+                <?php if ($row['workflow'] >= 4) {?>
+                <td class="blue">修复完毕</td>
+                <?php } else {?>
+                <?php if ($row['workflow'] == 3 && $acceptUsers && isset($acceptUsers['2']) && $acceptUsers['2']['accept_user'] == $this->input->cookie('uids')) { ?>
+                <td style="text-align:center;" width="200px" id="td-fix">
                   <a href="/test/add/<?php echo $row['id'];?>" class="label label-danger" target="_blank">提交代码</a> 
-                  <a href="javascript:;" ids="<?php echo $row['id']; ?>" class="label label-primary over">提交完毕</a>
+                  <a href="javascript:;" ids="<?php echo $row['id']; ?>" class="label label-primary fix">修复完毕</a>
                 </td>
                 <?php }else { ?>
-                <td style="text-align:center;">修复中
-                </td>
+                <td style="text-align:center;">修复完毕</td>
                 <?php } ?>
                 <?php } ?>
                 <?php } ?>
 
                 <!-- #测试-测试中# -->
-                <?php if ($row['workflow'] >= 4 && $fixedFlag) {?>
+                <?php if ($row['workflow'] >= 5) {?>
                 <td class="blue">测试中</td>
                 <?php } else {?>
-                <?php if ($row['workflow'] == 2 && $acceptUsers && isset($acceptUsers['3']) && $row['accept_user'] == $this->input->cookie('uids') && $fixedFlag) {?>
+                <?php if (($row['workflow'] == 2 || $row['workflow'] == 4)&& $acceptUsers && isset($acceptUsers['3']) && $acceptUsers['3']['accept_user'] == $this->input->cookie('uids')) {?>
                 <td style="text-align:center;" id="td-test"><a href="javascript:;" ids="<?php echo $row['id']; ?>" class="label label-danger test">我要测试</a></td>
-                <?php } elseif ($row['workflow'] == 2 && $row['accept_user'] == $this->input->cookie('uids')) {?>
+                <?php } elseif ($row['workflow'] == 2 && $acceptUsers && !isset($acceptUsers['3']) && $acceptUsers['2']['accept_user'] == $this->input->cookie('uids')) {?>
                 <td style="text-align:center;"><a href="javascript:;" id="test_user" data-type="select2" data-value="0" data-title="指定受理人"></a></td>
                 <?php } else {?>
                 <td style="text-align:center;">测试中</td>
@@ -122,10 +127,10 @@
                 <?php } ?>
 
                 <!-- #测试-测试通过# -->
-                <?php if ($row['workflow'] >= 5) { ?>
+                <?php if ($row['workflow'] >= 6) { ?>
                   <td class="blue">测试通过</td>
                 <?php } else { ?>
-                  <?php if ($row['workflow'] == 4 && $acceptUsers && isset($acceptUsers['3']) && $acceptUsers['3']['accept_user'] == $this->input->cookie('uids')) {?>
+                  <?php if (($row['workflow'] >=3 && $row['workflow'] <= 5) && $acceptUsers && isset($acceptUsers['3']) && $acceptUsers['3']['accept_user'] == $this->input->cookie('uids')) {?>
                   <td style="text-align:center;" width="200px" id="td-wait">
                     <a href="/bug/add/<?php echo $row['id'];?>" class="label label-danger" target="_blank">反馈BUG</a> 
                     <a href="javascript:;" ids="<?php echo $row['id']; ?>" class="label label-primary waits">测试通过</a>
@@ -136,12 +141,12 @@
                 <?php } ?>
 
                 <!-- #上线# -->
-                <?php if ($row['workflow'] == 6) { ?>
+                <?php if ($row['workflow'] == 7) { ?>
                 <td class="blue">已上线</td>
                 <?php } else { ?>
-                <?php if ($row['workflow'] == 5 && $acceptUsers && isset($acceptUsers['4']) && $acceptUsers['4']['accept_user'] == $this->input->cookie('uids')) {?>
+                <?php if ($row['workflow'] == 6 && $acceptUsers && isset($acceptUsers['4']) && $acceptUsers['4']['accept_user'] == $this->input->cookie('uids')) {?>
                 <td style="text-align:center;" id="td-online"><a href="javascript:;" ids="<?php echo $row['id']; ?>" class="label label-danger onlines">通知上线</a></td>
-                <?php } elseif ($row['workflow'] == 5 && !isset($acceptUsers['4']) ) {?>
+                <?php } elseif ($row['workflow'] == 6 && $acceptUsers && !isset($acceptUsers['4']) && $acceptUsers['3']['accept_user'] == $this->input->cookie('uids')) {?>
                 <td style="text-align:center;"><a href="javascript:;" id="test_user" data-type="select2" data-value="0" data-title="指定受理人"></a></td>
                 <?php } else {?>
                 <td style="text-align:center;">上线</td>
@@ -1042,6 +1047,30 @@ $(function(){
             $(this).hide();
             $("#td-over").addClass('blue');
             $("#td-over").text('开发完毕');
+            tip(data.message, data.url, 'success', 2000);
+          } else {
+            tip(data.message, data.url, 'danger', 5000);
+          };
+        }
+      });
+    }
+  });
+
+  //修复完毕
+  $(".fix").click(function(){
+    var c = confirm('你确定已经完成所有BUG修复并提交相应代码了吗？');
+    if(c) {
+      $(this).attr("disabled", true);
+      id = $(this).attr("ids");
+      $.ajax({
+        type: "GET",
+        url: "/issue/change_flow/"+id+"/fixed",
+        dataType: "JSON",
+        success: function(data){
+          if (data.status) {
+            $(this).hide();
+            $("#td-fix").addClass('blue');
+            $("#td-fix").text('修复完毕');
             tip(data.message, data.url, 'success', 2000);
           } else {
             tip(data.message, data.url, 'danger', 5000);
