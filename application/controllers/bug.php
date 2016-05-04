@@ -271,6 +271,9 @@ class bug extends CI_Controller {
         );
         $feedback = $this->bug->add($post);
         if ($feedback['status']) {
+
+            //任务工作流更改为修复中
+            $this->issue->changeFlow($row['id'], 3);
             $callBack = array(
                 'status' => true,
                 'message' => '提交成功',
