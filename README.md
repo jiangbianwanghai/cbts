@@ -1,5 +1,5 @@
 # 巧克力任务跟踪系统 - Chocolate Issue Tracker System
-Choc - Bug Tracker System. Based on the CodeIgniter framework development.
+CITS基于CodeIgniter框架开发
 
 设计思路:
 
