@@ -463,8 +463,8 @@ class Model_issue extends CI_Model {
         return $row;
     }
 
-    public function changeFlow($id, $flow) {
-        return $this->db->update($this->_table, array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'accept_user' => $this->input->cookie('uids'), 'accept_time' => time(), 'workflow' => $flow), array('id' => $id));
+    public function changeFlow($id, $flow, $acceptUser) {
+        return $this->db->update($this->_table, array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'accept_user' => $acceptUser, 'accept_time' => time(), 'workflow' => $flow), array('id' => $id));
     }
 
     public function starList($projectId = 0, $limit = 20, $offset = 0) {

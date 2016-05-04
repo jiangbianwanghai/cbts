@@ -271,9 +271,14 @@ class bug extends CI_Controller {
         );
         $feedback = $this->bug->add($post);
         if ($feedback['status']) {
-
+            $user = $this->input->cookie('uids');
+            $this->load->model('Model_accept', 'accept', TRUE);
+            $acceptRow = $this->accept->rowByIssue($this->input->post('issue_id'), 2);
+            if ($acceptRow) {
+                $user = $acceptRow['accept_user'];
+            }
             //任务工作流更改为修复中
-            $this->issue->changeFlow($row['id'], 3);
+            $this->issue->changeFlow($row['id'], 3, $user);
             $callBack = array(
                 'status' => true,
                 'message' => '提交成功',
