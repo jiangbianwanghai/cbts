@@ -93,7 +93,7 @@
                 <?php } ?>
                 <!-- #开发-修复中# -->
                 <?php if ($bug_total_rows) {?>
-                <?php if ($row['workflow'] >= 4) {?>
+                <?php if ($row['workflow'] >= 3) {?>
                 <td class="blue">修复中</td>
                 <?php } else {?>
                 <?php if ($acceptUsers && isset($acceptUsers['2']) && $acceptUsers['2']['accept_user'] == $this->input->cookie('uids') && !$fixedFlag) { ?>
@@ -109,10 +109,10 @@
                 <?php } ?>
 
                 <!-- #测试-测试中# -->
-                <?php if ($row['workflow'] >= 3 && $fixedFlag) {?>
+                <?php if ($row['workflow'] >= 4 && $fixedFlag) {?>
                 <td class="blue">测试中</td>
                 <?php } else {?>
-                <?php if ($row['workflow'] == 2 && $acceptUsers && isset($acceptUsers['3']) && $row['accept_user'] == $this->input->cookie('uids')) {?>
+                <?php if ($row['workflow'] == 3 && $acceptUsers && isset($acceptUsers['3']) && $row['accept_user'] == $this->input->cookie('uids') && $fixedFlag) {?>
                 <td style="text-align:center;" id="td-test"><a href="javascript:;" ids="<?php echo $row['id']; ?>" class="label label-danger test">我要测试</a></td>
                 <?php } elseif ($row['workflow'] == 2 && $row['accept_user'] == $this->input->cookie('uids')) {?>
                 <td style="text-align:center;"><a href="javascript:;" id="test_user" data-type="select2" data-value="0" data-title="指定受理人"></a></td>
@@ -122,10 +122,10 @@
                 <?php } ?>
 
                 <!-- #测试-测试通过# -->
-                <?php if ($row['workflow'] >= 4) { ?>
+                <?php if ($row['workflow'] >= 5) { ?>
                   <td class="blue">测试通过</td>
                 <?php } else { ?>
-                  <?php if ($row['workflow']  == 3 && $acceptUsers && isset($acceptUsers['3']) && $acceptUsers['3']['accept_user'] == $this->input->cookie('uids')) {?>
+                  <?php if ($row['workflow']  == 4 && $acceptUsers && isset($acceptUsers['3']) && $acceptUsers['3']['accept_user'] == $this->input->cookie('uids')) {?>
                   <td style="text-align:center;" width="200px" id="td-wait">
                     <a href="/bug/add/<?php echo $row['id'];?>" class="label label-danger" target="_blank">反馈BUG</a> 
                     <a href="javascript:;" ids="<?php echo $row['id']; ?>" class="label label-primary waits">测试通过</a>
@@ -136,12 +136,12 @@
                 <?php } ?>
 
                 <!-- #上线# -->
-                <?php if ($row['workflow'] == 5) { ?>
+                <?php if ($row['workflow'] == 6) { ?>
                 <td class="blue">已上线</td>
                 <?php } else { ?>
-                <?php if ($row['workflow'] == 4 && $acceptUsers && isset($acceptUsers['4'])) {?>
+                <?php if ($row['workflow'] == 5 && $acceptUsers && isset($acceptUsers['4'])) {?>
                 <td style="text-align:center;" id="td-online"><a href="javascript:;" ids="<?php echo $row['id']; ?>" class="label label-danger onlines">通知上线</a></td>
-                <?php } elseif ($row['workflow'] == 4) {?>
+                <?php } elseif ($row['workflow'] == 5) {?>
                 <td style="text-align:center;"><a href="javascript:;" id="test_user" data-type="select2" data-value="0" data-title="指定受理人"></a></td>
                 <?php } else {?>
                 <td style="text-align:center;">已上线</td>

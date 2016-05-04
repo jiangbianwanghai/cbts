@@ -803,8 +803,9 @@ class issue extends CI_Controller {
 
         //指派上线人员
         if ($row['workflow'] == 5) {
-            $acceptRow = $this->accept->rowByIssue($row['id'], 5);
-            if ($acceptRow['flow']) {
+            $acceptRow = $this->accept->rowByIssue($row['id'], 4);
+            print_r($acceptRow);
+            if ($acceptRow) {
                 $this->accept->update($uid, $acceptRow['id']);
             } else {
                 $this->accept->add(array('accept_user' => $uid, 'accept_time' => time(), 'issue_id' => $id, 'flow' => 4));
