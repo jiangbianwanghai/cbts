@@ -41,7 +41,7 @@
                             <?php }?>
                             <?php if ($row['state'] == 1) { ?>
                             <div class="btn-group mr10">
-                                <button class="btn btn-sm btn-primary" type="button" id="over" ids="<?php echo $row['id'];?>" data-toggle="modal" data-target="#myModal">已修复</button>
+                                <button class="btn btn-sm btn-primary" type="button" id="over" ids="<?php echo $row['id'];?>">已修复</button>
                             </div>
                             <?php } ?>
 
@@ -203,6 +203,7 @@
 
 <script src="/static/js/jquery.datatables.min.js"></script>
 <script src="/static/js/select2.min.js"></script>
+<script src="/static/js/jquery.gritter.min.js"></script>
 
 <script src="/static/js/custom.js"></script>
 
@@ -263,6 +264,25 @@ $(function(){
             } else {
               alert('fail');
             }
+          }
+        });
+      }
+  });
+
+  $("#over").click(function(){
+    var c = confirm('你确定要已经修好了此BUG吗？如果有代码变动别忘记提交代码');
+      if(c) {
+        id = $(this).attr("ids");
+        $.ajax({
+          type: "GET",
+          url: "/bug/over/"+id,
+          dataType: "JSON",
+          success: function(data){
+            if (data.status) {
+              tip(data.message, '/bug/view/'+id, 'success', 2000);
+            } else {
+              alert('fail');
+            } 
           }
         });
       }
@@ -339,6 +359,21 @@ $(function(){
   });
 
 });
+
+//消息提醒通用组建配置
+function tip(message, url, color, sec) {
+  jQuery.gritter.add({
+    title: '提醒',
+    text: message,
+      class_name: 'growl-'+color,
+      image: '/static/images/screen.png',
+    sticky: false,
+    time: ''
+  });
+  setTimeout(function(){
+    location.href = url;
+  }, sec);
+}
 </script>
 
 </body>

@@ -823,16 +823,7 @@ class test extends CI_Controller {
             echo json_encode($callBack);
             exit();
         }
-        //不是受理本人不能操作
-        if ($row['accept_user'] != $this->input->cookie('uids')) {
-            $callBack = array(
-                'status' => false,
-                'message' => '不是受理人本人没有权限操作',
-                'url' => '/issue/view/'.$row['issue_id']
-            );
-            echo json_encode($callBack);
-            exit();
-        }
+
         if ($status == 'zhanyong') {
             $prevRow = $this->test->prev2($row['repos_id'], $row['test_flag']);
             if ($prevRow) {
