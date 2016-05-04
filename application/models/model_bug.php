@@ -29,7 +29,7 @@ class Model_bug extends CI_Model {
 
     public function listByIssueId($id) {
         $rows = array('total' => 0, 'data' => false);
-        $this->db->select('id,subject');
+        $this->db->select('id, subject, state, level, add_user, add_time, accept_user, accept_time');
         $this->db->where('issue_id', $id);
         $db = clone($this->db);
         $rows['total'] = $this->db->count_all_results($this->_table);

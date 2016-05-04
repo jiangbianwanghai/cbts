@@ -55,6 +55,27 @@
                 </div>
               </div>
               <div class="form-group">
+                <label class="col-sm-2 control-label">指派给谁 <span class="asterisk">*</span></label>
+                <div class="col-sm-10">
+                  <select id="accept_user" name="accept_user" class="select3" data-placeholder="请选择受理人" required>
+                    <?php if ($devUser) { ?>
+                    <option value="<?php echo $devUser; ?>"><?php echo $users[$devUser]['realname']; ?></option>
+                    <?php } else { ?>
+                    <option value=""></option>
+                    <?php } ?>
+                    <?php
+                    if (isset($users) && $users) {
+                      foreach ($users as $value) {
+                    ?>
+                    <option value="<?php echo $value['uid'];?>"><?php echo $value['realname'];?></option>
+                    <?php
+                      }
+                    }
+                    ?>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
                 <label class="col-sm-2 control-label">BUG标题 <span class="asterisk">*</span></label>
                 <div class="col-sm-10">
                   <input type="text" id="subject" name="subject" class="form-control"  placeholder="请填写BUG标题" required/>
@@ -164,6 +185,9 @@ jQuery(document).ready(function(){
   jQuery(".select2").select2({
       width: '150',
       minimumResultsForSearch: -1
+  });
+  jQuery(".select3").select2({
+      width: '150'
   });
 
 });

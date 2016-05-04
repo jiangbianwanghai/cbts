@@ -151,7 +151,7 @@ class plan extends CI_Controller {
         }
 
         //验证结束时间不能小于开始时间
-        if ($this->input->post('endime') <= $this->input->post('startime')) {
+        if (strtotime($this->input->post('endtime')) <= strtotime($this->input->post('startime'))) {
             $callBack = array(
                 'status' => false,
                 'message' => '结束时间不能小于等于开始时间',

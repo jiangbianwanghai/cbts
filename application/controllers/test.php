@@ -64,30 +64,51 @@ class test extends CI_Controller {
      * 添加入库
      */
     public function add_ajax() {
-    	$this->load->model('Model_test', 'test', TRUE);
+
+        //获取任务ID
+        $issueId = $this->input->post('issue_id');
+
+        //验证任务ID合法性
+        $this->load->model('Model_issue', 'issue', TRUE);
+        $data['row'] = $this->issue->fetchOne($issueId);
+        if (!$data['row']) {
+            $callBack = array(
+                'status' => false,
+                'message' => '任务ID不合法',
+                'url' => '/test/add/'.$issueId
+            );
+            echo json_encode($callBack);
+            exit();
+        }
+
         //提测版本号不能为空
         $test_flag = $this->input->post('test_flag');
         if ($test_flag <= 0) {
             $callBack = array(
                 'status' => false,
                 'message' => '提测版本号不能为空',
-                'url' => '/test/add/'.$this->input->post('issue_id')
+                'url' => '/test/add/'.$issueId
             );
             echo json_encode($callBack);
             exit();
         }
+
         //提测版本号不能已经存在
+        $this->load->model('Model_test', 'test', TRUE);
         $checkTestFlag = $this->test->checkFlag($this->input->post('repos_id'), $this->input->post('br'), $this->input->post('test_flag'));
         if (!$checkTestFlag) {
             $callBack = array(
                 'status' => false,
                 'message' => '提测版本已经存在',
-                'url' => '/test/add/'.$this->input->post('issue_id')
+                'url' => '/test/add/'.$issueId
             );
             echo json_encode($callBack);
             exit();
         }
+
         $post = array(
+            'project_id' => $row['project_id'],
+            'plan_id' => $row['plan_id'],
             'issue_id' => $this->input->post('issue_id'),
             'repos_id' => $this->input->post('repos_id'),
             'br' => $this->input->post('br'),
@@ -96,22 +117,9 @@ class test extends CI_Controller {
             'accept_user' => $this->input->post('accept_user'),
             'accept_time' => time()
         );
+
         $feedback = $this->test->add($post);
         if ($feedback['status']) {
-            //发RTX消息提醒受理人
-            if (file_exists('./cache/repos.conf.php')) {
-                require './cache/repos.conf.php';
-            }
-            if (file_exists('./cache/users.conf.php')) {
-                require './cache/users.conf.php';
-            }
-            $this->config->load('extension', TRUE);
-            $home = $this->config->item('home', 'extension');
-            $home = $home."/issue/view/".$this->input->post('issue_id');
-
-            $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：".$repos[$this->input->post('repos_id')]['repos_name']."(".$this->input->post('test_flag').")请求提测";
-            $this->rtx($users[$this->input->post('accept_user')]['username'],$home,$subject);
-
             $callBack = array(
                 'status' => true,
                 'message' => '提交成功',

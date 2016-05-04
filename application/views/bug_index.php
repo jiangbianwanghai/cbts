@@ -28,120 +28,114 @@
       <div class="col-sm-9 col-lg-10">
         <div class="panel panel-default">
           <div class="panel-body">
-                        <?php if ($this->uri->segment(2, 'index') == 'index') {?>
-                        <div class="pull-right">
-                          <div class="btn-group">
-                                <div class="btn-group nomargin">
-                                    <button data-toggle="dropdown" class="btn btn-sm btn-white dropdown-toggle tooltips" type="button" title="根据处理状态筛选">
-                                      <i class="glyphicon glyphicon-folder-close mr5"></i> <?php if ($state == 'all') { echo '处理状态筛选'; }?><?php if ($state == 'uncheck') { echo '未处理'; }?><?php if ($state == 'checkin') { echo '已确认'; }?><?php if ($state == 'doing') { echo '处理中'; }?><?php if ($state == 'over') { echo '已处理'; }?><?php if ($state == 'invalid') { echo '无效反馈'; }?>
-                                      <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                      <?php if ($state != 'all') {?>
-                                      <li><a href="/bug/index/<?php echo $folder;?>/all"><i class="glyphicon glyphicon-folder-open mr5"></i> 查看全部状态</a></li>
-                                      <?php } ?>
-                                      <li><a href="/bug/index/<?php echo $folder;?>/uncheck"><i class="glyphicon glyphicon-folder-open mr5"></i> 未确认</a></li>
-                                      <li><a href="/bug/index/<?php echo $folder;?>/checkin"><i class="glyphicon glyphicon-folder-open mr5"></i> 已确认</a></li>
-                                      <li><a href="/bug/index/<?php echo $folder;?>/doing"><i class="glyphicon glyphicon-folder-open mr5"></i> 处理中</a></li>
-                                      <li><a href="/bug/index/<?php echo $folder;?>/over"><i class="glyphicon glyphicon-folder-open mr5"></i> 已处理</a></li>
-                                      <li><a href="/bug/index/<?php echo $folder;?>/invalid"><i class="glyphicon glyphicon-folder-open mr5"></i> 无效反馈</a></li>
-                                    </ul>
-                                </div>
-                                <div class="btn-group nomargin">
-                                    <button data-toggle="dropdown" class="btn btn-sm btn-white dropdown-toggle tooltips" type="button" title="根据信息状态筛选">
-                                      <i class="glyphicon glyphicon-tag mr5"></i> <?php if ($status == 'all') { echo '信息状态筛选'; }?><?php if ($status == 'normal') { echo '正常'; }?><?php if ($status == 'close') { echo '关闭'; }?><?php if ($status == 'del') { echo '已删除'; }?>
-                                      <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                      <?php if ($status != 'all') {?>
-                                      <li><a href="/bug/index/<?php echo $folder;?>/<?php echo $state;?>"><i class="glyphicon glyphicon-folder-open mr5"></i> 查看全部状态</a></li>
-                                      <?php } ?>
-                                      <li><a href="/bug/index/<?php echo $folder;?>/<?php echo $state;?>/normal"><i class="glyphicon glyphicon-tag mr5"></i> 正常</a></li>
-                                      <li><a href="/bug/index/<?php echo $folder;?>/<?php echo $state;?>/close"><i class="glyphicon glyphicon-tag mr5"></i> 关闭</a></li>
-                                      <li><a href="/bug/index/<?php echo $folder;?>/<?php echo $state;?>/del"><i class="glyphicon glyphicon-tag mr5"></i> 已删除</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div><!-- pull-right -->
-                        <?php } ?>
-                        <h5 class="subtitle mb5">Bug列表</h5>
-                        <?php if (($total-$offset) < $per_page) { $per_page_end = $total-$offset; } else { $per_page_end = $per_page; }?>
-                        <p class="text-muted">查询结果：<?php echo ($offset+1).' - '.($per_page_end+$offset).' of '.$total;?></p>
-                        
-                        <div class="table-responsive">
-                          <table class="table table-email">
-                            <tbody>
-                              <?php
-                                if ($rows) {
-                                  foreach ($rows as $value) {
-                              ?>
-                              <tr class="unread">
-                                <td>
-                                  <div class="ckbox ckbox-success">
-                                      <input type="checkbox" id="checkbox<?php echo $value['id'];?>">
-                                      <label for="checkbox<?php echo $value['id'];?>"></label>
-                                  </div>
-                                </td>
-                                <td>
-                                  <a href="javascript:;" bugid="<?php echo $value['id'];?>" class="star<?php if ($this->uri->segment(2, '') == 'star') { echo ' star-checked'; } else { if (isset($star[$value['id']])) echo ' star-checked'; }?>"><i class="glyphicon glyphicon-star"></i></a>
-                                </td>
-                                <td width="40px">
-                                  <a href="#" class="pull-left">
-                                    <div class="face"><img alt="" src="/static/avatar/<?php echo $users[$value['accept_user']]['username']?>.jpg" align="absmiddle" title="处理人：<?php echo $users[$value['accept_user']]['realname'];?>"></div>
-                                  </a>
-                                </td>
-                                <td width="70px">
-                                  <?php if ($value['status'] == 1) {?>
-                                  <?php if ($value['state'] === '-1') {?>
-                                  <span class="label label-default">无效反馈</span>
-                                  <?php } ?>
-                                  <?php if ($value['state'] === '0') {?>
-                                  <span class="label label-default">未确认</span>
-                                  <?php } ?>
-                                  <?php if ($value['state'] === '1') {?>
-                                  <span class="label label-primary">已确认</span>
-                                  <?php } ?>
-                                  <?php if ($value['state'] === '2') {?>
-                                  <span class="label label-warning">处理中</span>
-                                  <?php } ?>
-                                  <?php if ($value['state'] === '3') {?>
-                                  <span class="label label-success">已处理</span>
-                                  <?php } ?>
-                                  <?php } elseif ($value['status'] == 0) {?>
-                                  <span class="label label-default">已关闭</span>
-                                  <?php } elseif ($value['status'] == -1) {?>
-                                  <span class="label label-default">已删除</span>
-                                  <?php } ?>
-                                </td>
-                                <td>
-                                  <?php if ($value['level']) {?><?php echo "<strong style='color:#ff0000;' title='".$level[$value['level']]['alt']."'>".$level[$value['level']]['name']."</strong> ";?><?php } ?> <a href="/bug/view/<?php echo $value['id'];?>"><?php echo $value['subject'];?></a> <span class="badge"><?php echo $users[$value['add_user']]['realname'];?></span>
-                                </td>
-                                <td><span class="media-meta pull-right"><?php echo date("Y/m/d H:i", $value['add_time'])?></span></td>
-                              </tr>
-                              <?php
-                                  }
-                                } else {
-                              ?>
-                                <tr><td align="center">无数据~</td></tr>
-                              <?php
-                                }
-                              ?>
-                            </tbody>
-                          </table>
-                          <?php echo $pages;?>
-                        </div><!-- table-responsive -->
-                        
-                    </div><!-- panel-body -->
-                </div><!-- panel -->
-                
-            </div><!-- col-sm-9 -->
-            
-        </div><!-- row -->
-      
-    </div><!-- contentpanel -->
-    
-  </div><!-- mainpanel -->
-  <?php include('common_users.php');?>
+            <?php if ($this->uri->segment(2, 'index') == 'index') {?>
+            <div class="pull-right">
+              <div class="btn-group">
+                <div class="btn-group nomargin">
+                  <button data-toggle="dropdown" class="btn btn-sm btn-white dropdown-toggle tooltips" type="button" title="根据处理状态筛选">
+                    <i class="glyphicon glyphicon-folder-close mr5"></i> <?php if ($state == 'all') { echo '处理状态筛选'; }?><?php if ($state == 'uncheck') { echo '未处理'; }?><?php if ($state == 'checkin') { echo '已确认'; }?><?php if ($state == 'doing') { echo '处理中'; }?><?php if ($state == 'over') { echo '已处理'; }?><?php if ($state == 'invalid') { echo '无效反馈'; }?>
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <?php if ($state != 'all') {?>
+                    <li><a href="/bug/index/<?php echo $folder;?>/all"><i class="glyphicon glyphicon-folder-open mr5"></i> 查看全部状态</a></li>
+                    <?php } ?>
+                    <li><a href="/bug/index/<?php echo $folder;?>/uncheck"><i class="glyphicon glyphicon-folder-open mr5"></i> 未确认</a></li>
+                    <li><a href="/bug/index/<?php echo $folder;?>/checkin"><i class="glyphicon glyphicon-folder-open mr5"></i> 已确认</a></li>
+                    <li><a href="/bug/index/<?php echo $folder;?>/doing"><i class="glyphicon glyphicon-folder-open mr5"></i> 处理中</a></li>
+                    <li><a href="/bug/index/<?php echo $folder;?>/over"><i class="glyphicon glyphicon-folder-open mr5"></i> 已处理</a></li>
+                    <li><a href="/bug/index/<?php echo $folder;?>/invalid"><i class="glyphicon glyphicon-folder-open mr5"></i> 无效反馈</a></li>
+                  </ul>
+                </div>
+                <div class="btn-group nomargin">
+                  <button data-toggle="dropdown" class="btn btn-sm btn-white dropdown-toggle tooltips" type="button" title="根据信息状态筛选">
+                    <i class="glyphicon glyphicon-tag mr5"></i> <?php if ($status == 'all') { echo '信息状态筛选'; }?><?php if ($status == 'normal') { echo '正常'; }?><?php if ($status == 'close') { echo '关闭'; }?><?php if ($status == 'del') { echo '已删除'; }?>
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <?php if ($status != 'all') {?>
+                    <li><a href="/bug/index/<?php echo $folder;?>/<?php echo $state;?>"><i class="glyphicon glyphicon-folder-open mr5"></i> 查看全部状态</a></li>
+                    <?php } ?>
+                    <li><a href="/bug/index/<?php echo $folder;?>/<?php echo $state;?>/normal"><i class="glyphicon glyphicon-tag mr5"></i> 正常</a></li>
+                    <li><a href="/bug/index/<?php echo $folder;?>/<?php echo $state;?>/close"><i class="glyphicon glyphicon-tag mr5"></i> 关闭</a></li>
+                    <li><a href="/bug/index/<?php echo $folder;?>/<?php echo $state;?>/del"><i class="glyphicon glyphicon-tag mr5"></i> 已删除</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div><!-- pull-right -->
+            <?php } ?>
+            <h5 class="subtitle mb5">Bug列表</h5>
+            <?php if (($total-$offset) < $per_page) { $per_page_end = $total-$offset; } else { $per_page_end = $per_page; }?>
+            <p class="text-muted">查询结果：<?php echo ($offset+1).' - '.($per_page_end+$offset).' of '.$total;?></p>
+            <div class="table-responsive">
+              <table class="table table-email">
+                <tbody>
+                  <?php
+                    if ($rows) {
+                      foreach ($rows as $value) {
+                  ?>
+                  <tr class="unread">
+                    <td>
+                      <div class="ckbox ckbox-success">
+                          <input type="checkbox" id="checkbox<?php echo $value['id'];?>">
+                          <label for="checkbox<?php echo $value['id'];?>"></label>
+                      </div>
+                    </td>
+                    <td>
+                      <a href="javascript:;" bugid="<?php echo $value['id'];?>" class="star<?php if ($this->uri->segment(2, '') == 'star') { echo ' star-checked'; } else { if (isset($star[$value['id']])) echo ' star-checked'; }?>"><i class="glyphicon glyphicon-star"></i></a>
+                    </td>
+                    <td width="40px">
+                      <a href="#" class="pull-left">
+                        <div class="face"><img alt="" src="/static/avatar/<?php echo $users[$value['accept_user']]['username']?>.jpg" align="absmiddle" title="处理人：<?php echo $users[$value['accept_user']]['realname'];?>"></div>
+                      </a>
+                    </td>
+                    <td width="70px">
+                      <?php if ($value['status'] == 1) {?>
+                      <?php if ($value['state'] === '-1') {?>
+                      <span class="label label-default">无效反馈</span>
+                      <?php } ?>
+                      <?php if ($value['state'] === '0') {?>
+                      <span class="label label-default">未确认</span>
+                      <?php } ?>
+                      <?php if ($value['state'] === '1') {?>
+                      <span class="label label-primary">已确认</span>
+                      <?php } ?>
+                      <?php if ($value['state'] === '2') {?>
+                      <span class="label label-warning">处理中</span>
+                      <?php } ?>
+                      <?php if ($value['state'] === '3') {?>
+                      <span class="label label-success">已处理</span>
+                      <?php } ?>
+                      <?php } elseif ($value['status'] == 0) {?>
+                      <span class="label label-default">已关闭</span>
+                      <?php } elseif ($value['status'] == -1) {?>
+                      <span class="label label-default">已删除</span>
+                      <?php } ?>
+                    </td>
+                    <td>
+                      <?php if ($value['level']) {?><?php echo "<strong style='color:#ff0000;' title='".$level[$value['level']]['alt']."'>".$level[$value['level']]['name']."</strong> ";?><?php } ?> <a href="/bug/view/<?php echo $value['id'];?>"><?php echo $value['subject'];?></a> <span class="badge"><?php echo $users[$value['add_user']]['realname'];?></span>
+                    </td>
+                    <td><span class="media-meta pull-right"><?php echo date("Y/m/d H:i", $value['add_time'])?></span></td>
+                  </tr>
+                  <?php
+                      }
+                    } else {
+                  ?>
+                    <tr><td align="center">无数据~</td></tr>
+                  <?php
+                    }
+                  ?>
+                </tbody>
+              </table>
+              <?php echo $pages;?>
+            </div><!-- table-responsive -->
+          </div><!-- panel-body -->
+        </div><!-- panel -->   
+      </div><!-- col-sm-9 -->
+    </div><!-- row -->
+  </div><!-- contentpanel -->
+</div><!-- mainpanel -->
+<?php include('common_users.php');?>
 </section>
 
 <div class="modal fade bs-example-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -191,7 +185,7 @@ jQuery(document).ready(function(){
           jQuery(this).addClass('star-checked');
           var id = jQuery(this).attr('bugid');
           $.ajax({
-            type: "POST",
+            type: "GET",
             dataType: "JSON",
             url: "/bug/star_ajax/"+id,
             success: function(data){
@@ -206,7 +200,7 @@ jQuery(document).ready(function(){
         jQuery(this).removeClass('star-checked');
         var id = jQuery(this).attr('bugid');
         $.ajax({
-          type: "POST",
+          type: "GET",
           dataType: "JSON",
           url: "/bug/star_del/"+id,
           success: function(data){
