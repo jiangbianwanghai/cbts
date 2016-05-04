@@ -28,19 +28,15 @@ class Model_bug extends CI_Model {
     }
 
     public function listByIssueId($id) {
-        $rows = false;
-
-        //获取总数
-        $sql = "SELECT * FROM `choc_issue_bug` WHERE `issue_id` = '".$id."'";
-        $query = $this->db->query($sql);
-        $rows['total_rows'] = $query->num_rows;
-
-        $sql = "SELECT * FROM `choc_issue_bug` WHERE `issue_id` = '".$id."' ORDER BY `id` DESC";
-        $query = $this->db->query($sql);
-        foreach ($query->result_array() as $row)
-        {
-            $rows['data'][] = $row;
-        }
+        $rows = array('total' => 0, 'data' => false);
+        $this->db->select('id,subject');
+        $this->db->where('issue_id', $id);
+        $db = clone($this->db);
+        $rows['total'] = $this->db->count_all_results($this->_table);
+        $this->db = $db;
+        $this->db->order_by('id', 'desc');
+        $query = $this->db->get($this->_table);
+        $rows['data'] = $query->result_array();
         return $rows;
     }
 

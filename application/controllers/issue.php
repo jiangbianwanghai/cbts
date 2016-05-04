@@ -307,10 +307,11 @@ class issue extends CI_Controller {
         //获取相关BUG记录
         $this->load->model('Model_bug', 'bug', TRUE);
         $rows = $this->bug->listByIssueId($id);
-        if ($rows['total_rows']) {
+        if ($rows['total']) {
             $data['bug'] = $rows['data'];
-            $data['bug_total_rows'] = $rows['total_rows'];
+            $data['bug_total_rows'] = $rows['total'];
         }
+        
         //验证BUG是否都已经处理
         $data['fixedFlag'] = 1;
         if ($rows['data']) {
