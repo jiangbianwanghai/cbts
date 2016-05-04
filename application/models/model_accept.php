@@ -48,7 +48,17 @@ class Model_accept extends CI_Model {
      * 获取指定单条信息
      */
     public function fetchOne($id) {
-        $query = $this->db->get_where('issue', array('id' => $id), 1);
+        $query = $this->db->get_where($this->_table, array('id' => $id), 1);
+        if ($query->num_rows()) {
+            $row = $query->row_array();
+            return $row;
+        } else {
+            return false;
+        }
+    }
+
+    public function rowByIssue($issue_id, $flow) {
+        $query = $this->db->get_where($this->_table, array('issue_id' => $issue_id, 'flow' => $flow), 1);
         if ($query->num_rows()) {
             $row = $query->row_array();
             return $row;
@@ -59,5 +69,9 @@ class Model_accept extends CI_Model {
 
     public function changeUser($uid, $id) {
         return $this->db->update($this->_table, array('accept_user' => $uid), array('id' => $id));
+    }
+
+    public function update($uid, $id) {
+        return $this->db->update($this->_table, array('accept_user' => $uid, 'accept_time' => time()), array('id' => $id));
     }
 }

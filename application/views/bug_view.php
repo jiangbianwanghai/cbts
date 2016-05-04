@@ -39,6 +39,11 @@
                                 <button class="btn btn-sm btn-primary tooltips" type="button" title="如果BUG反馈无效，请说明理由" id="checkout" data-toggle="modal" data-target="#myModal2">无效反馈</button>
                             </div>
                             <?php }?>
+                            <?php if ($row['state'] == 1) { ?>
+                            <div class="btn-group mr10">
+                                <button class="btn btn-sm btn-primary" type="button" id="over" ids="<?php echo $row['id'];?>" data-toggle="modal" data-target="#myModal">已修复</button>
+                            </div>
+                            <?php } ?>
 
                             <div class="btn-group mr10">
                                 <button class="btn btn-sm btn-white tooltips" id="back" type="button" data-toggle="tooltip" title="回到上一页面"><i class="fa fa-reply"></i></button>
@@ -212,7 +217,7 @@ $(function(){
     defaultImage : '/static/simditor-2.3.6/images/image.png', //编辑器插入图片时使用的默认图片
     upload: {
         url: '/admin/upload',
-        params: null, //键值对,指定文件上传接口的额外参数,上传的时候随文件一起提交  
+        params: {'<?php echo $this->security->get_csrf_token_name();?>':'<?php echo $this->security->get_csrf_hash();?>'}, //键值对,指定文件上传接口的额外参数,上传的时候随文件一起提交  
         fileKey: 'upload_file', //服务器端获取文件数据的参数名  
         connectionCount: 3,  
         leaveConfirm: '正在上传文件'
@@ -229,7 +234,7 @@ $(function(){
     $.ajax({
       type: "POST",
       url: "/bug/coment_add_ajax",
-      data: "content="+content+"&bug_id="+bug_id,
+      data: "content="+content+"&bug_id="+bug_id+"&<?php echo $this->security->get_csrf_token_name();?>=<?php echo $this->security->get_csrf_hash();?>",
       dataType: "JSON",
       success: function(data){
         if (data.status) {
@@ -288,7 +293,7 @@ $(function(){
       type: "POST",
       dataType: "JSON",
       url: "/bug/checkout/",
-      data: "content="+content+"&bug_id="+bug_id,
+      data: "content="+content+"&bug_id="+bug_id+"&<?php echo $this->security->get_csrf_token_name();?>=<?php echo $this->security->get_csrf_hash();?>",
       success: function(data){
         if (data.status) {
           location.href = '/bug/view/'+bug_id;

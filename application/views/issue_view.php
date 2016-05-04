@@ -39,7 +39,7 @@
             <a href="javascript:;" class="panel-edit" reposid="<?php echo $row['id'];?>"><i class="fa fa-unlock"></i></a>
           </div><!-- panel-btns --><?php }?>
           <h5 class="bug-key-title"><?php if ($row['type'] == 2) {?><i class="fa fa-bug tooltips" data-toggle="tooltip" title="BUG"></i><?php } ?><?php if ($row['type'] == 1) {?><i class="fa fa-magic tooltips" data-toggle="tooltip" title="TASK"></i><?php } ?> ISSUE-<?php echo $row['id'];?></h5>
-          <div class="panel-title"><?php if ($row['level']) { $level = array(1=>'!',2=>'!!',3=>'!!!',4=>'!!!!');?><?php echo "<strong style='color:#ff0000;'>".$level[$row['level']]."</strong> ";?><?php } ?><?php if ($row['status'] == '-1') { ?><s><?php echo $row['issue_name'];?></s><?php } else { ?><?php echo $row['issue_name'];?><?php } ?> <?php if ($row['resolve']) { ?> <span class="label label-success">已解决</span><?php }?> <?php if ($row['status'] == 0) {?> <span class="label label-default">已关闭</span><?php }?></div>
+          <div class="panel-title"><?php if ($row['level']) { ?><?php echo "<strong style='color:#ff0000;'>".$level[$row['level']]['name']."</strong> ";?><?php } ?><?php if ($row['status'] == '-1') { ?><s><?php echo $row['issue_name'];?></s><?php } else { ?><?php echo $row['issue_name'];?><?php } ?> <?php if ($row['resolve']) { ?> <span class="label label-success">已解决</span><?php }?> <?php if ($row['status'] == 0) {?> <span class="label label-default">已关闭</span><?php }?></div>
         </div>
         <div class="panel-body">
           <h5 class="subtitle subtitle-lined">进度</h5>
@@ -109,7 +109,7 @@
                 <?php } ?>
 
                 <!-- #测试-测试中# -->
-                <?php if ($row['workflow'] >= 3) {?>
+                <?php if ($row['workflow'] >= 3 && $fixedFlag) {?>
                 <td class="blue">测试中</td>
                 <?php } else {?>
                 <?php if ($row['workflow'] == 2 && $acceptUsers && isset($acceptUsers['3']) && $row['accept_user'] == $this->input->cookie('uids')) {?>
@@ -125,7 +125,7 @@
                 <?php if ($row['workflow'] >= 4) { ?>
                   <td class="blue">测试通过</td>
                 <?php } else { ?>
-                  <?php if ($row['workflow']  == 3) {?>
+                  <?php if ($row['workflow']  == 3 && $acceptUsers && isset($acceptUsers['3']) && $acceptUsers['3']['accept_user'] == $this->input->cookie('uids')) {?>
                   <td style="text-align:center;" width="200px" id="td-wait">
                     <a href="/bug/add/<?php echo $row['id'];?>" class="label label-danger" target="_blank">反馈BUG</a> 
                     <a href="javascript:;" ids="<?php echo $row['id']; ?>" class="label label-primary waits">测试通过</a>
@@ -292,29 +292,26 @@
             </tbody>
           </table>
           </div><!-- table-responsive -->
-        </div>
-      </div>
-
-      <?php if ($bug_total_rows) {?>
-      <div class="panel panel-default panel-alt">
-        <div class="panel-heading">
-          <h5 class="panel-title">反馈BUG列表</h5>
-        </div><!-- panel-heading -->
-        <div class="panel-body panel-table">
-         <div class="table-responsive">
-            <table class="table table-buglist">
+          <?php if ($bug_total_rows) {?>
+          <h5 class="subtitle subtitle-lined">发现的BUG</h5>
+          <div class="table-responsive">
+            <table class="table table-striped">
               <tbody>
                 <?php
                   if ($bug) {
                     foreach ($bug as $value) {
                 ?>
                   <tr>
-                    <td><i class="fa fa-bug tooltips" data-toggle="tooltip" title="Bug"></i></td>
-                    <td><?php echo $value['id']?></td>
-                    <td><?php if ($value['level']) { $level = array(1=>'!',2=>'!!',3=>'!!!',4=>'!!!!');?><?php echo "<strong style='color:#ff0000;'>".$level[$value['level']]."</strong> ";?><?php } ?><a href="/bug/view/<?php echo $value['id'];?>" target="_blank"><?php echo $value['subject']?></a></td>
-                    <td><?php echo $value['add_user'] ? '<a href="/conf/profile/'.$value['add_user'].'">'.$users[$value['add_user']]['realname'].'</a>' : '-';?></td>
-                    <td><?php echo friendlydate($value['add_time']);?>
-                    <td><?php if ($value['state'] === '0') {?>
+                    <td width="50px"><?php echo $value['id']?></td>
+                    <td width="50px"><i class="fa fa-bug tooltips" data-toggle="tooltip" title="Bug"></i></td>
+                    <td width="50px">
+                      <a href="/conf/profile/<?php echo $value['accept_user'];?>" class="pull-left" target="_blank">
+                        <div class="face"><img alt="" src="/static/avatar/<?php echo $users[$value['accept_user']]['username']?>.jpg" align="absmiddle" title="当前受理人：<?php echo $users[$value['accept_user']]['realname'];?>"></div>
+                      </a>
+                    </td>
+                    <td><?php if ($value['level']) { ?><?php echo "<strong style='color:#ff0000;'>".$level[$value['level']]['name']."</strong> ";?><?php } ?><a href="/bug/view/<?php echo $value['id'];?>" target="_blank"><?php echo $value['subject']?></a></td>
+                    
+                    <td width="80px"><?php if ($value['state'] === '0') {?>
                     <span class="label label-default">未确认</span>
                     <?php } ?>
                     <?php if ($value['state'] === '1') {?>
@@ -322,6 +319,9 @@
                     <?php } ?>
                     <?php if ($value['state'] === '3') {?>
                     <span class="label label-success">已处理</span>
+                    <?php } ?>
+                    <?php if ($value['state'] === '-1') {?>
+                    <span class="label label-default">反馈无效</span>
                     <?php } ?>
                     </td>
                   </tr>
@@ -334,9 +334,9 @@
               </tbody>
             </table>
           </div><!-- table-responsive -->
-        </div><!-- panel-body -->
-      </div><!-- panel -->
-      <?php } ?>
+          <?php } ?>
+        </div>
+      </div>
 
       <div class="panel">
         <div class="panel-body">

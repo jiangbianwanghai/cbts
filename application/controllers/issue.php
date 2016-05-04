@@ -329,7 +329,6 @@ class issue extends CI_Controller {
             $this->load->model('Model_plan', 'plan', TRUE);
             $data['plan'] = $this->plan->fetchOne($data['row']['plan_id']);
         }
-
         
         //读取受理信息
         $this->load->model('Model_accept', 'accept', TRUE);
@@ -350,8 +349,10 @@ class issue extends CI_Controller {
         $rows = $this->issuecomment->rows($id);
         $data['comment'] = $rows['data'];
 
-        //获取贡献代码的用户信息
-        $data['shareUsers'] = $this->test->shareUsers($id);
+        //载入配置信息
+        $this->config->load('extension', TRUE);
+        $data['level'] = $this->config->item('level', 'extension');
+
         $this->load->view('issue_view', $data);
     }
 
@@ -782,8 +783,8 @@ class issue extends CI_Controller {
 
         //指派研发人员
         if ($row['workflow'] <= 1) {
-            $acceptRow = $this->accept->fetchOne($row['accept_user']);
-            if ($acceptRow['flow'] == 2) {
+            $acceptRow = $this->accept->rowByIssue($row['id'], 2);
+            if ($acceptRow) {
                 $this->accept->update($uid, $acceptRow['id']);
             } else {
                 $this->accept->add(array('accept_user' => $uid, 'accept_time' => time(), 'issue_id' => $id, 'flow' => 2));
@@ -792,8 +793,8 @@ class issue extends CI_Controller {
 
         //指派测试人员
         if ($row['workflow'] == 2) {
-            $acceptRow = $this->accept->fetchOne($row['accept_user']);
-            if ($acceptRow['flow'] == 3) {
+            $acceptRow = $this->accept->rowByIssue($row['id'], 3);
+            if ($acceptRow) {
                 $this->accept->update($uid, $acceptRow['id']);
             } else {
                 $this->accept->add(array('accept_user' => $uid, 'accept_time' => time(), 'issue_id' => $id, 'flow' => 3));
@@ -801,9 +802,9 @@ class issue extends CI_Controller {
         }
 
         //指派上线人员
-        if ($row['workflow'] == 4) {
-            $acceptRow = $this->accept->fetchOne($row['accept_user']);
-            if ($acceptRow['flow'] == 4) {
+        if ($row['workflow'] == 5) {
+            $acceptRow = $this->accept->rowByIssue($row['id'], 5);
+            if ($acceptRow['flow']) {
                 $this->accept->update($uid, $acceptRow['id']);
             } else {
                 $this->accept->add(array('accept_user' => $uid, 'accept_time' => time(), 'issue_id' => $id, 'flow' => 4));
