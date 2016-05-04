@@ -365,6 +365,24 @@ class bug extends CI_Controller {
         echo json_encode($callBack);
     }
 
+    public function over() {
+        $bugId = $this->uri->segment(3, 0);
+        $this->load->model('Model_bug', 'bug', TRUE);
+        $flag = $this->bug->over($bugId);
+        if ($flag) {
+            $callBack = array(
+                'status' => true,
+                'message' => '操作成功'
+            );
+        } else {
+            $callBack = array(
+                'status' => false,
+                'message' => '操作失败'
+            );
+        }
+        echo json_encode($callBack);
+    }
+
     public function checkout() {
         $this->load->model('Model_bug', 'bug', TRUE);
         $this->load->model('Model_bugcomment', 'bugcomment', TRUE);
