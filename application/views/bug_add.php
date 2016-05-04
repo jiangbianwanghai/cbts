@@ -95,7 +95,6 @@
               <div class="row">
                 <div class="col-sm-10 col-sm-offset-2">
                   <button class="btn btn-primary" id="btnSubmit">提交</button>
-                  <button type="reset" class="btn btn-default">重置</button>
                 </div>
               </div>
             </div>

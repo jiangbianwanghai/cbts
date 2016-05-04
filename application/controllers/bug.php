@@ -264,7 +264,7 @@ class bug extends CI_Controller {
             'content' => $this->input->post('content'),
             'add_user' => $this->input->cookie('uids'),
             'add_time' => time(),
-            'accept_user' => $row['add_user'],
+            'accept_user' => $this->input->post('accept_user'),
             'accept_time' => time(),
             'state' => 0,
             'status' => 1

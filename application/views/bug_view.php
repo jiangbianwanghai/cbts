@@ -179,7 +179,7 @@
         <h4 class="modal-title" id="myModalLabel">请说明反馈无效的理由</h4>
       </div>
       <div class="modal-body">
-        <textarea class="form-control" rows="5" placeholder="请说明反馈无效的理由"></textarea>
+        <textarea class="form-control" id="msg" rows="5" placeholder="请说明反馈无效的理由"></textarea>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -307,7 +307,7 @@ $(function(){
 
   //反馈无效
   $(".ajax-btn2").click(function(){
-    content = $('.form-control').val();
+    content = $('#msg').val();
     bug_id = $("#bug_id").val();
     $.ajax({
       type: "POST",

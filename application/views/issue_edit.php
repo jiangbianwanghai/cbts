@@ -68,12 +68,12 @@
                   </div>
                 </div>
               </div><!-- panel-body -->
+              <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>" />
               <input type="hidden" value="<?php echo $row['id'];?>" id="id" name="id">
               <div class="panel-footer">
                 <div class="row">
                   <div class="col-sm-9 col-sm-offset-3">
                     <button class="btn btn-primary" id="btnSubmit">提交</button>
-                    <button type="reset" class="btn btn-default">重置</button>
                   </div>
                 </div>
               </div>

@@ -70,8 +70,8 @@ class test extends CI_Controller {
 
         //验证任务ID合法性
         $this->load->model('Model_issue', 'issue', TRUE);
-        $data['row'] = $this->issue->fetchOne($issueId);
-        if (!$data['row']) {
+        $row = $this->issue->fetchOne($issueId);
+        if (!$row) {
             $callBack = array(
                 'status' => false,
                 'message' => '任务ID不合法',
@@ -83,7 +83,7 @@ class test extends CI_Controller {
 
         //提测版本号不能为空
         $test_flag = $this->input->post('test_flag');
-        if ($test_flag <= 0) {
+        if ($test_flag <= 0 && is_numeric($test_flag)) {
             $callBack = array(
                 'status' => false,
                 'message' => '提测版本号不能为空',
@@ -95,16 +95,18 @@ class test extends CI_Controller {
 
         //提测版本号不能已经存在
         $this->load->model('Model_test', 'test', TRUE);
-        $checkTestFlag = $this->test->checkFlag($this->input->post('repos_id'), $this->input->post('br'), $this->input->post('test_flag'));
-        if (!$checkTestFlag) {
-            $callBack = array(
-                'status' => false,
-                'message' => '提测版本已经存在',
-                'url' => '/test/add/'.$issueId
-            );
-            echo json_encode($callBack);
-            exit();
-        }
+        /**if (is_numeric($test_flag)) {
+            $checkTestFlag = $this->test->checkFlag($this->input->post('repos_id'), $this->input->post('br'), $this->input->post('test_flag'));
+            if (!$checkTestFlag) {
+                $callBack = array(
+                    'status' => false,
+                    'message' => '提测版本已经存在',
+                    'url' => '/test/add/'.$issueId
+                );
+                echo json_encode($callBack);
+                exit();
+            }
+        }*/
 
         $post = array(
             'project_id' => $row['project_id'],
