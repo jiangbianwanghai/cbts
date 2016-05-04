@@ -50,9 +50,10 @@ class Model_bug extends CI_Model {
         }
     }
 
-    public function searchByMysql($folder, $state, $limit = 20, $offset = 0, $status = 'all') {
+    public function searchByMysql($projectId, $folder, $state, $limit = 20, $offset = 0, $status = 'all') {
         $rows = array('total' => 0, 'data' => false);
         $this->db->select('id, level, issue_id, subject, add_user, add_time, accept_user, accept_time, state, status');
+        $this->db->where('project_id', $projectId);
         if ($folder == 'to_me')
             $this->db->where('accept_user', $this->input->cookie('uids'));
         if ($folder == 'from_me')
@@ -109,16 +110,21 @@ class Model_bug extends CI_Model {
         return $this->db->update($this->_table, array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'state' => '-1', 'check_time' => time()), array('id' => $id));
     }
 
-    public function starList($limit = 20, $offset = 0) {
+    public function starList($projectId = 0, $limit = 20, $offset = 0) {
         $rows = array('total' => 0, 'data' => false);
         $this->db->select('*');
         $this->db->where('star.add_user', $this->input->cookie('uids'));
         $this->db->where('star.star_type', 3);
+        if ($projectId)
+            $this->db->where('issue_bug.project_id', $projectId);
+        $this->db->join($this->_table, 'star.star_id = issue_bug.id', 'left');
         $rows['total'] = $this->db->count_all_results('star');
         $this->db->select('issue_bug.id,subject,issue_bug.add_user,issue_bug.add_time,accept_user,accept_time,state,level,status');
         $this->db->from('star');
         $this->db->where('star.add_user', $this->input->cookie('uids'));
         $this->db->where('star.star_type', 3);
+        if ($projectId)
+            $this->db->where('issue_bug.project_id', $projectId);
         $this->db->join($this->_table, 'star.star_id = issue_bug.id', 'left');
         $this->db->limit($limit, $offset);
         $query = $this->db->get();

@@ -1,36 +1,33 @@
 <?php include('common_header.php');?>
-    <div class="pageheader">
-      <h2><i class="fa fa-bug"></i> Bug管理 <span>我的Bug列表</span></h2>
-      <div class="breadcrumb-wrapper">
-        <span class="label">你的位置:</span>
-        <ol class="breadcrumb">
-          <li><a href="/">我的控制台</a></li>
-          <li><a href="/bug">Bug管理</a></li>
-          <li class="active">我的Bug列表</li>
-        </ol>
-      </div>
+  <div class="pageheader">
+    <h2><i class="fa fa-bug"></i> Bug管理 <span>当前项目的Bug列表</span></h2>
+    <div class="breadcrumb-wrapper">
+      <span class="label">你的位置:</span>
+      <ol class="breadcrumb">
+        <li><a href="/">我的控制台</a></li>
+        <li><a href="/bug">Bug管理</a></li>
+        <li class="active">当前项目的Bug列表</li>
+      </ol>
     </div>
-    
-    <div class="contentpanel panel-email">
-      <div class="row">
-        <div class="col-sm-3 col-lg-2">
-          <ul class="nav nav-pills nav-stacked nav-email">
-              <li<?php if ($this->uri->segment(1, 'index') == 'bug' && $this->uri->segment(2, 'index') == 'index' && $this->uri->segment(3, 'all') == 'all') {?> class="active"<?php } ?>><a href="/bug"><i class="glyphicon glyphicon-inbox"></i> Bug列表</a></li>
-              <li<?php if ($this->uri->segment(2, '') == 'star') {?> class="active"<?php } ?>><a href="/bug/star"><i class="glyphicon glyphicon-star"></i> 星标</a></li>
-              <li<?php if ($this->uri->segment(2, '') == 'trash') {?> class="active"<?php } ?>><a href="/bug/trash"><i class="glyphicon glyphicon-trash"></i> 已删除</a></li>
-          </ul>
-          <div class="mb30"></div>
-          <h5 class="subtitle">快捷方式</h5>
-          <ul class="nav nav-pills nav-stacked nav-email mb20">
-            <li<?php if ($this->uri->segment(3, '') == 'to_me') {?> class="active"<?php } ?>><a href="/bug/index/to_me"><i class="glyphicon glyphicon-folder-open"></i> 我负责的</a></li>
-            <li<?php if ($this->uri->segment(3, '') == 'from_me') {?> class="active"<?php } ?>><a href="/bug/index/from_me"><i class="glyphicon glyphicon-folder-open"></i> 我创建的</a></li>
-          </ul>
-        </div><!-- col-sm-3 -->
-            
-            <div class="col-sm-9 col-lg-10">
-                
-                <div class="panel panel-default">
-                    <div class="panel-body">
+  </div>
+  <div class="contentpanel panel-email">
+    <div class="row">
+      <div class="col-sm-3 col-lg-2">
+        <ul class="nav nav-pills nav-stacked nav-email">
+          <li<?php if ($this->uri->segment(1, 'index') == 'bug' && $this->uri->segment(2, 'index') == 'index' && $this->uri->segment(3, 'all') == 'all') {?> class="active"<?php } ?>><a href="/bug"><i class="glyphicon glyphicon-inbox"></i> Bug列表</a></li>
+          <li<?php if ($this->uri->segment(2, '') == 'star') {?> class="active"<?php } ?>><a href="/bug/star"><i class="glyphicon glyphicon-star"></i> 星标</a></li>
+          <li<?php if ($this->uri->segment(2, '') == 'trash') {?> class="active"<?php } ?>><a href="/bug/trash"><i class="glyphicon glyphicon-trash"></i> 已删除</a></li>
+        </ul>
+        <div class="mb30"></div>
+        <h5 class="subtitle">快捷方式</h5>
+        <ul class="nav nav-pills nav-stacked nav-email mb20">
+          <li<?php if ($folder == 'to_me') { ?> class="active"<?php } ?>><a href="/bug/index/to_me"><i class="glyphicon glyphicon-folder-<?php echo $folder == 'to_me' ? 'open' : 'close'; ?>"></i> 我负责的</a></li>
+          <li<?php if ($folder == 'from_me') { ?> class="active"<?php } ?>><a href="/bug/index/from_me"><i class="glyphicon glyphicon-folder-<?php echo $folder == 'from_me' ? 'open' : 'close'; ?>"></i> 我创建的</a></li>
+        </ul>
+      </div><!-- col-sm-3 -->
+      <div class="col-sm-9 col-lg-10">
+        <div class="panel panel-default">
+          <div class="panel-body">
                         <?php if ($this->uri->segment(2, 'index') == 'index') {?>
                         <div class="pull-right">
                           <div class="btn-group">

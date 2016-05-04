@@ -37,18 +37,30 @@ class bug extends CI_Controller {
      * 默认列表控制器
      */
     public function index() {
+
+        //设置页面标题
         $data['PAGE_TITLE'] = 'BUG列表';
+
         $data['star'] = array();
+
+        //获取参数
         $folder = $data['folder'] = $this->uri->segment(3, 'all');
         $state = $data['state'] = $this->uri->segment(4, 'all');
         $status = $data['status'] = $this->uri->segment(5, 'all');
         $offset = $this->uri->segment(6, 0);
-        $this->load->model('Model_bug', 'bug', TRUE);
+        
+        //载入配置信息
         $this->config->load('extension', TRUE);
         $data['level'] = $this->config->item('level', 'extension');
         $config = $this->config->item('pages', 'extension');
-        $rows = $this->bug->searchByMysql($folder, $state, $config['per_page'], $offset, $status);
+
+        //读取数据
+        $this->load->model('Model_bug', 'bug', TRUE);
+        $rows = $this->bug->searchByMysql($this->_projectCache[$this->_projectId]['id'], $folder, $state, $config['per_page'], $offset, $status);
         $data['rows'] = $rows['data'];
+        $data['total'] = $rows['total'];
+
+        //获取星标ID
         if ($rows['data']) {
             $ids = array();
             foreach ($rows['data'] as $key => $value) {
@@ -61,12 +73,13 @@ class bug extends CI_Controller {
                 }
             }
         }
-        $data['total'] = $rows['total'];
+
         if (file_exists('./cache/users.conf.php')) {
             require './cache/users.conf.php';
             $data['users'] = $users;
         }
-        $this->load->helper('friendlydate');
+
+        //分页
         $this->load->library('pagination');
         $config['total_rows'] = $rows['total'];
         $config['cur_page'] = $offset;
@@ -75,6 +88,10 @@ class bug extends CI_Controller {
         $data['pages'] = $this->pagination->create_links();
         $data['offset'] = $offset;
         $data['per_page'] = $config['per_page'];
+
+        //载入助手
+        $this->load->helper('friendlydate');
+
         $this->load->view('bug_index', $data);
     }
 
@@ -113,22 +130,30 @@ class bug extends CI_Controller {
      * 星标列表控制器
      */
     public function star() {
+
+        //设置页面标题
         $data['PAGE_TITLE'] = '星标记录';
-        $this->load->model('Model_bug', 'bug', TRUE);
-        $folder = $data['folder'] = $this->uri->segment(3, 'all');
-        $state = $this->uri->segment(4, 'all');
-        $offset = $this->uri->segment(5, 0);
+
+        //获取参数
+        $offset = $this->uri->segment(3, 0);
+
+        //载入配置信息
         $this->config->load('extension', TRUE);
         $data['level'] = $this->config->item('level', 'extension');
         $config = $this->config->item('pages', 'extension');
-        $rows = $this->bug->starList();
+
+        //读取数据
+        $this->load->model('Model_bug', 'bug', TRUE);
+        $rows = $this->bug->starList($this->_projectCache[$this->_projectId]['id'], $config['per_page'], $offset);
         $data['rows'] = $rows['data'];
         $data['total'] = $rows['total'];
+
         if (file_exists('./cache/users.conf.php')) {
             require './cache/users.conf.php';
             $data['users'] = $users;
         }
-        $this->load->helper('friendlydate');
+        
+        //分页
         $this->load->library('pagination');
         $config['total_rows'] = $rows['total'];
         $config['cur_page'] = $offset;
@@ -137,6 +162,10 @@ class bug extends CI_Controller {
         $data['pages'] = $this->pagination->create_links();
         $data['offset'] = $offset;
         $data['per_page'] = $config['per_page'];
+
+        //载入助手
+        $this->load->helper('friendlydate');
+
         $this->load->view('bug_index', $data);
     }
 
@@ -403,30 +432,5 @@ class bug extends CI_Controller {
             );
         }
         echo json_encode($callBack);
-    }
-
-    private function rtx($toList,$url,$subject)
-    {
-        $subject = str_replace(array('#', '&', ' '), '', $subject);
-        $pushInfo = array(
-            'to' => $toList,
-            'title' => 'CBTS提醒你：',     
-            'msg' => $subject . $url,
-            'delaytime' => '',                                                                                                                                                               
-        );
-        $receiver        = iconv("utf-8","gbk//IGNORE", $pushInfo['to']);
-        $this->config->load('extension', TRUE);
-        $rtx = $this->config->item('rtx', 'extension');
-        $url = $rtx['url'].'/sendtortx.php?receiver=' . $receiver . '&notifytitle=' .$pushInfo['title']. '&notifymsg=' . $pushInfo['msg'] . '&delaytime=' . $pushInfo['delaytime'];           
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt ($curl, CURLOPT_TIMEOUT, 60);
-        curl_setopt($curl, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.9.2.8) Gecko/20100722 Firefox/3.6.8");
-        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, TRUE);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        $str = curl_exec($curl);
-        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
     }
 }
