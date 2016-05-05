@@ -28,12 +28,7 @@
           <?php } ?>
         </div><!-- col-sm-3 -->
         <div class="col-sm-9 col-lg-10">
-          <?php if ($planId && $currPlan) {?>
-          <div class="alert alert-warning">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            计划全称：<strong><?php echo $currPlan['plan_name']?></strong> / 起至时间：<?php echo date("Y-m-d H:i", $currPlan['startime']).' - '.date("Y-m-d H:i", $currPlan['endtime']);?> / 时长：<?php echo timediff($currPlan['startime'], $currPlan['endtime']);?> / 距离结束：<?php echo timediff(time(), $currPlan['endtime']);?> <a href="/issue/add?planId=<?php echo $currPlan['id'];?>"><i class="fa fa-plus"></i> 添加任务</a>
-          </div>
-          <?php } ?>
+          <div class="mb10" align="right"><a href="/issue/add?planId=<?php echo $currPlan['id'];?>" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> 添加任务</a></div>
           <?php if ($planId) {?>
           <div class="panel panel-default">
             <div class="panel-body">
@@ -90,7 +85,7 @@
                         <a href="javascript:;" item-id="<?php echo $value['id'];?>" class="star<?php if ($this->uri->segment(2, '') == 'star') { echo ' star-checked'; } else { if (isset($star[$value['id']])) echo ' star-checked'; }?>"><i class="glyphicon glyphicon-star"></i></a>
                       </td>
                       <td align="center" width="40px">
-                        <a href="#" class="pull-left">
+                        <a href="/conf/profile/<?php echo $value['add_user'];?>" class="pull-left">
                           <div class="face"><img alt="" src="/static/avatar/<?php echo $users[$value['add_user']]['username']?>.jpg" align="absmiddle" title="添加人：<?php echo $users[$value['add_user']]['realname'];?>"></div>
                         </a>
                       </td>
@@ -124,6 +119,49 @@
               </div><!-- table-responsive -->
             </div><!-- panel-body -->
           </div><!-- panel -->
+          <?php if ($planId && $currPlan) {?>
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <h5 class="subtitle subtitle-lined">计划概览</h5>
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <tbody>
+                    <tr>
+                      <td width="100px">计划全称：</td>
+                      <td><?php echo $currPlan['plan_name']?></td>
+                      <td width="100px">创建人：</td>
+                      <td>
+                        <a href="/conf/profile/<?php echo $value['add_user'];?>" class="pull-left face"><img alt="" src="/static/avatar/<?php echo $users[$value['add_user']]['username']?>.jpg" align="absmiddle" title="创建人：<?php echo $users[$value['add_user']]['realname'];?>"></a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width="100px">创建时间：</td>
+                      <td><?php echo date("Y/m/d H:i:s", $currPlan['add_time']);?></td>
+                      <td width="100px">当前进度：</td>
+                      <td><span class="label label-primary">新建</span></td>
+                    </tr>
+                    <tr>
+                      <td width="100px">开始时间：</td>
+                      <td><?php echo date("Y/m/d H:i:s", $currPlan['startime']);?></td>
+                      <td width="100px">截至时间：</td>
+                      <td><?php echo date("Y/m/d H:i:s", $currPlan['endtime']);?></td>
+                    </tr>
+                    <tr>
+                      <td width="100px">规划时长：</td>
+                      <td><?php echo timediff($currPlan['startime'], $currPlan['endtime']);?></td>
+                      <td width="100px">距离结束：</td>
+                      <td><?php echo timediff(time(), $currPlan['endtime']);?></td>
+                    </tr>
+                    <tr>
+                      <td width="100px">简介：</td>
+                      <td colspan="3"><?php echo nl2br($currPlan['plan_discription']);?></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div><!-- table-responsive -->
+            </div>
+          </div>
+          <?php } ?>
         </div><!-- col-sm-9 -->
       </div><!-- row -->
       <p class="text-right"><small>页面执行时间 <em>{elapsed_time}</em> 秒 使用内存 {memory_usage}</small></p>

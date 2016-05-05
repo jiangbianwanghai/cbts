@@ -3,9 +3,11 @@ function timediff( $begin_time, $end_time, $arr = 0 ) {
   if ( $begin_time < $end_time ) {
     $starttime = $begin_time;
     $endtime = $end_time;
+    $res = '还剩 ';
   } else {
     $starttime = $end_time;
     $endtime = $begin_time;
+    $res = '超出 ';
   }
   $timediff = $endtime - $starttime;
   $days = intval( $timediff / 86400 );
@@ -17,7 +19,6 @@ function timediff( $begin_time, $end_time, $arr = 0 ) {
   if ($arr) {
   	$res = array( "day" => $days, "hour" => $hours, "min" => $mins, "sec" => $secs );
   } else {
-  	$res = '';
   	if ($days)
   		$res .= $days.'天';
   	if ($hours)
