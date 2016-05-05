@@ -9,29 +9,6 @@
 
     <!-- Tab panes -->
     <div class="tab-content">
-        <div class="tab-pane active" id="rp-alluser">
-            <h5 class="sidebartitle">目前使用该系统的用户</h5>
-            <ul class="chatuserlist">
-                <?php 
-                if (file_exists('./cache/users.conf.php')) {
-                    require './cache/users.conf.php';
-                }
-                foreach ($users as $key => $value) { ?>
-                <li class="online">
-                    <div class="media">
-                        <a href="#" class="pull-left media-thumb">
-                            <img alt="" src="/static/avatar/<?php echo $value['username'];?>.jpg" class="media-object">
-                        </a>
-                        <div class="media-body">
-                            <strong><?php echo $value['realname'];?></strong>
-                            <small>Login Time:<?php echo $value['last_login_time'] ? date("m-d H:i:s", $value['last_login_time']) : '-';?></small>
-                        </div>
-                    </div><!-- media -->
-                </li>
-                <?php } ?>
-            </ul>
-            
-        </div>
 
     </div><!-- tab-content -->
   </div><!-- rightpanel -->

@@ -130,6 +130,12 @@ class plan extends CI_Controller {
         //载入助手
         $this->load->helper('timediff');
 
+        //载入缓存文件
+        if (file_exists(FCPATH.'/cache/users.conf.php')) {
+            require FCPATH.'/cache/users.conf.php';
+            $data['users'] = $users;
+        }
+
         $this->load->view('plan_index', $data);
     }
 
