@@ -35,9 +35,6 @@
                 <a href="javascript:;" id="del" reposid="<?php echo $row['id'];?>" class="btn btn-sm btn-white"><i class="fa fa-trash-o mr5"></i> 删除</a>
             </div>
           </div>
-          <?php if ($row['status'] == 0) {?><div class="panel-btns">
-            <a href="javascript:;" class="panel-edit" reposid="<?php echo $row['id'];?>"><i class="fa fa-unlock"></i></a>
-          </div><!-- panel-btns --><?php }?>
           <h5 class="bug-key-title"><?php if ($row['type'] == 2) {?><i class="fa fa-bug tooltips" data-toggle="tooltip" title="BUG"></i><?php } ?><?php if ($row['type'] == 1) {?><i class="fa fa-magic tooltips" data-toggle="tooltip" title="TASK"></i><?php } ?> ISSUE-<?php echo $row['id'];?></h5>
           <div class="panel-title"><?php if ($row['level']) { ?><?php echo "<strong style='color:#ff0000;'>".$level[$row['level']]['name']."</strong> ";?><?php } ?><?php if ($row['status'] == '-1') { ?><s><?php echo $row['issue_name'];?></s><?php } else { ?><?php echo $row['issue_name'];?><?php } ?> <?php if ($row['resolve']) { ?> <span class="label label-success">已解决</span><?php }?> <?php if ($row['status'] == 0) {?> <span class="label label-default">已关闭</span><?php }?></div>
         </div>

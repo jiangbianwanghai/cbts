@@ -1,5 +1,4 @@
 <?php include('common_header.php');?>
-<link rel="stylesheet" type="text/css" href="/static/css/jquery.datetimepicker.css"/>
     <div class="pageheader">
       <h2><i class="fa fa-pencil"></i> 任务管理 <span>为计划增加任务</span></h2>
       <div class="breadcrumb-wrapper">
@@ -200,10 +199,6 @@ jQuery(document).ready(function(){
     success: function(element) {
       jQuery(element).closest('.form-group').removeClass('has-error');
     },
-  });
-
-  $('#datepicker').datetimepicker({
-    minDate:'<?php echo date("Y/m/d", time());?>',
   });
   
   jQuery(".select2").select2({

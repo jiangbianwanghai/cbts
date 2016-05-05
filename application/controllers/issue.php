@@ -241,9 +241,9 @@ class issue extends CI_Controller {
 
         //如果有相关链接就序列化它
         if ($this->input->post('issue_url')) {
-            $post['url'] = serialize(explode(PHP_EOL, $this->input->post('issue_url')));
+            $post['url'] = serialize(array_filter(explode(PHP_EOL, $this->input->post('issue_url'))));
         }
-        //echo $this->input->post('plan_id');exit();
+
         //入库
         $feedback = $this->issue->add($post);
         $url = '/plan';
@@ -698,11 +698,19 @@ class issue extends CI_Controller {
             exit('已经被别人受理了，你不能编辑了~');
         }
         $row = $this->issue->fetchOne($id);
+
+        //载入配置信息
+        $this->config->load('extension', TRUE);
+        $data['level'] = $this->config->item('level', 'extension');
+
         if ($row) {
             $data['row'] = $row;
+            if ($data['row']) {
+                $data['row']['url'] = unserialize($data['row']['url']);
+            }
             $this->load->view('issue_edit', $data);
         } else {
-            echo '你查找的数据不存在.';
+            show_error('你查找的数据不存在', 500, '错误');
         }
     }
 
@@ -716,9 +724,11 @@ class issue extends CI_Controller {
             'type' => $this->input->post('type'),
             'level' => $this->input->post('level'),
             'issue_name' => $this->input->post('issue_name'),
-            'url' => $this->input->post('issue_url'),
             'issue_summary' => $this->input->post('issue_summary')
         );
+        if ($this->input->post('issue_url')) {
+            $post['url'] = serialize(array_filter(explode(PHP_EOL, $this->input->post('issue_url'))));
+        }
         $feedback = $this->issue->update($post);
         if ($feedback) {
             $callBack = array(
