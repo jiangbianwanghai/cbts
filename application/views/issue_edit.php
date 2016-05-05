@@ -1,11 +1,11 @@
 <?php include('common_header.php');?>
     <div class="pageheader">
-      <h2><i class="fa fa-pencil"></i> 我的任务 <span>编辑任务</span></h2>
+      <h2><i class="fa fa-pencil"></i> 任务管理 <span>编辑任务</span></h2>
       <div class="breadcrumb-wrapper">
         <span class="label">你的位置:</span>
         <ol class="breadcrumb">
-          <li><a href="/">我的控制台</a></li>
-          <li><a href="/issue/my">我的任务</a></li>
+          <li><a href="/">CITS</a></li>
+          <li><a href="/issue">任务管理</a></li>
           <li class="active">编辑任务</li>
         </ol>
       </div>
@@ -14,57 +14,73 @@
     <div class="contentpanel">
       
       <div class="row">
-        
-        <div class="col-md-12">
+        <div class="col-sm-3 col-lg-2">
+          <h5 class="subtitle">快捷方式</h5>
+          <ul class="nav nav-pills nav-stacked nav-email">
+            <li><a href="/issue"><i class="glyphicon glyphicon-folder-close"></i> 任务列表</a></li>
+            <li><a href="/issue/index/to_me"><i class="glyphicon glyphicon-folder-close"></i> 我负责的</a></li>
+            <li><a href="/issue/index/from_me"><i class="glyphicon glyphicon-folder-close"></i> 我创建的</a></li>
+          </ul>
+        </div><!-- col-sm-3 -->
+        <div class="col-sm-9 col-lg-10">
           <form method="POST" id="basicForm" action="/issue/edit_ajax" class="form-horizontal">
           <div class="panel panel-default">
               <div class="panel-heading">
-                <div class="panel-btns">
-                  <a href="" class="panel-close">&times;</a>
-                  <a href="" class="minimize">&minus;</a>
-                </div>
                 <h4 class="panel-title">编辑任务</h4>
-                <p>提测分两步：1.添加任务信息，2.添加版本库信息；</p>
+                <p>每个任务都应该包含在计划中</p>
               </div>
               <div class="panel-body">
-                <div class="form-group">
-                  <label class="col-sm-3 control-label">请选择类型 <span class="asterisk">*</span></label>
-                  <div class="col-sm-9">
-                    <select id="type" name="type" class="select2" data-placeholder="请选择类型" required>
-                      <option value=""></option>
-                      <option value="2"<?php if ($row['type'] == 2) { echo " selected=\"selected\"";}?>>BUG</option>
-                      <option value="1"<?php if ($row['type'] == 1) { echo " selected=\"selected\"";}?>>TASK</option>
-                    </select>
+                <div class="col-sm-8 col-lg-9">
+                  <div class="form-group">
+                    <label class="control-label">任务全称 <span class="asterisk">*</span></label>
+                    <div>
+                      <input type="text" id="issue_name" name="issue_name" value="<?php echo $row['issue_name'];?>" class="form-control" placeholder="请输入任务名称" required />
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label">说明</label>
+                    <div>
+                      <textarea id="issue_summary" name="issue_summary" rows="5" class="form-control" placeholder="请输入任务描述"><?php echo $row['issue_summary'];?></textarea>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label">任务地址</label>
+                    <div>
+                      <textarea id="issue_url" name="issue_url" rows="3" class="form-control" placeholder="每行一个链接，可以添加多个"><?php
+                        if ($row['url']) {
+                          foreach ($row['url'] as $key => $value) {
+                            echo $value."\n";
+                          }
+                        }
+                        ?></textarea>
+                    </div>
                   </div>
                 </div>
-                <div class="form-group">
-                  <label class="col-sm-3 control-label">请选择优先级 <span class="asterisk">*</span></label>
-                  <div class="col-sm-9">
-                    <select id="level" name="level" class="select2" data-placeholder="请选择优先级" required>
-                      <option value=""></option>
-                      <option value="4"<?php if ($row['level'] == 4) { echo " selected=\"selected\"";}?>>[!!!!]非常紧急</option>
-                      <option value="3"<?php if ($row['level'] == 3) { echo " selected=\"selected\"";}?>>[!!!]优先处理</option>
-                      <option value="2"<?php if ($row['level'] == 2) { echo " selected=\"selected\"";}?>>[!!]正常迭代</option>
-                      <option value="1"<?php if ($row['level'] == 1) { echo " selected=\"selected\"";}?>>[!]抽空处理</option>
-                    </select>
+                <div class="col-sm-4 col-lg-3" style="padding-left:50px;">
+                  <div class="form-group">
+                    <label class="control-label">请选择类型 <span class="asterisk">*</span></label>
+                    <div>
+                      <select id="type" name="type" class="select2" data-placeholder="请选择类型" required>
+                        <option value=""></option>
+                        <option value="2"<?php if ($row['type'] == 2) { echo " selected=\"selected\"";}?>>BUG</option>
+                        <option value="1"<?php if ($row['type'] == 1) { echo " selected=\"selected\"";}?>>TASK</option>
+                      </select>
+                    </div>
                   </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-3 control-label">名称 <span class="asterisk">*</span></label>
-                  <div class="col-sm-9">
-                    <input type="text" id="issue_name" name="issue_name" value="<?php echo $row['issue_name'];?>" class="form-control" placeholder="请输入任务名称" required />
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-3 control-label">说明</label>
-                  <div class="col-sm-9">
-                    <textarea id="issue_summary" name="issue_summary" rows="5" class="form-control" placeholder="请输入任务描述"><?php echo $row['issue_summary'];?></textarea>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-3 control-label">任务地址</label>
-                  <div class="col-sm-9">
-                    <input type="text" id="issue_url" name="issue_url" value="<?php echo $row['url'];?>" class="form-control" placeholder="请输入任务地址" />
+                  <div class="form-group">
+                    <label class="control-label">请选择优先级 <span class="asterisk">*</span></label>
+                    <div>
+                      <select id="level" name="level" class="select2" data-placeholder="请选择优先级" required>
+                        <option value=""></option>
+                        <?php
+                        foreach ($level as $key => $value) {
+                          $selected = '';
+                          $key == $row['level'] && $selected = " selected=\"selected\"";
+                          echo '<option value="'.$key.'"'.$selected.'>'.$value['name'].' - '.$value['task'].'</option>';
+                        }
+                        ?>
+                      </select>
+                    </div>
                   </div>
                 </div>
               </div><!-- panel-body -->
@@ -170,7 +186,7 @@ jQuery(document).ready(function(){
   });
 
   jQuery(".select2").select2({
-      width: '150',
+      width: '100%',
       minimumResultsForSearch: -1
   });
 
@@ -189,7 +205,7 @@ jQuery(document).ready(function(){
     defaultImage : '/static/simditor-2.3.6/images/image.png', //编辑器插入图片时使用的默认图片
     upload: {
         url: '/admin/upload',
-        params: null, //键值对,指定文件上传接口的额外参数,上传的时候随文件一起提交  
+        params: {'<?php echo $this->security->get_csrf_token_name();?>':'<?php echo $this->security->get_csrf_hash();?>'}, //键值对,指定文件上传接口的额外参数,上传的时候随文件一起提交  
         fileKey: 'upload_file', //服务器端获取文件数据的参数名  
         connectionCount: 3,  
         leaveConfirm: '正在上传文件'
