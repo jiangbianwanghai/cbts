@@ -223,9 +223,6 @@
                     <?php }?>
                     <?php }?> 
                     <?php }?>
-                    <?php if ($value['state'] == -3) {?>
-                    <a class="btn btn-white btn-xs" href="/bug/add/<?php echo $value['id'];?>"><i class="fa fa-bug"></i> 反馈BUG</a>
-                    <?php } ?>
                   </td>
                 </tr>
                 <tr><td colspan="6" style="padding-left:0px;padding-right:0px;"><div class="abc" id="deploy-<?php echo $value['id'];?>"><?php $text = ''; if($repos[$value['repos_id']]['merge'] == 1) { $text = "cd ~/cap_scripts/" . $repos[$value['repos_id']]['repos_name'] . "/ && cap staging deploy br=" . $value['br'] . " rev=" . $value['test_flag'] . " issue=" . $row['id'];}elseif($value['repos_id'] == 42){$text = "cd ~/cap_scripts/" . $repos[$value['repos_id']]['repos_name'] . "/ && cap staging deploy rev=" . $value['test_flag'] . " issue=" . $row['id'];} if(isset($text) && !empty($text)){echo "<input type='text' value='" . $text . "'  class=\"form-control\">"; } ?></div></td></tr>
