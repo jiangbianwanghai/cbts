@@ -131,7 +131,7 @@
                       <td><?php echo $currPlan['plan_name']?></td>
                       <td width="100px">创建人：</td>
                       <td>
-                        <a href="/conf/profile/<?php echo $value['add_user'];?>" class="pull-left face"><img alt="" src="/static/avatar/<?php echo $users[$value['add_user']]['username']?>.jpg" align="absmiddle" title="创建人：<?php echo $users[$value['add_user']]['realname'];?>"></a>
+                        <a href="/conf/profile/<?php echo $currPlan['add_user'];?>" class="pull-left face"><img alt="" src="/static/avatar/<?php echo $users[$currPlan['add_user']]['username'];?>.jpg" align="absmiddle" title="创建人：<?php echo $users[$currPlan['add_user']]['realname'];?>"></a>
                       </td>
                     </tr>
                     <tr>
@@ -150,7 +150,7 @@
                       <td width="100px">规划时长：</td>
                       <td><?php echo timediff($currPlan['startime'], $currPlan['endtime']);?></td>
                       <td width="100px">距离结束：</td>
-                      <td><?php echo timediff(time(), $currPlan['endtime']);?></td>
+                      <td><?php echo timediff(time(), $currPlan['endtime'], 0, 1);?></td>
                     </tr>
                     <tr>
                       <td width="100px">简介：</td>
