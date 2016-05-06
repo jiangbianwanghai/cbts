@@ -1023,7 +1023,6 @@ class issue extends CI_Controller {
                 $this->email->subject($subject);
                 $this->email->message($message);
                 $this->email->send();
-                print_r($email);die();
             }
         }
         $flag = $this->issue->changeFlow($id, $workflowfilter[$flow]['id'], $user);
