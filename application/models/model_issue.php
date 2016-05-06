@@ -489,4 +489,24 @@ class Model_issue extends CI_Model {
         $rows['data'] = $query->result_array();
         return $rows;
     }
+
+    public function updateWatch($id, $name, $add = True){
+        $issue = $this->fetchOne($id);
+        if (!$issue) {
+            return false;
+        }
+        $watch = explode(',', $issue['watch']);
+        if ($add) {
+            //执行增加操作
+            if (!in_array($name, $watch)) {
+                $watch[] = $name;
+            }
+        }else {
+            //执行删除操作
+            if (($key = array_search($name, $watch)) !== false) {
+                unset($watch[$key]);
+            }
+        }
+        return $this->db->update('issue', array('watch' => implode(',', $watch)), array('id' => $id));
+    }
 }

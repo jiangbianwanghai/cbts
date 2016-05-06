@@ -31,6 +31,13 @@
         <div class="panel-heading">
           <div class="pull-right">
             <div class="btn-group mr10">
+                <?php if(strpos($row['watch'], $this->input->cookie('username')) !== false){ ?>
+                    <a href="javascript:;" id="unwatch" issueid="<?php echo $row['id']; ?>" class="btn btn-sm btn-white"><i class="glyphicon glyphicon-eye-open"></i> 已关注</a>
+                    <a href="javascript:;" id="watch" style="display: none;" issueid="<?php echo $row['id']; ?>" class="btn btn-sm btn-white"><i class="glyphicon glyphicon-eye-open"></i> 关注</a>
+                <?php }else{ ?>
+                    <a href="javascript:;" id="unwatch" style="display: none;" issueid="<?php echo $row['id']; ?>" class="btn btn-sm btn-white"><i class="glyphicon glyphicon-eye-open"></i> 已关注</a>
+                    <a href="javascript:;" id="watch" issueid="<?php echo $row['id']; ?>" class="btn btn-sm btn-white"><i class="glyphicon glyphicon-eye-open"></i> 关注</a>
+                <?php } ?>
                 <a href="/issue/edit/<?php echo $row['id'];?>" class="btn btn-sm btn-white"><i class="fa fa-pencil mr5"></i> 编辑</a>
                 <a href="javascript:;" id="del" reposid="<?php echo $row['id'];?>" class="btn btn-sm btn-white"><i class="fa fa-trash-o mr5"></i> 删除</a>
             </div>
@@ -970,6 +977,40 @@ $(function(){
           }
         });
       }
+  });
+
+  $("#watch").click(function(){
+    id = $(this).attr("issueid");
+    $.ajax({
+      type: "GET",
+          url: "/issue/watch/"+id+"/1",
+      dataType: "JSON",
+      success: function(data){
+        if (data.status) {
+            jQuery('#watch').hide();
+            jQuery('#unwatch').show();
+        } else {
+          alert('操作失败');
+        }
+      }
+    });
+  });
+
+  $("#unwatch").click(function(){
+    id = $(this).attr("issueid");
+    $.ajax({
+      type: "GET",
+          url: "/issue/watch/"+id+"/0",
+      dataType: "JSON",
+      success: function(data){
+        if (data.status) {
+            jQuery('#unwatch').hide();
+            jQuery('#watch').show();
+        } else {
+          alert('操作失败');
+        }
+      }
+    });
   });
 
   $('.deploy').click(function(){

@@ -928,6 +928,26 @@ class issue extends CI_Controller {
         echo json_encode($callBack);
     }
 
+    public function watch() {
+        $id = $this->uri->segment(3, 0);
+        $add = $this->uri->segment(4, 0);
+        $name = $this->input->cookie('username');
+        $this->load->model('Model_issue', 'watch', TRUE);
+        $flag = $this->watch->updateWatch($id, $name, $add);
+        if ($flag) {
+            $callBack = array(
+                'status' => true,
+                'message' => '操作成功'
+            );
+        } else {
+            $callBack = array(
+                'status' => false,
+                'message' => '操作失败'
+            );
+        }
+        echo json_encode($callBack);
+    }
+
     /**
      * 更改工作流
      */
