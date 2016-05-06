@@ -1,12 +1,6 @@
 <?php include('common_header.php');?>
 <style type="text/css">
 th,td{white-space:nowrap;}
-th:first-child {
-    position:absolute;
-    background-color: #fff;
-    width: 200px;
-    margin-left: -1px;
-}
 </style>
     <div class="pageheader">
       <h2><i class="fa fa-suitcase"></i> 数据分析 <span>计划列表</span></h2>
@@ -33,12 +27,16 @@ th:first-child {
         <div class="col-sm-9 col-lg-10">
           <div class="panel panel-default">
             <div class="panel-body">
-              <div class="table-responsive" style="overflow-x:auto;table-layout: fixed;">
+              <h5 class="subtitle mb5">计划列表</h5>
+              <?php if (($total-$offset) < $per_page) { $per_page_end = $total-$offset; } else { $per_page_end = $per_page; }?>
+              <p class="text-muted">查询结果：<?php echo ($offset+1).' - '.($per_page_end+$offset).' of '.$total;?></p>
+              <div class="table-responsive" style="overflow-x:auto;">
                 <table class="table table-hover table-bordered">
                   <thead>
                     <tr>
-                      <th style="border-left:#eee solid 1px;">计划全称</th>
-                      <th style="padding-left:210px">所属项目</th>
+                      <th>#</th>
+                      <th>计划全称</th>
+                      <th>所属项目</th>
                       <th>计划描述</th>
                       <th>进度</th>
                       <th>开始时间</th>
@@ -53,11 +51,12 @@ th:first-child {
                   <tbody>
                     <?php
                     if ($rows) {
-                      foreach ($rows as $value) {
+                      foreach ($rows as $key => $value) {
                     ?>
                     <tr>
-                      <th><a href="/plan?planId=<?php echo $value['id']; ?>"><?php echo $value['plan_name']; ?></a></th>
-                      <td style="padding-left:210px"><?php echo $projectArr[$value['project_id']]['project_name']; ?></td>
+                      <td><?php echo ($offset + $key + 1); ?></td>
+                      <td><a href="/plan?planId=<?php echo $value['id']; ?>"><?php echo $value['plan_name']; ?></a></td>
+                      <td><?php echo $projectArr[$value['project_id']]['project_name']; ?></td>
                       <td><a href="javascript:;">查看简介</a></td>
                       <td><?php echo '<span class="label label-'.$planflow[$value['state']]['span_color'].'">'.$planflow[$value['state']]['name'].'</span>'; ?></td>
                       <td><?php echo date('Y/m/d H:i', $value['startime']); ?></td>
