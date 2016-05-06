@@ -19,6 +19,7 @@ function timediff( $begin_time, $end_time, $arr = 0, $fix = 0 ) {
   if ($arr) {
   	$res = array( "day" => $days, "hour" => $hours, "min" => $mins, "sec" => $secs );
   } else {
+    $res = '';
     if ($fix) {
       $res = $fix_str;
     }
