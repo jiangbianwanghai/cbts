@@ -1015,12 +1015,15 @@ class issue extends CI_Controller {
                 $message .= '<br><br><br><i>收到这封邮件，是因为您关注了该任务。如果不想收到类似邮件，请点击上方链接，取消关注任务。</i>';
                 $message .= '<br><i>更多信息，请查询 http://cbts.gongchang.net</i>';
                 $this->load->library('email');
-                $this->config->load('email');
-                $this->email->from($this->config->item('smtp_user'));
+                $this->config->load('extension', TRUE);
+                $email = $this->config->item('email', 'extension');
+                $this->email->initialize($email);
+                $this->email->from($email['smtp_user']);
                 $this->email->to($watch);
                 $this->email->subject($subject);
                 $this->email->message($message);
                 $this->email->send();
+                print_r($email);die();
             }
         }
         $flag = $this->issue->changeFlow($id, $workflowfilter[$flow]['id'], $user);
