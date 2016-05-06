@@ -495,7 +495,7 @@ class Model_issue extends CI_Model {
         if (!$issue) {
             return false;
         }
-        $watch = explode(',', $issue['watch']);
+        $watch = unserialize($issue['watch']);
         if ($add) {
             //执行增加操作
             if (!in_array($name, $watch)) {
@@ -507,6 +507,6 @@ class Model_issue extends CI_Model {
                 unset($watch[$key]);
             }
         }
-        return $this->db->update('issue', array('watch' => implode(',', $watch)), array('id' => $id));
+        return $this->db->update('issue', array('watch' => serialize($watch)), array('id' => $id));
     }
 }
