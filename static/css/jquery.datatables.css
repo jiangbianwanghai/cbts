@@ -245,6 +245,10 @@ table.dataTable thead th:active,
 table.dataTable thead td:active {
 	outline: none;
 }
+table.dataTable th,
+table.dataTable td {
+	white-space: nowrap;
+}
 
 
 /*
@@ -258,4 +262,3 @@ table.dataTable thead td:active {
 	*margin-top: -1px;
 	-webkit-overflow-scrolling: touch;
 }
-

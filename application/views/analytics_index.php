@@ -1,0 +1,106 @@
+<?php include('common_header.php');?>
+<style type="text/css">
+th,td{white-space:nowrap;}
+th:first-child {
+    position:absolute;
+    background-color: #fff;
+    width: 200px;
+    margin-left: -1px;
+}
+</style>
+    <div class="pageheader">
+      <h2><i class="fa fa-suitcase"></i> 数据分析 <span>计划列表</span></h2>
+      <div class="breadcrumb-wrapper">
+        <span class="label">你的位置:</span>
+        <ol class="breadcrumb">
+          <li><a href="/">CITS</a></li>
+          <li><a href="/analytics">数据分析</a></li>
+          <li class="active">计划列表</li>
+        </ol>
+      </div>
+    </div>
+    
+    <div class="contentpanel">
+      <div class="row">
+        <div class="col-sm-3 col-lg-2">
+          <h5 class="subtitle">快捷方式</h5>
+          <ul class="nav nav-pills nav-stacked nav-email">
+            <li<?php if ($this->uri->segment(2, 'index') == 'index') {?> class="active"<?php } ?>><a href="/analytics/plan"><i class="fa fa-square-o"></i> 计划列表</a></li>
+            <li<?php if ($this->uri->segment(2, 'index') == 'issue') {?> class="active"<?php } ?>><a href="/analytics/issue"><i class="fa fa-square-o"></i> 任务列表</a></li>
+            <li<?php if ($this->uri->segment(2, 'index') == 'bug') {?> class="active"<?php } ?>><a href="/analytics/bug"><i class="fa fa-square-o"></i> BUG列表</a></li>
+          </ul>
+        </div><!-- col-sm-3 -->
+        <div class="col-sm-9 col-lg-10">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <div class="table-responsive" style="overflow-x:auto;table-layout: fixed;">
+                <table class="table table-hover table-bordered">
+                  <thead>
+                    <tr>
+                      <th style="border-left:#eee solid 1px;">计划全称</th>
+                      <th style="padding-left:210px">所属项目</th>
+                      <th>计划描述</th>
+                      <th>进度</th>
+                      <th>开始时间</th>
+                      <th>结束时间</th>
+                      <th>添加人</th>
+                      <th>添加时间</th>
+                      <th>最后修改人</th>
+                      <th>修改时间</th>
+                      <th>状态</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php
+                    if ($rows) {
+                      foreach ($rows as $value) {
+                    ?>
+                    <tr>
+                      <th><a href="/plan?planId=<?php echo $value['id']; ?>"><?php echo $value['plan_name']; ?></a></th>
+                      <td style="padding-left:210px"><?php echo $projectArr[$value['project_id']]['project_name']; ?></td>
+                      <td><a href="javascript:;">查看简介</a></td>
+                      <td><?php echo '<span class="label label-'.$planflow[$value['state']]['span_color'].'">'.$planflow[$value['state']]['name'].'</span>'; ?></td>
+                      <td><?php echo date('Y/m/d H:i', $value['startime']); ?></td>
+                      <td><?php echo date('Y/m/d H:i', $value['endtime']); ?></td>
+                      <td><?php echo $users[$value['add_user']]['realname']; ?></td>
+                      <td><?php echo $value['add_time'] ? date('Y/m/d H:i:s', $value['add_time']) : '-'; ?></td>
+                      <td><?php echo $value['last_user'] ? $value['last_user'] : '-'; ?></td>
+                      <td><?php echo $value['last_time'] ? date('Y/m/d H:i:s', $value['last_time']) : '-'; ?></td>
+                      <td><?php if ($value['status'] == 1) echo '正常'; ?><?php if ($value['status'] == -1) echo '已删除'; ?></td>
+                    </tr>
+                    <?php
+                        }
+                      } else {
+                    ?>
+                      <tr><td colspan="11" align="center">无数据~</td></tr>
+                    <?php
+                      }
+                    ?>
+                  </tbody>
+                </table>
+              </div><!-- table-responsive -->
+              <?php echo $pages;?>
+            </div><!-- panel-body -->
+          </div><!-- panel -->
+        </div><!-- col-md-9 -->
+      </div><!--row -->
+      <p class="text-right"><small>页面执行时间 <em>{elapsed_time}</em> 秒 使用内存 {memory_usage}</small></p>
+    </div><!-- contentpanel -->
+    
+  </div><!-- mainpanel -->
+  
+</section>
+
+<script src="/static/js/jquery-1.11.1.min.js"></script>
+<script src="/static/js/jquery-ui-1.10.3.min.js"></script>
+<script src="/static/js/jquery-migrate-1.2.1.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/js/modernizr.min.js"></script>
+<script src="/static/js/jquery.sparkline.min.js"></script>
+<script src="/static/js/toggles.min.js"></script>
+<script src="/static/js/jquery.cookies.js"></script>
+
+<script src="/static/js/custom.js"></script>
+
+</body>
+</html>

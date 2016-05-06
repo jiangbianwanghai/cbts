@@ -71,4 +71,19 @@ class Model_project extends CI_Model {
             return false;
         }
     }
+
+    public function rowsByPlan($idArr, $string = 0) {
+        $row = array();
+        if (!$string)
+            $string = '*';
+        $this->db->select($string);
+        $this->db->where_in('id', $idArr);
+        $query = $this->db->get($this->_table);
+        if ($query->num_rows()) {
+            $row = $query->result_array();
+            return $row;
+        } else {
+            return false;
+        }
+    }
 }
