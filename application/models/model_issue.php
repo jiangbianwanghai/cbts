@@ -509,4 +509,13 @@ class Model_issue extends CI_Model {
         }
         return $this->db->update('issue', array('watch' => serialize($watch)), array('id' => $id));
     }
+
+    public function numByPlan($planId) {
+        $this->db->select('id');
+        $this->db->where('plan_id', $planId);
+        $this->db->where('status >=', 0);
+        $query = $this->db->get($this->_table);
+        $num = $query->num_rows();
+        return $num;
+    }
 }
