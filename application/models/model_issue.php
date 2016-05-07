@@ -514,6 +514,7 @@ class Model_issue extends CI_Model {
         $this->db->select('id');
         $this->db->where('plan_id', $planId);
         $this->db->where('status >=', 0);
+        $this->db->where('workflow', 7);
         $query = $this->db->get($this->_table);
         $num = $query->num_rows();
         return $num;
