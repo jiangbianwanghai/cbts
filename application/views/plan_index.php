@@ -129,7 +129,7 @@
                     <tr>
                       <td width="100px">计划全称：</td>
                       <td><?php echo $currPlan['plan_name']?></td>
-                      <td width="100px">创建人：</td>
+                      <td width="120px">创建人：</td>
                       <td>
                         <a href="/conf/profile/<?php echo $currPlan['add_user'];?>" class="pull-left face"><img alt="" src="/static/avatar/<?php echo $users[$currPlan['add_user']]['username'];?>.jpg" align="absmiddle" title="创建人：<?php echo $users[$currPlan['add_user']]['realname'];?>"></a>
                       </td>
@@ -137,24 +137,26 @@
                     <tr>
                       <td width="100px">创建时间：</td>
                       <td><?php echo date("Y/m/d H:i:s", $currPlan['add_time']);?></td>
-                      <td width="100px">当前进度：</td>
+                      <td width="120px">当前进度：</td>
                       <td><span class="label label-primary">新建</span></td>
                     </tr>
                     <tr>
                       <td width="100px">开始时间：</td>
                       <td><?php echo date("Y/m/d H:i:s", $currPlan['startime']);?></td>
-                      <td width="100px">截止时间：</td>
+                      <td width="120px">截止时间：</td>
                       <td><?php echo date("Y/m/d H:i:s", $currPlan['endtime']);?></td>
                     </tr>
                     <tr>
                       <td width="100px">规划时长：</td>
                       <td><?php echo timediff($currPlan['startime'], $currPlan['endtime']);?></td>
-                      <td width="100px">距离结束：</td>
+                      <td width="120px">距离结束：</td>
                       <td><div id="clock"></div></td>
                     </tr>
                     <tr>
                       <td width="100px">简介：</td>
-                      <td colspan="3"><?php echo nl2br($currPlan['plan_discription']);?></td>
+                      <td><?php echo nl2br($currPlan['plan_discription']);?></td>
+                      <td width="120px">提测成功率：</td>
+                      <td><span class="label label-info" id="rate">计算中</span> <i class="glyphicon glyphicon-question-sign tooltips" title="分值超过1说明任务比代码数量要多，部分任务没有代码记录。"></i></td>
                     </tr>
                   </tbody>
                 </table>
@@ -362,6 +364,21 @@ jQuery(document).ready(function(){
      $this.html(event.strftime('<span style="color:green">仅剩：'+format+'</span>'));
     }
   });
+
+  //获取提测成功率
+  setTimeout(function () {
+    //获取我受理的任务量统计
+    $.ajax({
+      type: "GET",
+      url: "/plan/rate/<?php echo $planId; ?>",
+      dataType: "text",
+      success: function(data){
+        if (data) {
+          $("#rate").text(data);
+        }
+      }
+    });
+  }, 1101);
   
 });
 </script>

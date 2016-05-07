@@ -193,4 +193,37 @@ class plan extends CI_Controller {
         }
         echo json_encode($callBack);
     }
+
+    public function rate() {
+
+        //获取传入的参数
+        $planId = $this->uri->segment(3, 0);
+
+        //获取计划中的任务量
+        $this->load->model('Model_issue', 'issue', TRUE);
+        $taskNum = $this->issue->numByPlan($planId);
+
+        //获取提测数量并进行排序取最大值
+        $this->load->model('Model_test', 'test', TRUE);
+        $testRows = $this->test->rowsOfPlan($planId);
+        $top1OfTest = 0;
+        if ($testRows) {
+            foreach ($testRows as $key => $value) {
+                if (isset($testIdArr[$value['repos_id']])) {
+                    $testIdArr[$value['repos_id']] += 1;
+                } else {
+                    $testIdArr[$value['repos_id']] = 1;
+                }
+            }
+            $top1OfTest = max($testIdArr);
+        }
+
+        //提测成功率计算
+        if ($top1OfTest) {
+            $rate = sprintf("%.2f", $taskNum/$top1OfTest);
+        } else {
+            $rate = '无提测数据用于计算';
+        }
+        echo $rate;
+    }
 }
