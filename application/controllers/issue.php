@@ -323,6 +323,9 @@ class issue extends CI_Controller {
             }
         }
 
+        //将任务关注人转为数组
+        $data['row']['watch'] = unserialize($data['row']['watch']);
+
         //读取所属计划
         $data['plan'] = array();
         if ($data['row']['plan_id']) {

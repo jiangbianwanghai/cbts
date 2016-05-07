@@ -31,12 +31,12 @@
         <div class="panel-heading">
           <div class="pull-right">
             <div class="btn-group mr10">
-                <?php if(strpos($row['watch'], $this->input->cookie('username')) !== false){ ?>
-                    <a href="javascript:;" id="unwatch" issueid="<?php echo $row['id']; ?>" class="btn btn-sm btn-white"><i class="glyphicon glyphicon-eye-open"></i> 已关注</a>
-                    <a href="javascript:;" id="watch" style="display: none;" issueid="<?php echo $row['id']; ?>" class="btn btn-sm btn-white"><i class="glyphicon glyphicon-eye-open"></i> 关注</a>
+                <?php if(in_array($this->input->cookie('username'), $row['watch'])){ ?>
+                <a href="javascript:;" id="unwatch" issueid="<?php echo $row['id']; ?>" class="btn btn-sm btn-white"><i class="glyphicon glyphicon-eye-open"></i> 已关注(<?php echo count($row['watch']); ?>)</a>
+                <a href="javascript:;" id="watch" style="display: none;" issueid="<?php echo $row['id']; ?>" class="btn btn-sm btn-white"><i class="glyphicon glyphicon-eye-open"></i> 关注(<?php echo (count($row['watch']) - 1); ?>)</a>
                 <?php }else{ ?>
-                    <a href="javascript:;" id="unwatch" style="display: none;" issueid="<?php echo $row['id']; ?>" class="btn btn-sm btn-white"><i class="glyphicon glyphicon-eye-open"></i> 已关注</a>
-                    <a href="javascript:;" id="watch" issueid="<?php echo $row['id']; ?>" class="btn btn-sm btn-white"><i class="glyphicon glyphicon-eye-open"></i> 关注</a>
+                <a href="javascript:;" id="watch" issueid="<?php echo $row['id']; ?>" class="btn btn-sm btn-white"><i class="glyphicon glyphicon-eye-open"></i> 关注(<?php echo count($row['watch']); ?>)</a>
+                <a href="javascript:;" id="unwatch" style="display: none;" issueid="<?php echo $row['id']; ?>" class="btn btn-sm btn-white"><i class="glyphicon glyphicon-eye-open"></i> 已关注(<?php echo (count($row['watch']) + 1); ?>)</a>
                 <?php } ?>
                 <a href="/issue/edit/<?php echo $row['id'];?>" class="btn btn-sm btn-white"><i class="fa fa-pencil mr5"></i> 编辑</a>
                 <a href="javascript:;" id="del" reposid="<?php echo $row['id'];?>" class="btn btn-sm btn-white"><i class="fa fa-trash-o mr5"></i> 删除</a>
