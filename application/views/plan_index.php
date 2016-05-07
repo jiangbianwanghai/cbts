@@ -143,14 +143,14 @@
                     <tr>
                       <td width="100px">开始时间：</td>
                       <td><?php echo date("Y/m/d H:i:s", $currPlan['startime']);?></td>
-                      <td width="100px">截至时间：</td>
+                      <td width="100px">截止时间：</td>
                       <td><?php echo date("Y/m/d H:i:s", $currPlan['endtime']);?></td>
                     </tr>
                     <tr>
                       <td width="100px">规划时长：</td>
                       <td><?php echo timediff($currPlan['startime'], $currPlan['endtime']);?></td>
                       <td width="100px">距离结束：</td>
-                      <td><?php echo timediff(time(), $currPlan['endtime'], 0, 1);?></td>
+                      <td><div id="clock"></div></td>
                     </tr>
                     <tr>
                       <td width="100px">简介：</td>
@@ -238,6 +238,7 @@
 <script src="/static/js/select2.min.js"></script>
 
 <script src="/static/js/jquery.datetimepicker.full.js"></script>
+<script src="/static/js/jquery.countdown.min.js"></script>
 
 <script src="/static/js/custom.js"></script>
 <script src="/static/js/cits.js"></script>
@@ -343,6 +344,23 @@ jQuery(document).ready(function(){
         });
       }
       return false;
+  });
+
+  $('#clock').countdown('<?php echo date("Y/m/d H:i:s", $currPlan['endtime']);?>', {elapse: true})
+  .on('update.countdown', function(event) {
+    var format = '%-H 小时 %M 分钟 %S 秒';
+    if(event.offset.days > 0) {
+      format = '%-d 天%!d ' + format;
+    }
+    if(event.offset.weeks > 0) {
+      format = '%-w 周%!w ' + format;
+    }
+    var $this = $(this);
+    if (event.elapsed) {
+     $this.html(event.strftime('<span style="color:red">超出：'+format+'</span>'));
+    } else {
+     $this.html(event.strftime('<span style="color:green">仅剩：'+format+'</span>'));
+    }
   });
   
 });
