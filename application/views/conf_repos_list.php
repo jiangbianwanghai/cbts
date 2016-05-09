@@ -11,11 +11,23 @@
       </div>
     </div>
     
-    <div class="contentpanel">
+    <div class="contentpanel panel-email">
       
       <div class="row">
         
-        <div class="col-md-12">
+         <div class="col-sm-3 col-lg-2">
+          <h5 class="subtitle">快捷方式</h5>
+          <ul class="nav nav-pills nav-stacked nav-email">
+            <li<?php if ($this->uri->segment(2, 'index') == 'index' && $folder == 'all') {?> class="active"<?php } ?>><a href="/issue/index"><i class="glyphicon glyphicon-folder-<?php if ($this->uri->segment(2, 'index') == 'index' && $folder == 'all') { echo 'open'; } else { echo 'close'; } ?>"></i> 任务列表</a></li>
+            <li<?php if ($this->uri->segment(2, 'index') == 'index' && $folder == 'to_me') {?> class="active"<?php } ?>><a href="/issue/index/to_me"><i class="glyphicon glyphicon-folder-<?php if ($this->uri->segment(2, 'index') == 'index' && $folder == 'to_me') { echo 'open'; } else { echo 'close'; } ?>"></i> 我负责的</a></li>
+            <li<?php if ($this->uri->segment(2, 'index') == 'index' && $folder == 'from_me') {?> class="active"<?php } ?>><a href="/issue/index/from_me"><i class="glyphicon glyphicon-folder-<?php if ($this->uri->segment(2, 'index') == 'index' && $folder == 'from_me') { echo 'open'; } else { echo 'close'; } ?>"></i> 我创建的</a></li>
+          </ul>
+          <div class="mb10"></div>
+          <ul class="nav nav-pills nav-stacked nav-email">
+            <li<?php if ($this->uri->segment(2, '') == 'star') {?> class="active"<?php } ?>><a href="/issue/star"><i class="glyphicon glyphicon-star"></i> 星标</a></li>
+          </ul>
+        </div><!-- col-sm-3 -->
+        <div class="col-sm-9 col-lg-10">
           <div class="table-responsive">
           <table class="table table-hidaction table-hover">
             <thead>
