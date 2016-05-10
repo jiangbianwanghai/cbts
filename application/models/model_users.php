@@ -10,17 +10,12 @@ class Model_users extends CI_Model {
     /**
      * 登录验证
      */
-    public function checkUser($username, $password)
+    public function checkUser($username)
     {
-        $password = md5($password);
         $query = $this->db->get_where('users', array('username' => $username), 1);
         if ($query->num_rows() > 0) {
             $row = $query->row_array();
-            if ($row['password'] == $password) {
-                return $row;
-            } else {
-                return false;
-            }
+            return $row;
         } else {
             return false;
         }

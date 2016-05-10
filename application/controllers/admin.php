@@ -195,7 +195,16 @@ class admin extends CI_Controller {
         $this->load->model('Model_users', 'users', TRUE);
         $row = $this->users->checkUser($username, $password);
         if ($row) {
-
+            $password = md5($password);
+            if ($password != $row['password']) {
+                $array = array(
+                    'status' => false,
+                    'message' => '登录失败',
+                    'url' => '/'
+                );
+                echo json_encode($array);
+                exit();
+            }
             //写Cookie刷新登录时间
             $this->input->set_cookie('uids', $row['uid'], 86400*15);
             $this->input->set_cookie('username', $username, 86400*15);
