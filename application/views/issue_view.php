@@ -292,8 +292,8 @@
                   }
                   ?>
                 </td>
-                <td width="120px">标签</td>
-                <td>-</td>
+                <td width="120px">提测成功率</td>
+                <td><span class="label label-info"><?php echo $rate; ?></span> <i class="glyphicon glyphicon-question-sign tooltips" title="提测成功率越低，代表质量越差。"></i></td>
               </tr>
             </tbody>
           </table>

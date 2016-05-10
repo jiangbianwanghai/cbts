@@ -199,31 +199,56 @@ class plan extends CI_Controller {
         //获取传入的参数
         $planId = $this->uri->segment(3, 0);
 
-        //获取计划中的任务量
-        $this->load->model('Model_issue', 'issue', TRUE);
-        $taskNum = $this->issue->numByPlan($planId);
+        //获取项目ID并验证输入参数的合法性
+        $this->load->model('Model_plan', 'plan', TRUE);
+        $currPlan = $this->plan->fetchOne($planId, 'project_id');
 
-        //获取提测数量并进行排序取最大值
+        if (!$currPlan) {
+            exit('输入参数有误');
+        }
+
+        //获取计划中的任务
+        $this->load->model('Model_issue', 'issue', TRUE);
+        $issueRows = $this->issue->listByPlan($planId, $currPlan['project_id'], 7, 0, 200, 0);
+        if (!$issueRows['total']) {
+            exit('任务未完成，无法参与计算');
+        }
+
+        //循环计算每个任务的提测率
+        $rateArr = array();
         $this->load->model('Model_test', 'test', TRUE);
-        $testRows = $this->test->rowsOfPlan($planId);
-        $top1OfTest = 0;
+        //组合issue ID
+        foreach ($issueRows['data'] as $key => $val) {
+            $issueIdArr[] = $val['id'];
+        }
+        $testRows = $this->test->rowsOfPlan($issueIdArr);
+        $maxTest = 0;
+        $testIdArr = array();
+        //计算每个任务的提测成功率
         if ($testRows) {
             foreach ($testRows as $key => $value) {
-                if (isset($testIdArr[$value['repos_id']])) {
-                    $testIdArr[$value['repos_id']] += 1;
+                if (isset($testIdArr[$value['issue_id']][$value['repos_id']])) {
+                    $testIdArr[$value['issue_id']][$value['repos_id']] += 1;
                 } else {
-                    $testIdArr[$value['repos_id']] = 1;
+                    $testIdArr[$value['issue_id']][$value['repos_id']] = 1;
                 }
             }
-            $top1OfTest = max($testIdArr);
+            if ($testIdArr) {
+                foreach ($testIdArr as $key => $value) {
+                    $rateArr[$key] = 1/max($value);
+                }
+            }
         }
 
-        //提测成功率计算
-        if ($top1OfTest) {
-            $rate = sprintf("%.2f", $taskNum/$top1OfTest);
+        //输出整个计划的提测率
+        if ($rateArr) {
+            $rateTotal = 0;
+            foreach ($rateArr as $key => $value) {
+                $rateTotal += $value;
+            }
+            echo sprintf("%.2f", $rateTotal/count($rateArr));
         } else {
-            $rate = '无提测数据用于计算';
+            echo '无提测数据用于计算';
         }
-        echo $rate;
     }
 }

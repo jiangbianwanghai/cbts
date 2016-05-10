@@ -72,7 +72,7 @@ class Model_project extends CI_Model {
         }
     }
 
-    public function rowsByPlan($idArr, $string = 0) {
+    public function rowsByPlan($idArr, $string = NULL) {
         $row = array();
         if (!$string)
             $string = '*';

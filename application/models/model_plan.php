@@ -37,9 +37,10 @@ class Model_plan extends CI_Model {
         return $row;
     }
 
-    public function fetchOne($id) {
-        $row = array();
-        $this->db->select('*');
+    public function fetchOne($id, $string = NULL) {
+        if (!$string)
+            $string = '*';
+        $this->db->select($string);
         $this->db->where('id', $id);
         $this->db->limit(1, 0);
         $query = $this->db->get($this->_table);

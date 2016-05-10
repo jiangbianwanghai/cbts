@@ -537,9 +537,9 @@ class Model_test extends CI_Model {
         return $array;
     }
 
-    public function rowsOfPlan($planId) {
-        $this->db->select('id,repos_id');
-        $this->db->where('plan_id', $planId);
+    public function rowsOfPlan($issueIdArr) {
+        $this->db->select('id,issue_id,repos_id');
+        $this->db->where_in('issue_id', $issueIdArr);
         $this->db->where('status', 1);
         $query = $this->db->get($this->_table);
         $rows = $query->result_array();

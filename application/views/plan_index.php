@@ -156,7 +156,7 @@
                       <td width="100px">简介：</td>
                       <td><?php echo nl2br($currPlan['plan_discription']);?></td>
                       <td width="120px">提测成功率：</td>
-                      <td><span class="label label-info" id="rate">计算中</span> <i class="glyphicon glyphicon-question-sign tooltips" title="分值超过1说明任务比代码数量要多，部分任务没有代码记录。"></i></td>
+                      <td><span class="label label-info" id="rate">计算中</span> <i class="glyphicon glyphicon-question-sign tooltips" title="提测成功率越低，代表质量越差。"></i></td>
                     </tr>
                   </tbody>
                 </table>
@@ -378,7 +378,7 @@ jQuery(document).ready(function(){
         }
       }
     });
-  }, 1101);
+  }, 1000);
   
 });
 </script>

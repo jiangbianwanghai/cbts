@@ -304,6 +304,21 @@ class issue extends CI_Controller {
             $data['total_rows'] = $rows['total_rows'];
         }
 
+        //计算提测成功率
+        $data['rate'] = '无提测数据用于计算';
+        $testIdArr = array();
+        if ($rows['data']) {
+            foreach ($rows['data'] as $key => $value) {
+                if (isset($testIdArr[$value['repos_id']])) {
+                    $testIdArr[$value['repos_id']] += 1;
+                } else {
+                    $testIdArr[$value['repos_id']] = 1;
+                }
+            }
+            $maxTest = max($testIdArr);
+            $data['rate'] = sprintf("%.2f", 1/$maxTest);
+        }
+
         //获取相关BUG记录
         $this->load->model('Model_bug', 'bug', TRUE);
         $rows = $this->bug->listByIssueId($id);
@@ -332,6 +347,7 @@ class issue extends CI_Controller {
             $this->load->model('Model_plan', 'plan', TRUE);
             $data['plan'] = $this->plan->fetchOne($data['row']['plan_id']);
         }
+
         
         //读取受理信息
         $this->load->model('Model_accept', 'accept', TRUE);
