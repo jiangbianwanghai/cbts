@@ -82,7 +82,6 @@
               <li><a href="javascript:;" data-toggle="modal" data-target="#myModal-project">添加绩效圈</a></li>
             </ul>
           </li>
-          <li><a href="http://cbts.gongchang.net/static/avatar/cits.jpg" target="_blank"><i class="fa fa-envelope-o"></i> <span>致《CITS》用户的一封信<sup>new</sup></span></a></li>
         </ul>
       </div><!-- topnav -->
 
