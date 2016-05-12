@@ -31,7 +31,7 @@
         <div class="panel-heading">
           <div class="pull-right">
             <div class="btn-group mr10">
-                <?php if(in_array($this->input->cookie('username'), $row['watch'])){ ?>
+                <?php if($row['watch'] && in_array($this->input->cookie('username'),$row['watch'])) { ?>
                 <a href="javascript:;" id="unwatch" issueid="<?php echo $row['id']; ?>" class="btn btn-sm btn-white"><i class="glyphicon glyphicon-eye-open"></i> 已关注(<?php echo count($row['watch']); ?>)</a>
                 <a href="javascript:;" id="watch" style="display: none;" issueid="<?php echo $row['id']; ?>" class="btn btn-sm btn-white"><i class="glyphicon glyphicon-eye-open"></i> 关注(<?php echo (count($row['watch']) - 1); ?>)</a>
                 <?php }else{ ?>
@@ -412,7 +412,7 @@
 
 <script src="/static/js/jquery.datatables.min.js"></script>
 <script src="/static/js/simple-pinyin.js"></script>
-<script src="/static/js/select2.js"></script>
+<script src="/static/js/select2.min.js"></script>
 <script src="/static/js/jquery.gritter.min.js"></script>
 <script src="/static/js/bootstrap-editable.min.js"></script>
 <script src="/static/js/bootstrap-datetimepicker.min.js"></script>

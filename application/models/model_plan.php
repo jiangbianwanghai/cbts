@@ -67,4 +67,19 @@ class Model_plan extends CI_Model {
         $rows['data'] = $query->result_array();
         return $rows;
     }
+
+    public function rowsByPlan($idArr, $string = NULL) {
+        $row = array();
+        if (!$string)
+            $string = '*';
+        $this->db->select($string);
+        $this->db->where_in('id', $idArr);
+        $query = $this->db->get($this->_table);
+        if ($query->num_rows()) {
+            $row = $query->result_array();
+            return $row;
+        } else {
+            return false;
+        }
+    }
 }

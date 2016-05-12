@@ -64,14 +64,16 @@ class Model_issue extends CI_Model {
     /**
      * 列表
      */
-    public function rows() {
-        $rows = false;
-        $sql = "SELECT * FROM `choc_issue` ORDER BY `id` DESC";
-        $query = $this->db->query($sql);
-        foreach ($query->result_array() as $row)
-        {
-            $rows[] = $row;
-        }
+    public function rows($pageFlag = 0, $offset = 0, $limit = 20) {
+        $rows = array('total' => 0, 'data' => false);
+        $this->db->select('*');
+        $db = clone($this->db);
+        $rows['total'] = $this->db->count_all_results($this->_table);
+        $this->db = $db;
+        $this->db->order_by('id', 'desc');
+        $pageFlag && $this->db->limit($limit, $offset);
+        $query = $this->db->get($this->_table);
+        $rows['data'] = $query->result_array();
         return $rows;
     }
 
