@@ -67,7 +67,7 @@
             require './cache/project.conf.php';
             if ($this->input->cookie('projectId')&& isset($project[$this->input->cookie('projectId')])) {
               echo $project[$this->input->cookie('projectId')]['project_name']; 
-            } else { echo '绩效圈'; }
+            } else { echo '请选择项目团队'; }
             ?></span> <span class="caret"></span></a>
             <ul class="dropdown-menu children">
               <?php
@@ -79,7 +79,7 @@
                   echo "<li class=\"divider\"></li>";
               }
               ?>
-              <li><a href="javascript:;" data-toggle="modal" data-target="#myModal-project">添加绩效圈</a></li>
+              <li><a href="javascript:;" data-toggle="modal" data-target="#myModal-project">添加项目团队</a></li>
             </ul>
           </li>
         </ul>
@@ -117,18 +117,18 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title" id="myModalLabel">创建绩效圈</h4>
+            <h4 class="modal-title" id="myModalLabel">创建项目团队</h4>
           </div>
           <div class="modal-body">
             <div class="form-group">
-              <label class="col-sm-3 control-label">绩效圈名称 <span class="asterisk">*</span></label>
+              <label class="col-sm-3 control-label">名称 <span class="asterisk">*</span></label>
               <div class="col-sm-9">
                 <input type="text" name="project_name" id="project_name" class="form-control project_name" required />
               </div>
             </div>
             
             <div class="form-group">
-              <label class="col-sm-3 control-label">绩效圈简介 <span class="asterisk">*</span></label>
+              <label class="col-sm-3 control-label">简介 <span class="asterisk">*</span></label>
               <div class="col-sm-9">
                 <textarea rows="5" class="form-control" id="project_discription" name="project_discription" required></textarea>
               </div>
