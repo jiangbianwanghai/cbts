@@ -411,7 +411,8 @@
 <script src="/static/js/jquery.cookies.js"></script>
 
 <script src="/static/js/jquery.datatables.min.js"></script>
-<script src="/static/js/select2.min.js"></script>
+<script src="/static/js/simple-pinyin.js"></script>
+<script src="/static/js/select2.js"></script>
 <script src="/static/js/jquery.gritter.min.js"></script>
 <script src="/static/js/bootstrap-editable.min.js"></script>
 <script src="/static/js/bootstrap-datetimepicker.min.js"></script>
