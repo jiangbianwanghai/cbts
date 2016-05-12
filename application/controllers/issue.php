@@ -304,9 +304,9 @@ class issue extends CI_Controller {
         //获取相关提测记录
         $this->load->model('Model_test', 'test', TRUE);
         $rows = $this->test->listByIssueId($id);
-        if ($rows['total_rows']) {
+        if ($rows['total']) {
             $data['test'] = $rows['data'];
-            $data['total_rows'] = $rows['total_rows'];
+            $data['total_rows'] = $rows['total'];
         }
 
         //计算提测成功率

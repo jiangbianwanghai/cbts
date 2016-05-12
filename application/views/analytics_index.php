@@ -17,12 +17,7 @@ th,td{white-space:nowrap;}
     <div class="contentpanel">
       <div class="row">
         <div class="col-sm-3 col-lg-2">
-          <h5 class="subtitle">快捷方式</h5>
-          <ul class="nav nav-pills nav-stacked nav-email">
-            <li<?php if ($this->uri->segment(2, 'index') == 'index') {?> class="active"<?php } ?>><a href="/analytics/plan"><i class="fa fa-square-o"></i> 计划列表</a></li>
-            <li<?php if ($this->uri->segment(2, 'index') == 'issue') {?> class="active"<?php } ?>><a href="/analytics/issue"><i class="fa fa-square-o"></i> 任务列表</a></li>
-            <li<?php if ($this->uri->segment(2, 'index') == 'bug') {?> class="active"<?php } ?>><a href="/analytics/bug"><i class="fa fa-square-o"></i> BUG列表</a></li>
-          </ul>
+          <?php include('analytics_sider.php');?>
         </div><!-- col-sm-3 -->
         <div class="col-sm-9 col-lg-10">
           <div class="panel panel-default">
@@ -36,7 +31,7 @@ th,td{white-space:nowrap;}
                     <tr>
                       <th>#</th>
                       <th>计划全称</th>
-                      <th>所属项目</th>
+                      <th>所属项目团队</th>
                       <th>计划描述</th>
                       <th>进度</th>
                       <th>开始时间</th>
@@ -63,7 +58,7 @@ th,td{white-space:nowrap;}
                       <td><?php echo date('Y/m/d H:i', $value['endtime']); ?></td>
                       <td><?php echo $users[$value['add_user']]['realname']; ?></td>
                       <td><?php echo $value['add_time'] ? date('Y/m/d H:i:s', $value['add_time']) : '-'; ?></td>
-                      <td><?php echo $value['last_user'] ? $value['last_user'] : '-'; ?></td>
+                      <td><?php echo $value['last_user'] ? $users[$value['last_user']]['realname'] : '-'; ?></td>
                       <td><?php echo $value['last_time'] ? date('Y/m/d H:i:s', $value['last_time']) : '-'; ?></td>
                       <td><?php if ($value['status'] == 1) echo '正常'; ?><?php if ($value['status'] == -1) echo '已删除'; ?></td>
                     </tr>
