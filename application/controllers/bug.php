@@ -24,12 +24,17 @@ class bug extends CI_Controller {
             show_error('项目缓存文件载入失败，请联系<a href="mailto:webmaster@jiangbianwanghai.com">江边望海</a>。', 500, '错误');
         }
 
-        //验证Cookie中的项目ID是否合法
+        //如果没有项目ID的Cookie就默认一个项目ID
         $projectId = $this->input->cookie('projectId');
-        if (isset($project[$projectId])) {
-            $this->_projectId = $projectId;
+        if ($projectId) {
+            if (isset($project[$projectId]))
+                $this->_projectId = $projectId;
+            else
+                show_error('无法获取项目信息（计划，任务，BUG，提测四个模块操作前先在页面顶部选择项目），请 <a href="/">返回首页</a> 选择项目', 500, '错误');
         } else {
-            show_error('无法获取项目信息，请 <a href="/">返回首页</a> 选择项目', 500, '错误');
+            $currProject = end($project);
+            $this->_projectId = $currProject['md5'];
+            $this->input->set_cookie('projectId', $currProject['md5'], 86400*15);
         }
     }
 
