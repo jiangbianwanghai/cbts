@@ -54,10 +54,10 @@
               </div>
               <div class="form-group">
                 <label class="col-sm-2 control-label">分支名称</label>
-                <div class="col-sm-10">
+                <div class="col-sm-10" id="br-w">
                   <select id="br" name="br" class="select3" data-placeholder="请选择分支" required>
                     <option value=""></option>
-                  </select>
+                  </select><div id="br-loading"></div>
                 </div>
               </div>
               <div class="form-group">
@@ -181,14 +181,17 @@ jQuery(document).ready(function(){
 
   $("#repos_id").change(function(){
     reposId = $(this).val();
+    $("#br-loading").html('<small><img src="/static/images/loaders/loader3.gif" />分支信息加载中...</small>');
     $.ajax({
       type: "GET",
       url: "/test/getbr/"+reposId,
+      dataType: "JSON",
       success: function(data){
-        if (data) {
-          $("#br").html(data);
+        if (data.status) {
+          $("#br").html(data.output);
+          $("#br-loading").text('');
         } else {
-          alert('获取分支异常，请联系QA');
+          $("#br-loading").html("<small>error:"+data.error+" code:"+data.code+"</small>");
         }
       }
     });
@@ -209,7 +212,7 @@ jQuery(document).ready(function(){
     defaultImage : '/static/simditor-2.3.6/images/image.png', //编辑器插入图片时使用的默认图片
     upload: {
         url: '/admin/upload',
-        params: null, //键值对,指定文件上传接口的额外参数,上传的时候随文件一起提交  
+        params: {'<?php echo $this->security->get_csrf_token_name();?>':'<?php echo $this->security->get_csrf_hash();?>'}, //键值对,指定文件上传接口的额外参数,上传的时候随文件一起提交  
         fileKey: 'upload_file', //服务器端获取文件数据的参数名  
         connectionCount: 3,  
         leaveConfirm: '正在上传文件'
