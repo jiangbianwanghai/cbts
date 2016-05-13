@@ -106,7 +106,7 @@
 <script src="/static/js/jquery.validate.min.js"></script>
 <script src="/static/js/jquery.form.js"></script>
 <script src="/static/js/jquery.gritter.min.js"></script>
-
+<script src="/static/js/simple-pinyin.js"></script>
 <script src="/static/js/select2.min.js"></script>
 
 <script src="/static/js/custom.js"></script>

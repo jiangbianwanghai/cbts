@@ -77,7 +77,7 @@
 
 body {
     background: #1d2939;
-    font-family: 'LatoRegular', 'Lucida Grande', 'Lucida Sans Unicode', Helvetica, sans-serif !important;
+    font-family: "Hiragino Sans GB","Hiragino Sans GB W3","Microsoft Yahei","微软雅黑",Tahoma,Arial,Helvetica !important;
     line-height: 21px;
     color: #636e7b;
 }
@@ -88,14 +88,14 @@ body.signin {
 }
 
 input,select,textarea {
-    font-family: 'LatoRegular', 'Lucida Grande', 'Lucida Sans Unicode', Helvetica, sans-serif !important;
+    font-family: "Hiragino Sans GB","Hiragino Sans GB W3","Microsoft Yahei","微软雅黑",Tahoma,Arial,Helvetica !important;
     color: #636e7b;
 }
 
 a:focus, a:active { outline: none; }
 
 h1,h2,h3,h4,h5 {
-    font-family: 'LatoRegular', 'Lucida Grande', 'Lucida Sans Unicode', Helvetica, sans-serif;
+    font-family: "Hiragino Sans GB","Hiragino Sans GB W3","Microsoft Yahei","微软雅黑",Tahoma,Arial,Helvetica;
 }
 
 strong {
