@@ -5,7 +5,7 @@
         <span class="label">你的位置:</span>
         <ol class="breadcrumb">
           <li><a href="/">我的控制台</a></li>
-          <li><a href="/">基础信息配置</a></li>
+          <li><a href="/conf/repos_list">基础信息配置</a></li>
           <li class="active">配置代码库信息</li>
         </ol>
       </div>
@@ -69,6 +69,7 @@
                 </div>
               </div><!-- panel-body -->
               <input type="hidden" value="<?php echo $row['id'];?>" id="id" name="id">
+              <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>" />
               <div class="panel-footer">
                 <div class="row">
                   <div class="col-sm-9 col-sm-offset-3">
