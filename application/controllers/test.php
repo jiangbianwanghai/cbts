@@ -703,8 +703,6 @@ class test extends CI_Controller {
             $res = $this->curl->get($cap_url);
             if ($res['httpcode'] == '200') {
                 $this->test->changestat($row['id'], 3);
-                $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：".$repos[$row['repos_id']]['repos_name']."(".$row['test_flag'].")测试通过，会择机发布到线上";
-                $this->rtx($users[$row['add_user']]['username'],$home,$subject);
                 $callBack = array(
                     'status' => true,
                     'message' => '操作成功',
@@ -722,8 +720,6 @@ class test extends CI_Controller {
             }
         } else { //走capistrano提测方法，直接修改数据库状态即可
             $this->test->changestat($row['id'], 3);
-            $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：".$repos[$row['repos_id']]['repos_name']."(".$row['test_flag'].")测试通过，会择机发布到线上";
-            $this->rtx($users[$row['add_user']]['username'],$home,$subject);
             $callBack = array(
                 'status' => true,
                 'message' => '操作成功',
@@ -783,8 +779,7 @@ class test extends CI_Controller {
             $res = $this->curl->get($cap_url);
             if ($res['httpcode'] == '200') {
                 $this->test->changestat($row['id'], '-3');
-                $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：".$repos[$row['repos_id']]['repos_name']."(".$row['test_flag'].")测试不通过，并驳回了";
-                $this->rtx($users[$row['add_user']]['username'],$home,$subject);
+                
                 $callBack = array(
                     'status' => true,
                     'message' => '操作成功',
@@ -802,8 +797,7 @@ class test extends CI_Controller {
             }
         } else { //走capistrano提测方法，直接修改数据库状态即可
             $this->test->changestat($row['id'], '-3');
-            $subject = $users[$this->input->cookie('uids')]['realname']."提醒你：".$repos[$row['repos_id']]['repos_name']."(".$row['test_flag'].")测试不通过，并驳回了";
-            $this->rtx($users[$row['add_user']]['username'],$home,$subject);
+            
             $callBack = array(
                 'status' => true,
                 'message' => '操作成功',
@@ -966,75 +960,57 @@ class test extends CI_Controller {
         $this->test->update_accept($test_id, $uid);
 
         $username =  $users[$uid]['username'];
-        $this->config->load('extension', TRUE);
-        $home = $this->config->item('home', 'extension');
-        $url = $home."/issue/view/".$issue_id;
-        $subject = $users[$this->input->cookie('uids')]['realname']."指派了一个提测给你";
-        $this->rtx($username,$url,$subject);
         echo 1;
     }
 
+    /**
+     * 获取代码库的分支
+     */
     public function getbr() {
-        $reposId = $this->uri->segment(3, 0);
-        if (file_exists('./cache/repos.conf.php')) {
-            require './cache/repos.conf.php';
-        }
 
-        $merge = $repos[$reposId]['merge'];
+        //获取输入的参数
+        $id = $this->uri->segment(3, 0);
 
-        if ($reposId) {
-            if ($merge) {
-                //打队列
-                $this->config->load('extension', TRUE);
-                $sqs = $this->config->item('sqs', 'extension');
-                $sqs_url = $sqs."/?name=getbr&opt=put&data=";
-                $sqs_url .= $reposId."&auth=mypass123";
-                file_get_contents($sqs_url);
-                sleep(3);
-                $file = "/usr/local/nginx/html/cbts/cache/repos_br_".$reposId;
-                if (file_exists($file)) {
-                    $con = file_get_contents($file);
-                    $conArr = array_filter(explode("\n", $con));
-                    $str = '';
-                    if ($conArr) {
-                        foreach ($conArr as $key => $value) {
-                            $str .='<option value="'.str_replace('/', '', $value).'">branches/'.$value.'</option>';
-                        }
-                        echo $str;
-                    }
-                }
-            } else {
-                if ($reposId == 42) {
-                    echo '<option value="branches">branches</option>';
-                } else {
-                    echo '<option value="trunk">trunk</option>';
-                }
-            }
-        }
-    }
+        //带入代码库缓存文件
+        if (file_exists(FCPATH.'/cache/repos.conf.php'))
+            require FCPATH.'/cache/repos.conf.php';
 
-    private function rtx($toList,$url,$subject)
-    {
-        $subject = str_replace(array('#', '&', ' '), '', $subject);
-        $pushInfo = array(
-            'to' => $toList,
-            'title' => 'CBTS提醒你：',     
-            'msg' => $subject . $url,
-            'delaytime' => '',                                                                                                                                                               
-        );
-        $receiver        = iconv("utf-8","gbk//IGNORE", $pushInfo['to']);
+        //验证输入的参数合法性
+        if (!isset($repos[$id]))
+            exit(json_encode(array('status' => false, 'error' => '输入的参数有误', 'code' => 3001)));
+
+        //组合队列url
         $this->config->load('extension', TRUE);
-        $rtx = $this->config->item('rtx', 'extension');
-        $url = $rtx['url'].'/sendtortx.php?receiver=' . $receiver . '&notifytitle=' .$pushInfo['title']. '&notifymsg=' . $pushInfo['msg'] . '&delaytime=' . $pushInfo['delaytime'];           
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt ($curl, CURLOPT_TIMEOUT, 60);
-        curl_setopt($curl, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.9.2.8) Gecko/20100722 Firefox/3.6.8");
-        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, TRUE);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        $str = curl_exec($curl);
-        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
+        $sqs = $this->config->item('sqs', 'extension');
+        $sqsUrl = $sqs."/?name=tree&opt=put&data=";
+        $sqsUrl .= $id."&auth=mypass123";
+
+        //发送消息给后端worker
+        $this->load->library('curl');
+        $res = $this->curl->get($sqsUrl);
+        if ($res['httpcode'] != 200)
+            exit(json_encode(array('status' => false, 'error' => '消息队列出现异常', 'code' => 1001)));
+
+        //等待2秒中，让worker把查询结果写入缓存
+        sleep(2);
+
+        //获取生成的缓存文件并解析它
+        $cacheFile = FCPATH.'/cache/repos_'.$id.'_tree';
+        if (!file_exists($cacheFile))
+            exit(json_encode(array('status' => false, 'error' => '文件不存在', 'code' => 1002)));
+
+        $con = file_get_contents($cacheFile);
+        if ($con)
+        $conArr = unserialize($con);
+
+        if (!$conArr)
+            exit(json_encode(array('status' => false, 'error' => '格式异常', 'code' => 1003)));
+
+        $str = '';
+        foreach ($conArr as $key => $value) {
+            $str .='<option value="'.$value.'">'.$value.'</option>';
+        }
+        $callBack = array('status' => true, 'output' => $str);
+        echo json_encode($callBack);
     }
 }
