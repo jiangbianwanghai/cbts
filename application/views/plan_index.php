@@ -129,10 +129,14 @@
                     <tr>
                       <td width="100px">计划全称：</td>
                       <td><?php echo $currPlan['plan_name']?></td>
-                      <td width="120px">创建人：</td>
-                      <td>
-                        <a href="/conf/profile/<?php echo $currPlan['add_user'];?>" class="pull-left face"><img alt="" src="/static/avatar/<?php echo $users[$currPlan['add_user']]['username'];?>.jpg" align="absmiddle" title="创建人：<?php echo $users[$currPlan['add_user']]['realname'];?>"></a>
-                      </td>
+                      <td width="120px">提测成功率：</td>
+                      <td><span class="label label-info" id="rate">计算中</span> <i class="glyphicon glyphicon-question-sign tooltips" title="提测成功率越低，代表质量越差。"></i></td>
+                    </tr>
+                    <tr>
+                      <td width="100px">创建人：</td>
+                      <td><a href="/conf/profile/<?php echo $currPlan['add_user'];?>" class="pull-left face"><img alt="" src="/static/avatar/<?php echo $users[$currPlan['add_user']]['username'];?>.jpg" align="absmiddle" title="创建人：<?php echo $users[$currPlan['add_user']]['realname'];?>"></a></td>
+                      <td width="120px">参与人员：</td>
+                      <td>N/A</td>
                     </tr>
                     <tr>
                       <td width="100px">创建时间：</td>
@@ -154,13 +158,15 @@
                     </tr>
                     <tr>
                       <td width="100px">简介：</td>
-                      <td><?php echo nl2br($currPlan['plan_discription']);?></td>
-                      <td width="120px">提测成功率：</td>
-                      <td><span class="label label-info" id="rate">计算中</span> <i class="glyphicon glyphicon-question-sign tooltips" title="提测成功率越低，代表质量越差。"></i></td>
+                      <td colspan="3"><?php echo nl2br($currPlan['plan_discription']);?></td>
                     </tr>
                   </tbody>
                 </table>
               </div><!-- table-responsive -->
+              <div class="alert alert-warning">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <strong>说明：</strong>计划有四种状态：“新建”，“开发”，“测试”，“上线”。计划状态的改变有手动方式和自动方式（通过后台Worker监控每个计划是否达到状态变更标准），除非计划变更为上线状态，否则。<code>距离结束时间</code>会一直走。上线状态变更的时间减去计划规划的截止时间，就是该计划的误差时间。这个误差时间是一个非常重要的参考值。<br />功能正在优化中，预计5.22号之前上线。
+              </div>
             </div>
           </div>
           <?php } ?>
