@@ -5,7 +5,7 @@
         <span class="label">你的位置:</span>
         <ol class="breadcrumb">
           <li><a href="/">我的控制台</a></li>
-          <li><a href="/">基础信息配置</a></li>
+          <li><a href="/conf/repos_list">基础信息配置</a></li>
           <li class="active">配置代码库信息</li>
         </ol>
       </div>
@@ -15,7 +15,13 @@
       
       <div class="row">
         
-        <div class="col-md-12">
+         <div class="col-sm-3 col-lg-2">
+          <ul class="nav nav-pills nav-stacked nav-email">
+            <li><a href="/conf/repos_list"><i class="fa fa-list"></i>代码库列表</a></li>
+            <li class="active"><a href="/conf/repos"><i class="fa fa-plus"></i>添加代码库</a></li>
+          </ul>
+        </div><!-- col-sm-3 -->
+        <div class="col-sm-9 col-lg-10">
           <form method="POST" id="basicForm" action="/conf/repos_add" class="form-horizontal">
           <div class="panel panel-default">
               <div class="panel-heading">
@@ -68,11 +74,11 @@
                   </div>
                 </div>
               </div><!-- panel-body -->
+              <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>" />
               <div class="panel-footer">
                 <div class="row">
                   <div class="col-sm-9 col-sm-offset-3">
                     <button class="btn btn-primary" id="btnSubmit">提交</button>
-                    <button type="reset" class="btn btn-default">重置</button>
                   </div>
                 </div>
               </div>

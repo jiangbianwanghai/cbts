@@ -249,4 +249,47 @@ class conf extends CI_Controller {
 
         $this->load->view('conf_users_profile', $data);
     }
+
+    /*
+     获取代码库列表
+    */
+    public function repos_view(){
+
+        //获取输入参数
+        $id = $this->uri->segment(3, 0);
+
+        //读取数据
+        $this->load->model('Model_repos', 'repos', TRUE);
+        $row = $this->repos->fetchOne($id);
+
+        //验证参数的合法性
+        if (!$row) {
+            $output = array('status' => false, 'message' => '输入参数有误');
+            echo json_encode($output);
+        }
+
+        //载入用户缓存文件
+        if (file_exists(FCPATH.'/cache/users.conf.php')) {
+            require FCPATH.'/cache/users.conf.php';
+        }
+
+        //输出
+        $merge = array(0 => '不需要', 1 => '需要');
+        $output = array(
+            'status' => true,
+            'message' => array(
+                'repos_name' => $row['repos_name'],
+                'repos_name_other' => $row['repos_name_other'],
+                'repos_url' => $row['repos_url'],
+                'repos_summary' => $row['repos_summary'],
+                'merge' => $merge[$row['merge']],
+                'add_user' => $users[$row['add_user']]['realname'],
+                'add_time' => $row['add_time'] ? date('Y/m/d H:i:s', $row['add_time']) : 'N/A',
+                'last_user' => $users[$row['add_user']]['realname'],
+                'last_time' => $row['last_time'] ? date('Y/m/d H:i:s', $row['last_time']) : 'N/A'
+            )
+        );
+
+        echo json_encode($output);
+    }
 }
