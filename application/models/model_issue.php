@@ -437,6 +437,7 @@ class Model_issue extends CI_Model {
             $this->db->where('issue.type', $taskType);
         $this->db->join($this->_table, 'accept.issue_id = issue.id', 'left');
         $this->db->group_by('accept.issue_id');
+        $this->db->order_by('issue.id', 'desc');
         $this->db->limit($limit, $offset);
         $query = $this->db->get();
         $rows['data'] = $query->result_array();
