@@ -374,6 +374,10 @@ class Model_issue extends CI_Model {
         return $rows;
     }
 
+    /**
+     * 根据用户ID查询任务信息
+     */
+
     public function listByUserId($uid = 0, $folder = 'to_me', $projectId = 0, $planId = 0, $flow = '-1', $taskType = 0, $limit = 20, $offset = 0) {
         $rows = array('total' => 0, 'data' => false);
         $this->db->select('*');
@@ -396,6 +400,98 @@ class Model_issue extends CI_Model {
         $this->db->limit($limit, $offset);
         $query = $this->db->get($this->_table);
         $rows['data'] = $query->result_array();
+        return $rows;
+    }
+
+    /**
+     * 根据用户参与数据链表查任务信息
+     */
+    public function partin($uid = 0, $folder = 'to_me', $projectId = 0, $planId = 0, $flow = '-1', $taskType = 0, $limit = 20, $offset = 0) {
+        $rows = array('total' => 0, 'data' => false);
+
+        //获取记录数
+        $this->db->where('accept.accept_user', $uid);
+        if ($projectId)
+            $this->db->where('issue.project_id', $projectId);
+        if ($planId)
+            $this->db->where('issue.plan_id', $planId);
+        if ($flow >= 0)
+            $this->db->where('issue.workflow', $flow);
+        if ($taskType)
+            $this->db->where('issue.type', $taskType);
+        $this->db->join($this->_table, 'accept.issue_id = issue.id', 'left');
+        $this->db->group_by('accept.issue_id');
+        $query = $this->db->get('accept');
+        $rows['total'] = $query->num_rows();
+
+        $this->db->select('issue.id,issue.issue_name,issue.add_user,issue.add_time,issue.accept_user,issue.accept_time,level,status,workflow,type');
+        $this->db->from('accept');
+        $this->db->where('accept.accept_user', $uid);
+        if ($projectId)
+            $this->db->where('issue.project_id', $projectId);
+        if ($planId)
+            $this->db->where('issue.plan_id', $planId);
+        if ($flow >= 0)
+            $this->db->where('issue.workflow', $flow);
+        if ($taskType)
+            $this->db->where('issue.type', $taskType);
+        $this->db->join($this->_table, 'accept.issue_id = issue.id', 'left');
+        $this->db->group_by('accept.issue_id');
+        $this->db->limit($limit, $offset);
+        $query = $this->db->get();
+        $rows['data'] = $query->result_array();
+
+        return $rows;
+    }
+
+    /**
+     * 根据用户参数数据链表查项目信息
+     */
+    public function projectByAccept($uid) {
+        $this->db->select('issue.project_id');
+        $this->db->from('accept');
+        $this->db->where('accept.accept_user', $uid);
+        $this->db->where('issue.project_id > ', 0);
+        $this->db->group_by('issue.project_id');
+        $this->db->join($this->_table, 'accept.issue_id = issue.id', 'left');
+        $query = $this->db->get();
+        $rows = $query->result_array();
+        if ($rows) {
+            $idArr = '';
+            foreach ($rows as $key => $value) {
+                $idArr[] = $value['project_id'];
+            }
+            $this->db->select('id, md5, project_name');
+            $this->db->where_in('id', $idArr);
+            $query = $this->db->get('project');
+            $rows = $query->result_array();
+        }
+        return $rows;
+    }
+
+    /**
+     * 根据用户参数数据链表查计划信息
+     */
+    public function planByAccept($uid, $projectId) {
+        $this->db->select('issue.plan_id');
+        $this->db->from('accept');
+        $this->db->where('accept.accept_user', $uid);
+        $this->db->where('issue.plan_id > ', 0);
+        $this->db->where('issue.project_id', $projectId);
+        $this->db->group_by('issue.plan_id');
+        $this->db->join($this->_table, 'accept.issue_id = issue.id', 'left');
+        $query = $this->db->get();
+        $rows = $query->result_array();
+        if ($rows) {
+            $idArr = '';
+            foreach ($rows as $key => $value) {
+                $idArr[] = $value['plan_id'];
+            }
+            $this->db->select('id, plan_name');
+            $this->db->where_in('id', $idArr);
+            $query = $this->db->get('plan');
+            $rows = $query->result_array();
+        }
         return $rows;
     }
 

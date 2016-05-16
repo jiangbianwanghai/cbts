@@ -17,7 +17,7 @@
         <ul class="nav nav-pills nav-stacked nav-email mb20">
           <li<?php if ($folder == 'to_me') {?> class="active"<?php } ?>><a href="/admin/index/to_me"><i class="glyphicon glyphicon-folder-<?php if ($folder == 'to_me') { echo 'open';} else { echo 'close';}?>"></i> 我负责的</a></li>
           <li<?php if ($folder == 'from_me') {?> class="active"<?php } ?>><a href="/admin/index/from_me"><i class="glyphicon glyphicon-folder-<?php if ($folder == 'from_me') { echo 'open';} else { echo 'close';}?>"></i> 我创建的</a></li>
-          <li<?php if ($folder == 'over') {?> class="active"<?php } ?>><a href="/admin/index/over"><i class="glyphicon glyphicon-folder-<?php if ($folder == 'over') { echo 'open';} else { echo 'close';}?>"></i> 已完成的</a></li>
+          <li<?php if ($folder == 'partin') {?> class="active"<?php } ?>><a href="/admin/index/partin"><i class="glyphicon glyphicon-folder-<?php if ($folder == 'partin') { echo 'open';} else { echo 'close';}?>"></i> 我参与的</a></li>
         </ul>
         <div class="mb10"></div>
         <ul class="nav nav-pills nav-stacked nav-email">
@@ -25,6 +25,10 @@
         </ul>
       </div><!-- col-sm-3 -->
       <div class="col-sm-9 col-lg-10">
+        <div class="alert alert-warning">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+          <strong>说明：</strong>5月4号后增加了对任务过程参与人员信息记录的功能。之前的数据由于没有记录信息。所以，在没有补全老数据之前，"我参与的"信息要比“我负责的”信息少属于正常现象。
+        </div>
         <div class="panel panel-default">
           <div class="panel-body">
             <?php if ($this->uri->segment(2, 'index') == 'index') { ?>

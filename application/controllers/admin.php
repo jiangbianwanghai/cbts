@@ -30,11 +30,12 @@ class admin extends CI_Controller {
 
         //获取筛选值
         $folder = $this->uri->segment(3, 'to_me');
-        if (in_array($folder, array('to_me', 'from_me', 'over'))) {
+        if (in_array($folder, array('to_me', 'from_me', 'partin'))) {
             $folder = $this->uri->segment(3, 'to_me');
         } else {
             $folder = 'to_me';
         }
+
         $data['folder'] = $folder;
         $data['projectMd5'] = $projectId = $this->uri->segment(4, 0);
         $data['planId'] = $projectId = $this->uri->segment(5, 0);
@@ -57,10 +58,19 @@ class admin extends CI_Controller {
             $data['projectMd5'] = 0;
         }
 
-        if ($folder == 'over') {
-            exit('功能开发中...');
+        if ($folder == 'partin') {
+            $rows = $this->issue->partin($this->input->cookie('uids'), $folder, $projectId, $data['planId'], $flow, $taskType, $config['per_page'], $offset);
+            $data['projectListByIssue'] = $this->issue->projectByAccept($this->input->cookie('uids'));
+            if ($projectId) {
+                $data['planListByIssue'] = $this->issue->planByAccept($this->input->cookie('uids'), $projectId);
+                if ($data['planListByIssue']) {
+                    foreach ($data['planListByIssue'] as $key => $value) {
+                        $data['planArr'][$value['id']] = $value;
+                    }
+                }
+            }
         } else {
-            $rows = $this->issue->listByUserId($this->input->cookie('uids'), $this->uri->segment(3, 'to_me'), $projectId, $data['planId'], $flow, $taskType, $config['per_page'], $offset);
+            $rows = $this->issue->listByUserId($this->input->cookie('uids'), $folder, $projectId, $data['planId'], $flow, $taskType, $config['per_page'], $offset);
             //获取任务所涉及到的项目列表
             $data['projectListByIssue'] = $this->issue->projectListByIssue($this->input->cookie('uids'), $folder);
             if ($projectId) {
@@ -71,19 +81,21 @@ class admin extends CI_Controller {
                     }
                 }
             }
-            if ($rows['data']) {
-                $ids = array();
-                foreach ($rows['data'] as $key => $value) {
-                    $ids[]= $value['id'];
-                }
-                $star = $this->issue->starByBugId($ids);
-                if ($star) {
-                    foreach ($star as $key => $value) {
-                        $data['star'][$value['star_id']] = $value['star_id'];
-                    }
+        }
+        
+        if ($rows['data']) {
+            $ids = array();
+            foreach ($rows['data'] as $key => $value) {
+                $ids[]= $value['id'];
+            }
+            $star = $this->issue->starByBugId($ids);
+            if ($star) {
+                foreach ($star as $key => $value) {
+                    $data['star'][$value['star_id']] = $value['star_id'];
                 }
             }
         }
+
         $data['rows'] = $rows['data'];
         $data['total'] = $rows['total'];
 
