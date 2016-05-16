@@ -60,20 +60,29 @@ class admin extends CI_Controller {
 
         if ($folder == 'partin') {
             $rows = $this->issue->partin($this->input->cookie('uids'), $folder, $projectId, $data['planId'], $flow, $taskType, $config['per_page'], $offset);
+            $data['projectListByIssue'] = $this->issue->projectByAccept($this->input->cookie('uids'));
+            if ($projectId) {
+                $data['planListByIssue'] = $this->issue->planByAccept($this->input->cookie('uids'), $projectId);
+                if ($data['planListByIssue']) {
+                    foreach ($data['planListByIssue'] as $key => $value) {
+                        $data['planArr'][$value['id']] = $value;
+                    }
+                }
+            }
         } else {
             $rows = $this->issue->listByUserId($this->input->cookie('uids'), $folder, $projectId, $data['planId'], $flow, $taskType, $config['per_page'], $offset);
-        }
-
-        //获取任务所涉及到的项目列表
-        $data['projectListByIssue'] = $this->issue->projectListByIssue($this->input->cookie('uids'), $folder);
-        if ($projectId) {
-            $data['planListByIssue'] = $this->issue->planListByIssue($this->input->cookie('uids'), $projectId, $folder);
-            if ($data['planListByIssue']) {
-                foreach ($data['planListByIssue'] as $key => $value) {
-                    $data['planArr'][$value['id']] = $value;
+            //获取任务所涉及到的项目列表
+            $data['projectListByIssue'] = $this->issue->projectListByIssue($this->input->cookie('uids'), $folder);
+            if ($projectId) {
+                $data['planListByIssue'] = $this->issue->planListByIssue($this->input->cookie('uids'), $projectId, $folder);
+                if ($data['planListByIssue']) {
+                    foreach ($data['planListByIssue'] as $key => $value) {
+                        $data['planArr'][$value['id']] = $value;
+                    }
                 }
             }
         }
+        
         if ($rows['data']) {
             $ids = array();
             foreach ($rows['data'] as $key => $value) {

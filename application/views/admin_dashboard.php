@@ -25,6 +25,10 @@
         </ul>
       </div><!-- col-sm-3 -->
       <div class="col-sm-9 col-lg-10">
+        <div class="alert alert-warning">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+          <strong>说明：</strong>5月4号后增加了对任务过程参与人员信息记录的功能。之前的数据由于没有记录信息。所以，在没有补全老数据之前，"我参与的"信息要比“我负责的”信息少属于正常现象。
+        </div>
         <div class="panel panel-default">
           <div class="panel-body">
             <?php if ($this->uri->segment(2, 'index') == 'index') { ?>
