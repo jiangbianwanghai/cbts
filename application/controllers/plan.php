@@ -114,7 +114,7 @@ class plan extends CI_Controller {
 
         //读取任务
         $this->load->model('Model_issue', 'issue', TRUE);
-        $rows = $this->issue->listByPlan($data['planId'], $projectId, $flow, $taskType);
+        $rows = $this->issue->listByPlan($data['planId'], $projectId, $flow, $taskType, 100);
         $data['total'] = $rows['total'];
         $data['rows'] = $rows['data'];
 
