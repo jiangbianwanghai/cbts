@@ -70,14 +70,20 @@
                   <tbody>
                     <?php
                       if ($rows) {
+                        $weekarray=array("日","一","二","三","四","五","六");
                         if (file_exists('./cache/users.conf.php'))
                             require './cache/users.conf.php';
                         foreach ($rows as $value) {
                           $timeDay = date("Ymd", $value['add_time']);
                           if (!isset($timeGroup[$timeDay])) {
-                            echo '<tr><td colspan="8"><span class="fa fa-calendar"></span> 创建时间：'.date('Y-m-d', $value['add_time']).'</td></tr>';
+                            if ($timeDay == date("Ymd", time())) {
+                              $day = '<span style="color:green">今天</span>';
+                            } else {
+                              $day = date('Y-m-d', $value['add_time']).' 星期'.$weekarray[date("w",$value['add_time'])];
+                            }
+                            echo '<tr><td colspan="8"><span class="fa fa-calendar"></span> 创建时间：'.$day.'</td></tr>';
                           }
-                          $timeGroup[$timeDay] = 1;
+                        $timeGroup[$timeDay] = 1;
                     ?>
                     <tr class="unread">
                       <td>

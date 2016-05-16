@@ -82,6 +82,12 @@
               <li><a href="javascript:;" data-toggle="modal" data-target="#myModal-project">添加项目团队</a></li>
             </ul>
           </li>
+          <li>
+            <?php
+            $weekarray=array("日","一","二","三","四","五","六");
+            echo "<a href=\"javascript:;\">今天是：".date("Y-m-d", time())." 星期".$weekarray[date("w",time())]."</a>";
+            ?>
+          </li>
         </ul>
       </div><!-- topnav -->
 
