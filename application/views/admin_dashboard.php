@@ -17,7 +17,7 @@
         <ul class="nav nav-pills nav-stacked nav-email mb20">
           <li<?php if ($folder == 'to_me') {?> class="active"<?php } ?>><a href="/admin/index/to_me"><i class="glyphicon glyphicon-folder-<?php if ($folder == 'to_me') { echo 'open';} else { echo 'close';}?>"></i> 我负责的</a></li>
           <li<?php if ($folder == 'from_me') {?> class="active"<?php } ?>><a href="/admin/index/from_me"><i class="glyphicon glyphicon-folder-<?php if ($folder == 'from_me') { echo 'open';} else { echo 'close';}?>"></i> 我创建的</a></li>
-          <li<?php if ($folder == 'over') {?> class="active"<?php } ?>><a href="/admin/index/over"><i class="glyphicon glyphicon-folder-<?php if ($folder == 'over') { echo 'open';} else { echo 'close';}?>"></i> 已完成的</a></li>
+          <li<?php if ($folder == 'partin') {?> class="active"<?php } ?>><a href="/admin/index/partin"><i class="glyphicon glyphicon-folder-<?php if ($folder == 'partin') { echo 'open';} else { echo 'close';}?>"></i> 我参与的</a></li>
         </ul>
         <div class="mb10"></div>
         <ul class="nav nav-pills nav-stacked nav-email">

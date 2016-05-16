@@ -374,6 +374,10 @@ class Model_issue extends CI_Model {
         return $rows;
     }
 
+    /**
+     * 根据用户ID查询任务信息
+     */
+
     public function listByUserId($uid = 0, $folder = 'to_me', $projectId = 0, $planId = 0, $flow = '-1', $taskType = 0, $limit = 20, $offset = 0) {
         $rows = array('total' => 0, 'data' => false);
         $this->db->select('*');
@@ -396,6 +400,42 @@ class Model_issue extends CI_Model {
         $this->db->limit($limit, $offset);
         $query = $this->db->get($this->_table);
         $rows['data'] = $query->result_array();
+        return $rows;
+    }
+
+    /**
+     * 根据用户参与数据链表查任务信息
+     */
+    public function partin($uid = 0, $folder = 'to_me', $projectId = 0, $planId = 0, $flow = '-1', $taskType = 0, $limit = 20, $offset = 0) {
+        $rows = array('total' => 0, 'data' => false);
+        $this->db->select('issue.id,issue.issue_name,issue.add_user,issue.add_time,issue.accept_user,issue.accept_time,level,status,workflow,type');
+        $this->db->where('accept.accept_user', $uid);
+        if ($projectId)
+            $this->db->where('issue.project_id', $projectId);
+        if ($planId)
+            $this->db->where('issue.plan_id', $planId);
+        if ($flow >= 0)
+            $this->db->where('issue.workflow', $flow);
+        if ($taskType)
+            $this->db->where('issue.type', $taskType);
+        $this->db->join($this->_table, 'accept.issue_id = issue.id', 'left');
+        $rows['total'] = $this->db->count_all_results('accept');
+
+        $this->db->from('accept');
+        if ($projectId)
+            $this->db->where('issue.project_id', $projectId);
+        if ($planId)
+            $this->db->where('issue.plan_id', $planId);
+        if ($flow >= 0)
+            $this->db->where('issue.workflow', $flow);
+        if ($taskType)
+            $this->db->where('issue.type', $taskType);
+        $this->db->join($this->_table, 'accept.issue_id = issue.id', 'left');
+        $this->db->group_by('accept.issue_id');
+        $this->db->limit($limit, $offset);
+        $query = $this->db->get();
+        $rows['data'] = $query->result_array();
+
         return $rows;
     }
 
