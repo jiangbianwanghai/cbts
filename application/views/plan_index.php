@@ -327,7 +327,7 @@ jQuery(document).ready(function(){
   $("#basicForm").submit(function(){
     $(this).ajaxSubmit({
       type:"post",
-      url: "/plan/add_ajax/"+<?php echo $currPlan['id']; ?>,
+      url: "/plan/add_ajax/"+<?php if ($currPlan['id']) { echo $currPlan['id']; } else { echo '0'; } ?>,
       dataType: "JSON",
       beforeSubmit:validForm,
       success:callBack
@@ -428,7 +428,7 @@ jQuery(document).ready(function(){
     $(".modal-title").text('编辑计划');
     $.ajax({
       type: "GET",
-      url: "/plan/get_info/"+<?php echo $currPlan['id']; ?>,
+      url: "/plan/get_info/"+<?php if ($currPlan['id']) { echo $currPlan['id']; } else { echo '0'; } ?>,
       dataType: "JSON",
       success: function(data){
         if (data.status) {
@@ -449,7 +449,7 @@ jQuery(document).ready(function(){
     if(c) {
       $.ajax({
         type: "GET",
-        url: "/plan/del/"+<?php echo $currPlan['id']; ?>,
+        url: "/plan/del/"+<?php if ($currPlan['id']) { echo $currPlan['id']; } else { echo '0'; } ?>,
         dataType: "JSON",
         success: function(data){
           if (data.status) {
