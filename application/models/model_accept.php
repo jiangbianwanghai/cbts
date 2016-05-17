@@ -74,4 +74,20 @@ class Model_accept extends CI_Model {
     public function update($uid, $id) {
         return $this->db->update($this->_table, array('accept_user' => $uid, 'accept_time' => time()), array('id' => $id));
     }
+
+    /**
+     * 计划参与的人员
+     */
+    public function getTeamByIssue($array) {
+        if ($array) {
+            $this->db->select('accept_user');
+            $this->db->where_in('issue_id', $array);
+            $this->db->group_by('accept_user');
+            $query = $this->db->get($this->_table);
+            $rows = $query->result_array();
+            return $rows;
+        } else {
+            return false;
+        }
+    }
 }

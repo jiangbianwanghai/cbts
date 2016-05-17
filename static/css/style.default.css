@@ -4650,6 +4650,5 @@ div.error label.error:before {
     text-align: center;
 }
 .ellipsis{
-    white-space:nowrap;
-    overflow:hidden;
+    padding-right: 10px;
 }

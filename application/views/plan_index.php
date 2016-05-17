@@ -22,7 +22,7 @@
           <ul class="nav nav-pills nav-stacked nav-email mb20">
             <?php foreach ($planFolder as $key => $value) {?>
             
-            <li class="ellipsis <?php if ($planId == $value['id']) { echo 'active'; } ?>"><a href="/plan?planId=<?php echo $value['id'];?>" title="<?php echo $value['plan_name'];?>"><i class="glyphicon glyphicon-folder-<?php if ($planId == $value['id']) { echo 'open';} else { echo 'close';}?>"></i> <?php echo $value['plan_name'];?></a></li>
+            <li class="ellipsis <?php if ($planId == $value['id']) { echo 'active'; } ?>"><a href="/plan?planId=<?php echo $value['id'];?>" title="<?php echo $value['plan_name'];?>"><span style="white-space:nowrap; display:block; overflow:hidden;text-overflow:ellipsis;"><i class="glyphicon glyphicon-folder-<?php if ($planId == $value['id']) { echo 'open';} else { echo 'close';}?>"></i>&nbsp;&nbsp;<?php echo $value['plan_name'];?></span></a></li>
             <?php } ?>
           </ul>
           <?php } ?>
@@ -147,7 +147,17 @@
                       <td width="100px">创建人：</td>
                       <td><a href="/conf/profile/<?php echo $currPlan['add_user'];?>" class="pull-left face"><img alt="" src="/static/avatar/<?php echo $users[$currPlan['add_user']]['username'];?>.jpg" align="absmiddle" title="创建人：<?php echo $users[$currPlan['add_user']]['realname'];?>"></a></td>
                       <td width="120px">参与人员：</td>
-                      <td>N/A</td>
+                      <td>
+                        <?php 
+                        if ($team) { 
+                          foreach ($team as $key => $value) {
+                        ?>
+                        <a href="/conf/profile/<?php echo $value['accept_user'];?>" class="pull-left face"><img alt="" src="/static/avatar/<?php echo $users[$value['accept_user']]['username'];?>.jpg" align="absmiddle" title="<?php echo $users[$value['accept_user']]['realname'];?>"></a> 
+                        <?php
+                          }
+                        }
+                        ?>
+                      </td>
                     </tr>
                     <tr>
                       <td width="100px">创建时间：</td>

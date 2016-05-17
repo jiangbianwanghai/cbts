@@ -130,6 +130,10 @@ class plan extends CI_Controller {
                     $data['star'][$value['star_id']] = $value['star_id'];
                 }
             }
+
+            //获取计划团队人员
+            $this->load->model('Model_accept', 'accept', TRUE);
+            $data['team'] = $this->accept->getTeamByIssue($ids);
         }
 
         //载入助手
@@ -199,6 +203,9 @@ class plan extends CI_Controller {
         echo json_encode($callBack);
     }
 
+    /**
+     * 获取整个计划的提测成功率
+     */
     public function rate() {
 
         //获取传入的参数
@@ -214,7 +221,7 @@ class plan extends CI_Controller {
 
         //获取计划中的任务
         $this->load->model('Model_issue', 'issue', TRUE);
-        $issueRows = $this->issue->listByPlan($planId, $currPlan['project_id'], 7, 0, 200, 0);
+        $issueRows = $this->issue->listByPlan($planId, $currPlan['project_id'], 7, 0, 100, 0);
         if (!$issueRows['total']) {
             exit('任务未完成，无法参与计算');
         }
