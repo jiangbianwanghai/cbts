@@ -89,7 +89,7 @@
                 <?php if ($row['workflow']  == 1 && $row['accept_user'] == $this->input->cookie('uids')) {?>
                 <td style="text-align:center;" width="200px" id="td-over">
                   <a href="/test/add/<?php echo $row['id'];?>" class="label label-danger" target="_blank">提交代码</a> 
-                  <a href="javascript:;" ids="<?php echo $row['id']; ?>" class="label label-primary over">提交完毕</a>
+                  <a href="javascript:;" ids="<?php echo $row['id']; ?>" class="label label-primary over">开发完毕</a>
                 </td>
                 <?php } else {?>
                 <td style="text-align:center;">开发完毕</td>
@@ -165,6 +165,14 @@
           <h5 class="subtitle subtitle-lined">描述</h5>
           <p><?php echo $row['issue_summary'];?></p>
           <br />
+          <div align="right">
+          <?php if (($row['workflow'] == 1 || $row['workflow'] == 3) && isset($acceptUsers['2']) && $acceptUsers['2']['accept_user'] != $this->input->cookie('uids')) { ?>
+          <a href="/test/add/<?php echo $row['id'];?>" class="label label-danger" target="_blank">其他人可以点击此处提交代码</a>
+          <?php } ?>
+          <?php if (($row['workflow'] >=3 && $row['workflow'] <= 5) && isset($acceptUsers['3']) && $acceptUsers['3']['accept_user'] != $this->input->cookie('uids')) { ?>
+           <a href="/bug/add/<?php echo $row['id'];?>" class="label label-danger" target="_blank">其他人可以点击此处反馈BUG</a>
+          <?php } ?>
+          </div>
           <h5 class="subtitle subtitle-lined">开发信息 <span class="badge badge-info"><?php echo $total_rows;?></span></h5>
           <div class="table-responsive">
             <table class="table table-hover table-striped">

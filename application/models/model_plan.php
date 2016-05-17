@@ -28,6 +28,16 @@ class Model_plan extends CI_Model {
         return $row;
     }
 
+    public function checkPlanName($planName, $projectId) {
+        $this->db->select('id, plan_name');
+        $this->db->where('plan_name', $planName);
+        $this->db->where('project_id', $projectId);
+        $this->db->where('status', 1);
+        $query = $this->db->get($this->_table);
+        $num = $query->num_rows();
+        return $num;
+    }
+
     public function fetchOne($id, $string = NULL) {
         if (!$string)
             $string = '*';
