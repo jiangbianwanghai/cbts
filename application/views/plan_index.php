@@ -139,7 +139,7 @@
                   <tbody>
                     <tr>
                       <td width="100px">计划全称：</td>
-                      <td><?php echo $currPlan['plan_name']?></td>
+                      <td><?php echo $currPlan['plan_name']?><?php if ($this->input->cookie('uids') == $currPlan['add_user']) { ?> <a href="javascript:;">编辑</a> <a href="javascript:;">删除</a><?php } ?></td>
                       <td width="120px">提测成功率：</td>
                       <td><span class="label label-info" id="rate">计算中</span> <i class="glyphicon glyphicon-question-sign tooltips" title="提测成功率越低，代表质量越差。"></i></td>
                     </tr>
@@ -155,6 +155,8 @@
                         <a href="/conf/profile/<?php echo $value['accept_user'];?>" class="pull-left face"><img alt="" src="/static/avatar/<?php echo $users[$value['accept_user']]['username'];?>.jpg" align="absmiddle" title="<?php echo $users[$value['accept_user']]['realname'];?>"></a> 
                         <?php
                           }
+                        } else {
+                          echo 'N/A';
                         }
                         ?>
                       </td>
