@@ -374,8 +374,20 @@ jQuery(document).ready(function() {
       $('.rdio-primary').addClass('rdio-default').removeClass('rdio-primary');
       $('.text-primary').removeClass('text-primary').addClass('text-orange');
    }
-
-
-
-
 });
+
+function htmlEncode(str) {
+  var s = "";
+  if (str.length == 0) return "";
+  s = str.replace(/&/g, "&amp;");
+  s = s.replace(/</g, "&lt;");
+  s = s.replace(/>/g, "&gt;");
+  s = s.replace(/ /g, "&nbsp;");
+  s = s.replace(/\'/g, "&#39;");
+  s = s.replace(/\"/g, "&quot;");
+  s = s.replace(/\n/g, "<br>");
+  s = s.replace(/%/g, "%25");
+  s = s.replace(/\&/g, "%26");
+  s = s.replace(/\+/g, "%2B");
+  return s;
+}

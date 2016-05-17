@@ -918,7 +918,7 @@ class issue extends CI_Controller {
             $callBack = array(
                 'status' => true,
                 'message' => array(
-                    'content'=>$this->input->post('content'),
+                    'content'=>html_entity_decode($this->input->post('content')),
                     'username'=>$users[$this->input->cookie('uids')]['username'],
                     'realname'=>$users[$this->input->cookie('uids')]['realname'],
                     'addtime' => friendlydate(time()),

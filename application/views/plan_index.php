@@ -139,7 +139,7 @@
                   <tbody>
                     <tr>
                       <td width="100px">计划全称：</td>
-                      <td><?php echo $currPlan['plan_name']?><?php if ($this->input->cookie('uids') == $currPlan['add_user']) { ?> <a href="javascript:;">编辑</a> <a href="javascript:;">删除</a><?php } ?></td>
+                      <td><?php echo $currPlan['plan_name']?><?php if ($this->input->cookie('uids') == $currPlan['add_user']) { ?> <a href="javascript:;" data-target="#myModal-plan" data-toggle="modal" id="plan-edit">编辑</a> <a href="javascript:;" id="plan-del">删除</a><?php } ?></td>
                       <td width="120px">提测成功率：</td>
                       <td><span class="label label-info" id="rate">计算中</span> <i class="glyphicon glyphicon-question-sign tooltips" title="提测成功率越低，代表质量越差。"></i></td>
                     </tr>
@@ -257,6 +257,7 @@
         </div>
       </div>
       <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>" />
+      <input type="hidden" name="plan_id" id="plan_id" value="0" />
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
         <button class="btn btn-primary" id="btnSubmit">提交</button>
@@ -302,19 +303,19 @@ function callBack(data) {
       time: ''
     });
     setTimeout(function(){
-      location.href = data.url;
+      location.href = '/plan';
     }, 2000);
   } else {
     jQuery.gritter.add({
       title: '提醒',
-      text: data.message,
+      text: data.error,
         class_name: 'growl-danger',
         image: '/static/images/screen.png',
       sticky: false,
       time: ''
     });
     setTimeout(function(){
-      location.href = data.url;
+      location.href = '/plan';
     }, 3000);
   }
 }
@@ -326,7 +327,7 @@ jQuery(document).ready(function(){
   $("#basicForm").submit(function(){
     $(this).ajaxSubmit({
       type:"post",
-      url: "/plan/add_ajax",
+      url: "/plan/add_ajax/"+<?php echo $currPlan['id']; ?>,
       dataType: "JSON",
       beforeSubmit:validForm,
       success:callBack
@@ -421,6 +422,65 @@ jQuery(document).ready(function(){
       }
     });
   }, 1000);
+
+  //编辑计划
+  $("#plan-edit").click(function(){
+    $(".modal-title").text('编辑计划');
+    $.ajax({
+      type: "GET",
+      url: "/plan/get_info/"+<?php echo $currPlan['id']; ?>,
+      dataType: "JSON",
+      success: function(data){
+        if (data.status) {
+          $("#plan_name").val(data.output.plan_name);
+          $("#plan_discription").val(data.output.plan_discription);
+          $("#startime").val(data.output.startime);
+          $("#endtime").val(data.output.endtime);
+          $("#plan_id").val(<?php echo $currPlan['id']; ?>);
+        } else {
+         $(".modal-body").html(data.message);
+        }
+      }
+    });
+  });
+
+  $("#plan-del").click(function(){
+    var c = confirm('任务已经移出完毕了吗？');
+    if(c) {
+      $.ajax({
+        type: "GET",
+        url: "/plan/del/"+<?php echo $currPlan['id']; ?>,
+        dataType: "JSON",
+        success: function(data){
+          if (data.status) {
+            jQuery.gritter.add({
+              title: '提醒',
+              text: data.message,
+                class_name: 'growl-success',
+                image: '/static/images/screen.png',
+              sticky: false,
+              time: ''
+            });
+            setTimeout(function(){
+              location.href = '/plan';
+            }, 2000);
+          } else {
+            jQuery.gritter.add({
+              title: '提醒',
+              text: data.error,
+                class_name: 'growl-danger',
+                image: '/static/images/screen.png',
+              sticky: false,
+              time: ''
+            });
+            setTimeout(function(){
+              location.href = '/plan';
+            }, 3000);
+          }
+        }
+      });
+    }
+  });
   
 });
 </script>

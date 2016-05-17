@@ -119,6 +119,7 @@ class plan extends CI_Controller {
         $data['rows'] = $rows['data'];
 
         //根据任务
+        $data['team'] = array();
         if ($rows['data']) {
             $ids = array();
             foreach ($rows['data'] as $key => $value) {
@@ -153,30 +154,21 @@ class plan extends CI_Controller {
      */
     public function add_ajax() {
 
-        //验证表单
-        $this->load->library('form_validation');
-        if ($this->form_validation->run() == FALSE) {
-            $callBack = array(
-                'status' => false,
-                'message' => validation_errors(),
-                'url' => '/plan'
-            );
-            echo json_encode($callBack);
-            exit();
+        //验证是否有编辑的权限
+        $this->load->model('Model_plan', 'plan', TRUE);
+        $planId = $this->input->post('plan_id');
+        if ($planId) {
+            $row = $this->plan->fetchOne($planId);
+            if (!$row) {
+                exit(json_encode(array('status' => false, 'error' => '只有创建人才可以编辑', 'code' => 3001)));
+            }
         }
 
         //验证结束时间不能小于开始时间
-        if (strtotime($this->input->post('endtime')) <= strtotime($this->input->post('startime'))) {
-            $callBack = array(
-                'status' => false,
-                'message' => '结束时间不能小于等于开始时间',
-                'url' => '/plan'
-            );
-            echo json_encode($callBack);
-            exit();
-        }
-
-    	$this->load->model('Model_plan', 'plan', TRUE);
+        if (strtotime($this->input->post('endtime')) <= strtotime($this->input->post('startime')))
+            exit(json_encode(array('status' => false, 'error' => '结束时间不能小于等于开始时间', 'code' => 3001)));
+    	
+        //准备数据
         $post = array(
         	'project_id' => $this->_projectCache[$this->_projectId]['id'],
             'plan_name' => $this->input->post('plan_name'),
@@ -186,20 +178,16 @@ class plan extends CI_Controller {
             'add_user' => $this->input->cookie('uids'),
             'add_time' => time()
         );
-        $flag = $this->plan->add($post);
-        if ($flag['status']) {
-            $callBack = array(
-                'status' => true,
-                'message' => '提交成功',
-                'url' => '/plan'
-            );
+        if ($planId) {
+            $flag = $this->plan->edit($planId, $post);
         } else {
-            $callBack = array(
-                'status' => false,
-                'message' => '提交失败'.$feedback['message'],
-                'url' => '/plan'
-            );
+            $flag = $this->plan->add($post);
         }
+        
+        if ($flag)
+            $callBack = array('status' => true, 'message' => '操作成功');
+        else
+            $callBack = array('status' => false, 'error' => '操作失败', 'code' => 3001);
         echo json_encode($callBack);
     }
 
@@ -262,5 +250,58 @@ class plan extends CI_Controller {
         } else {
             echo '无提测数据用于计算';
         }
+    }
+
+    public function get_info() {
+
+        //获取传入的参数
+        $planId = $this->uri->segment(3, 0);
+
+        //获取项目ID并验证输入参数的合法性
+        $this->load->model('Model_plan', 'plan', TRUE);
+        $currPlan = $this->plan->fetchOne($planId);
+
+        if (!$currPlan)
+            exit(json_encode(array('status' => false, 'error' => '输入的参数有误', 'code' => 3001)));
+
+        $currPlan['startime'] && $currPlan['startime'] = date("Y/m/d H:i", $currPlan['startime']);
+        $currPlan['endtime'] && $currPlan['endtime'] = date("Y/m/d H:i", $currPlan['endtime']);
+        $callBack = array('status' => true, 'output' => $currPlan);
+        echo json_encode($callBack);
+    }
+
+    /**
+     * 删除计划
+     */
+    public function del() {
+
+        //获取传入的参数
+        $planId = $this->uri->segment(3, 0);
+
+        //获取项目ID并验证输入参数的合法性
+        $this->load->model('Model_plan', 'plan', TRUE);
+        $currPlan = $this->plan->fetchOne($planId);
+
+        if (!$currPlan)
+            exit(json_encode(array('status' => false, 'error' => '输入的参数有误', 'code' => 3001)));
+
+        //只有计划创建人才能操作
+        if ($currPlan['add_user'] != $this->input->cookie('uids'))
+            exit(json_encode(array('status' => false, 'error' => '只有计划创建人才能操作', 'code' => 3001)));
+
+        //计划下没有任务了才可以删除计划
+        $this->load->model('Model_issue', 'issue', TRUE);
+        $count = $this->issue->countByPlan($planId);
+
+        if ($count)
+            exit(json_encode(array('status' => false, 'error' => '请将所有任务移出计划，再删除', 'code' => 3001)));
+
+        $flag = $this->plan->del($planId);
+
+        if ($flag)
+            $callBack = array('status' => true, 'message' => '操作成功');
+        else
+            $callBack = array('status' => false, 'error' => '操作失败', 'code' => 3001);
+        echo json_encode($callBack);
     }
 }

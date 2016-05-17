@@ -618,4 +618,13 @@ class Model_issue extends CI_Model {
         $num = $query->num_rows();
         return $num;
     }
+
+    public function countByPlan($planId) {
+        $this->db->select('id');
+        $this->db->where('plan_id', $planId);
+        $this->db->where('status >=', 0);
+        $query = $this->db->get($this->_table);
+        $num = $query->num_rows();
+        return $num;
+    }
 }

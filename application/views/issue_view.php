@@ -358,7 +358,7 @@
               <span class="media-meta pull-right"><?php echo friendlydate($value['add_time']);?><?php if ($value['add_user'] == $this->input->cookie('uids')) {?><br /><a class="del" ids="<?php echo $value['id'];?>" href="javascript:;">删除</a><?php } ?></span>
               <h6 class="text-muted"><?php echo $users[$value['add_user']]['realname'];?></h6>
               <small class="text-muted"><?php if ($value['add_user'] == $row['accept_user']) { echo '当前受理人'; } else { echo '路人甲'; }?></small>
-              <p><?php echo $value['content'];?></p>
+              <p><?php echo html_entity_decode($value['content']);?></p>
             </div>
           </div>
           <?php
@@ -937,6 +937,9 @@ $(function(){
 
   $("#btnSubmit").click(function(){
     content = $("#content").val();
+    content = htmlEncode(content);
+    //alert(htmlEncode(content));
+    //return;
     issue_id = $("#issue_id").val();
     if (!content) {
       editor.focus();
@@ -1179,6 +1182,8 @@ function tip(message, url, color, sec) {
     location.href = url;
   }, sec);
 }
+
+
 </script>
 
 </body>
