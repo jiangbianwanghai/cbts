@@ -14,7 +14,7 @@ class Model_plan extends CI_Model {
      */
     public function add($data) {
         $res = $this->db->insert($this->_table, $data);
-        return $feedback;
+        return $res;
     }
 
     public function planFolder($projectId) {

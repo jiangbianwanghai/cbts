@@ -63,7 +63,7 @@
                   </div>
                 </div>
               </div><!-- pull-right -->
-              <h5 class="subtitle mb5">计划内容</h5>
+              <h5 class="subtitle mb5"><?php echo $currPlan['plan_name']; ?> 计划的内容</h5>
               <p class="text-muted">查询结果：<?php echo $total;?></p>
               <div class="table-responsive">
                 <table class="table table-email">
