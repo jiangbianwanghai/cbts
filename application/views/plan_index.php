@@ -22,7 +22,7 @@
           <ul class="nav nav-pills nav-stacked nav-email mb20">
             <?php foreach ($planFolder as $key => $value) {?>
             
-            <li class="ellipsis <?php if ($planId == $value['id']) { echo 'active'; } ?>"><a href="/plan?planId=<?php echo $value['id'];?>" title="<?php echo $value['plan_name'];?>"><i class="glyphicon glyphicon-folder-<?php if ($planId == $value['id']) { echo 'open';} else { echo 'close';}?>"></i> <?php echo $value['plan_name'];?></a></li>
+            <li class="ellipsis <?php if ($planId == $value['id']) { echo 'active'; } ?>"><a href="/plan?planId=<?php echo $value['id'];?>" title="<?php echo $value['plan_name'];?>"><span style="white-space:nowrap; display:block; overflow:hidden;text-overflow:ellipsis;"><i class="glyphicon glyphicon-folder-<?php if ($planId == $value['id']) { echo 'open';} else { echo 'close';}?>"></i>&nbsp;&nbsp;<?php echo $value['plan_name'];?></span></a></li>
             <?php } ?>
           </ul>
           <?php } ?>
