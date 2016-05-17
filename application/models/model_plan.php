@@ -14,7 +14,7 @@ class Model_plan extends CI_Model {
      */
     public function add($data) {
         $res = $this->db->insert($this->_table, $data);
-        return $feedback;
+        return $res;
     }
 
     public function planFolder($projectId) {
@@ -26,6 +26,16 @@ class Model_plan extends CI_Model {
         $query = $this->db->get($this->_table);
         $row = $query->result_array();
         return $row;
+    }
+
+    public function checkPlanName($planName, $projectId) {
+        $this->db->select('id, plan_name');
+        $this->db->where('plan_name', $planName);
+        $this->db->where('project_id', $projectId);
+        $this->db->where('status', 1);
+        $query = $this->db->get($this->_table);
+        $num = $query->num_rows();
+        return $num;
     }
 
     public function fetchOne($id, $string = NULL) {

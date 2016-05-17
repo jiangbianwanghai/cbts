@@ -178,9 +178,16 @@ class plan extends CI_Controller {
             'add_user' => $this->input->cookie('uids'),
             'add_time' => time()
         );
+
         if ($planId) {
+            $num = $this->plan->checkPlanName($this->input->post('plan_name'), $this->_projectCache[$this->_projectId]['id']);
+            if ($num > 1)
+                exit(json_encode(array('status' => false, 'error' => '计划名称不能与已有的计划重复', 'code' => 3001)));
             $flag = $this->plan->edit($planId, $post);
         } else {
+            $num = $this->plan->checkPlanName($this->input->post('plan_name'), $this->_projectCache[$this->_projectId]['id']);
+            if ($num)
+                exit(json_encode(array('status' => false, 'error' => '计划已经存在，无需添加', 'code' => 3001)));
             $flag = $this->plan->add($post);
         }
         
