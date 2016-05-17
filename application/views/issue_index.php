@@ -83,15 +83,27 @@
               </div><!-- pull-right -->
               <?php } ?>
               <h5 class="subtitle mb5">任务列表</h5>
-              <p class="text-muted">查询结果：<?php echo $total;?></p>
+              <?php if (($total-$offset) < $per_page) { $per_page_end = $total-$offset; } else { $per_page_end = $per_page; }?>
+            <p class="text-muted">查询结果：<?php echo ($offset+1).' - '.($per_page_end+$offset).' of '.$total;?></p>
               <div class="table-responsive">
                 <table class="table table-email">
                   <tbody>
                     <?php
                       if ($rows) {
-                        if (file_exists('./cache/users.conf.php'))
-                            require './cache/users.conf.php';
-                        foreach ($rows as $value) {
+                        $weekarray=array("日","一","二","三","四","五","六");
+                      if (file_exists('./cache/users.conf.php'))
+                          require './cache/users.conf.php';
+                      foreach ($rows as $value) {
+                        $timeDay = date("Ymd", $value['add_time']);
+                        if (!isset($timeGroup[$timeDay])) {
+                          if ($timeDay == date("Ymd", time())) {
+                            $day = '<span style="color:green">今天</span>';
+                          } else {
+                            $day = date('Y-m-d', $value['add_time']).' 星期'.$weekarray[date("w",$value['add_time'])];
+                          }
+                          echo '<tr><td colspan="7"><span class="fa fa-calendar"></span> 创建时间：'.$day.'</td></tr>';
+                        }
+                        $timeGroup[$timeDay] = 1;
                     ?>
                     <tr class="unread">
                       <td>
