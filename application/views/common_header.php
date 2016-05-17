@@ -85,7 +85,7 @@
           <li>
             <?php
             $weekarray=array("日","一","二","三","四","五","六");
-            echo "<a href=\"javascript:;\">今天是：".date("Y-m-d", time())." 星期".$weekarray[date("w",time())]."</a>";
+            echo "<a href=\"javascript:;\">今天是：".date("Y-m-d", time())." 星期".$weekarray[date("w",time())]." （".date("Y", time())."年的第 ".intval(date("W", time()))." 周）</a>";
             ?>
           </li>
         </ul>

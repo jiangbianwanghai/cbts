@@ -22,7 +22,7 @@
           <ul class="nav nav-pills nav-stacked nav-email mb20">
             <?php foreach ($planFolder as $key => $value) {?>
             
-            <li<?php if ($planId == $value['id']) {?> class="active"<?php } ?>><a href="/plan?planId=<?php echo $value['id'];?>"><i class="glyphicon glyphicon-folder-<?php if ($planId == $value['id']) { echo 'open';} else { echo 'close';}?>"></i> <?php echo $value['plan_name'];?></a></li>
+            <li class="ellipsis <?php if ($planId == $value['id']) { echo 'active'; } ?>"><a href="/plan?planId=<?php echo $value['id'];?>" title="<?php echo $value['plan_name'];?>"><i class="glyphicon glyphicon-folder-<?php if ($planId == $value['id']) { echo 'open';} else { echo 'close';}?>"></i> <?php echo $value['plan_name'];?></a></li>
             <?php } ?>
           </ul>
           <?php } ?>
@@ -153,7 +153,7 @@
                       <td width="100px">创建时间：</td>
                       <td><?php echo date("Y/m/d H:i:s", $currPlan['add_time']);?></td>
                       <td width="120px">当前进度：</td>
-                      <td><span class="label label-primary">新建</span></td>
+                      <td><?php if ($currPlan['state'] == '1') { ?><span class="label label-default">新建</span><?php } ?><?php if ($currPlan['state'] == '2') { ?><span class="label label-primary">开发中</span><?php } ?><?php if ($currPlan['state'] == '3') { ?><span class="label label-warning">测试中</span><?php } ?><?php if ($currPlan['state'] == '4') { ?><span class="label label-success">已上线</span><?php } ?></td>
                     </tr>
                     <tr>
                       <td width="100px">开始时间：</td>
@@ -165,7 +165,20 @@
                       <td width="100px">规划时长：</td>
                       <td><?php echo timediff($currPlan['startime'], $currPlan['endtime']);?></td>
                       <td width="120px">距离结束：</td>
-                      <td><div id="clock"></div></td>
+                      <td>
+                        <?php
+                        if ($currPlan['timeline']) {
+                          $timeline = unserialize($currPlan['timeline']);
+                          if (isset($timeline['online'])) {
+                            echo timediff($timeline['online'], $currPlan['endtime'], 0, 1);
+                          } else {
+                            echo '<div id="clock"></div>';
+                          }
+                        } else {
+                          echo '<div id="clock"></div>';
+                        }
+                        ?>
+                        </td>
                     </tr>
                     <tr>
                       <td width="100px">简介：</td>

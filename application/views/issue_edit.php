@@ -88,9 +88,7 @@
               <input type="hidden" value="<?php echo $row['id'];?>" id="id" name="id">
               <div class="panel-footer">
                 <div class="row">
-                  <div class="col-sm-9 col-sm-offset-3">
-                    <button class="btn btn-primary" id="btnSubmit">提交</button>
-                  </div>
+                  <button class="btn btn-primary" id="btnSubmit">提交</button>
                 </div>
               </div>
             

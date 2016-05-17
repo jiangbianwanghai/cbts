@@ -4649,3 +4649,7 @@ div.error label.error:before {
     color: #fff;
     text-align: center;
 }
+.ellipsis{
+    white-space:nowrap;
+    overflow:hidden;
+}
