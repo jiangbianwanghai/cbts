@@ -211,8 +211,8 @@ class admin extends CI_Controller {
             if ($password != $row['password']) {
                 $array = array(
                     'status' => false,
-                    'message' => '登录失败',
-                    'url' => '/'
+                    'message' => '登录信息有误，请重试',
+                    'url' => '/admin/signin'
                 );
                 echo json_encode($array);
                 exit();
@@ -233,28 +233,11 @@ class admin extends CI_Controller {
                 'url' => '/'
             );
         } else {
-            $url = $rtx['url']."/userinfo.php?username=".$username."&password=".$password."&p=7232275";
-            $result = file_get_contents($url);
-            if ((int)$result == 200) {
-                $this->input->set_cookie('username', $username, 86400);
-                $this->input->set_cookie('realname', $username, 86400);
-                $feedback = $this->users->add(array('username' => $username, 'password' => md5($password)));
-                if ($feedback['status']) {
-                    $this->input->set_cookie('uids', $feedback['uid'], 86400);
-                    $this->users->cacheRefresh();
-                    $array = array(
-                        'status' => true,
-                        'message' => '登录成功',
-                        'url' => '/'
-                    );
-                }
-            } else {
-                $array = array(
-                    'status' => false,
-                    'message'=> '登录失败',
-                    'url' => '/admin/signin'
-                );
-            }
+            $array = array(
+                'status' => false,
+                'message' => '用户信息不存在',
+                'url' => '/admin/signin'
+            );
         }
         echo json_encode($array);
     }
@@ -268,6 +251,14 @@ class admin extends CI_Controller {
             redirect('/', 'location');
         }
         $this->load->view('admin_login');
+    }
+
+    public function signup() {
+        $this->load->helper(array('form', 'url'));
+        if ($this->input->cookie('uids')) {
+            redirect('/', 'location');
+        }
+        $this->load->view('signup');
     }
     
     public function logout()
@@ -584,9 +575,38 @@ class admin extends CI_Controller {
         }
     }
 
-    public function curl() {
-        $this->load->library('curl');
-        $res = $this->curl->get('http://product.gongchang.com/s9106/CNS29003818551.html?gct=1.1.3-3-1-2.1');
-        print_r($res);
+    public function reg() {
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
+        $email = $this->input->post('email');
+
+        $this->load->model('Model_users', 'users', TRUE);
+
+        //验证邮箱是否重复
+        $row = $this->users->checkEmail($email);
+        if ($row) {
+            exit(json_encode(array('status' => false, 'error' => '此邮箱已存在')));
+        }
+
+        //验证邮箱是否重复
+        $row = $this->users->checkUser($username);
+        if ($row) {
+            exit(json_encode(array('status' => false, 'error' => '此用户名已被暂用')));
+        }
+
+        //注册
+        $this->input->set_cookie('username', $username, 86400);
+        $this->input->set_cookie('realname', $username, 86400);
+        $feedback = $this->users->add(array('username' => $username, 'password' => md5($password), 'realname' => $username, 'email' => $email, 'role' => 2));
+        if ($feedback['status']) {
+            $this->input->set_cookie('uids', $feedback['uid'], 86400);
+            $this->users->cacheRefresh();
+            $array = array(
+                'status' => true,
+                'message' => '注册成功',
+                'url' => '/'
+            );
+            echo json_encode($array);
+        }
     }
 }

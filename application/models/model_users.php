@@ -2,6 +2,8 @@
 
 class Model_users extends CI_Model {
 
+    private $_table = 'users';
+
     function __construct()
     {
         parent::__construct();
@@ -85,5 +87,25 @@ class Model_users extends CI_Model {
             $rows[] = $row;
         }
         return $rows;
+    }
+
+    public function checkEmail($email) {
+        $query = $this->db->get_where($this->_table, array('email' => $email), 1);
+        if ($query->num_rows() > 0) {
+            $row = $query->row_array();
+            return $row;
+        } else {
+            return false;
+        }
+    }
+
+    public function checkUsername($username) {
+        $query = $this->db->get_where($this->_table, array('username' => $username), 1);
+        if ($query->num_rows() > 0) {
+            $row = $query->row_array();
+            return $row;
+        } else {
+            return false;
+        }
     }
 }
