@@ -67,11 +67,11 @@
               </div><!-- panel-body -->
               <input type="hidden" value="<?php echo $row['id'];?>" id="issue_id" name="issue_id">
               <input type="hidden" value="<?php echo $test['id'];?>" id="test_id" name="test_id">
+              <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>" />
               <div class="panel-footer">
                 <div class="row">
                   <div class="col-sm-9 col-sm-offset-3">
                     <button class="btn btn-primary" id="btnSubmit">提交</button>
-                    <button type="reset" class="btn btn-default">重置</button>
                   </div>
                 </div>
               </div>
@@ -185,7 +185,7 @@ jQuery(document).ready(function(){
     defaultImage : '/static/simditor-2.3.6/images/image.png', //编辑器插入图片时使用的默认图片
     upload: {
         url: '/admin/upload',
-        params: null, //键值对,指定文件上传接口的额外参数,上传的时候随文件一起提交  
+        params: {'<?php echo $this->security->get_csrf_token_name();?>':'<?php echo $this->security->get_csrf_hash();?>'}, //键值对,指定文件上传接口的额外参数,上传的时候随文件一起提交  
         fileKey: 'upload_file', //服务器端获取文件数据的参数名  
         connectionCount: 3,  
         leaveConfirm: '正在上传文件'
