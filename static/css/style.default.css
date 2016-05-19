@@ -3207,6 +3207,10 @@ div.error label.error:before {
     background: #fff url(../images/user.png) no-repeat 95% center; 
 }
 
+.signinpanel .email {
+    background: #fff url(../images/email.png) no-repeat 96% center; 
+}
+
 .signinpanel .pword {
     background: #fff url(../images/locked.png) no-repeat 95% center; 
 }
