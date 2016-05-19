@@ -69,6 +69,23 @@ $config = array(
             'rules'   => 'trim|required|xss_clean'
         )
     ),
+    'admin/reg' => array(
+        array(
+            'field'   => 'email', 
+            'label'   => '邮箱', 
+            'rules'   => 'trim|required|valid_email|xss_clean'
+        ),
+        array(
+            'field'   => 'username', 
+            'label'   => '用户名', 
+            'rules'   => 'trim|required|min_length[3]|max_length[40]|xss_clean'
+        ),
+        array(
+            'field'   => 'password', 
+            'label'   => '密码', 
+            'rules'   => 'trim|required|min_length[6]|xss_clean'
+        )
+    )
 );
 
 /* End of file form_validation.php */

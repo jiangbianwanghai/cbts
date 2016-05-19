@@ -576,6 +576,13 @@ class admin extends CI_Controller {
     }
 
     public function reg() {
+
+        //验证表单项
+        $this->load->library('form_validation');
+        if ($this->form_validation->run() == FALSE) {
+            exit(json_encode(array('status' => false, 'error' => validation_errors())));
+        }
+
         $username = $this->input->post('username');
         $password = $this->input->post('password');
         $email = $this->input->post('email');
