@@ -107,7 +107,7 @@
                               <span class="media-meta pull-right"><?php echo friendlydate($value['add_time']);?><?php if ($value['add_user'] == $this->input->cookie('uids')) {?><br /><a class="del" ids="<?php echo $value['id'];?>" href="javascript:;">删除</a></span><?php } ?>
                               <h4 class="text-primary"><?php echo $users[$value['add_user']]['realname'];?></h4>
                               <small class="text-muted">路人甲</small>
-                              <p><?php echo $value['content'];?></p>
+                              <p><?php echo html_entity_decode($value['content']);?></p>
 							  
                           </div>
                           <?php
@@ -227,6 +227,7 @@ $(function(){
 
   $("#btnSubmit").click(function(){
     content = $("#content").val();
+    content = htmlEncode(content);
     bug_id = $("#bug_id").val();
     if (!content) {
       editor.focus();

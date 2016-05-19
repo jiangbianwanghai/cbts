@@ -946,8 +946,6 @@ $(function(){
   $("#btnSubmit").click(function(){
     content = $("#content").val();
     content = htmlEncode(content);
-    //alert(htmlEncode(content));
-    //return;
     issue_id = $("#issue_id").val();
     if (!content) {
       editor.focus();
