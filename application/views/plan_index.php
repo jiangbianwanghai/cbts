@@ -33,6 +33,20 @@
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="pull-right">
+                <div class="btn-group move" style="display:none">
+                  <div class="btn-group nomargin">
+                    <button data-toggle="dropdown" class="btn btn-sm btn-info dropdown-toggle" type="button" style="text-transform:uppercase;">
+                      把选中的任务移动到 <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                      <?php foreach ($planFolder as $key => $value) {?>
+                      <?php if ($value['id'] != $planId) {?>
+                      <li><a href="javascript:;"><?php echo $value['plan_name'];?></a></li>
+                      <?php } ?>
+                      <?php } ?>
+                    </ul>
+                  </div>
+                </div>
                 <div class="btn-group">
                   <div class="btn-group nomargin">
                     <button data-toggle="dropdown" class="btn btn-sm btn-white dropdown-toggle tooltips" type="button" title="根据工作流筛选" style="text-transform:uppercase;">
@@ -88,7 +102,7 @@
                     <tr class="unread">
                       <td>
                         <div class="ckbox ckbox-success">
-                          <input type="checkbox" id="checkbox<?php echo $value['id'];?>">
+                          <input type="checkbox" class="chk" name="itemchk" id="checkbox<?php echo $value['id'];?>" value="<?php echo $value['id'];?>">
                           <label for="checkbox<?php echo $value['id'];?>"></label>
                         </div>
                       </td>
@@ -133,6 +147,22 @@
           <?php if ($planId && $currPlan) {?>
           <div class="panel panel-default">
             <div class="panel-body">
+              <h5 class="subtitle subtitle-lined">计划进度</h5>
+              <?php
+              $timeline = unserialize($currPlan['timeline']);
+              $endtime = $currPlan['endtime'];
+              $timeline['online'] > $currPlan['endtime'] && $endtime = $timeline['online'];
+              $total = $endtime - $currPlan['startime'];
+              $devPer = sprintf("%.2f", ($timeline['test'] - $timeline['dev'])/$total)*100;
+              $testPer = sprintf("%.2f", ($timeline['test'] - $timeline['dev'])/$total)*100;
+              $onlinePer = sprintf("%.2f", ($timeline['online'] - $timeline['test'])/$total)*100;
+              ?>
+              <span class="sublabel">实际用时（需求创建：<?php echo date("Y/m/d H:i:s", $timeline['new']); ?>, 开发用时：<?php echo date("Y/m/d H:i:s", $timeline['dev']); ?>, 测试用时：<?php echo date("Y/m/d H:i:s", $timeline['test']); ?>, 上线用时：<?php echo date("Y/m/d H:i:s", $timeline['online']); ?>）</span>
+              <div class="progress progress-sm">
+                <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="<?php echo $devPer; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $devPer; ?>%"></div>
+                <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="<?php echo $testPer; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $testPer; ?>%"></div>
+                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="<?php echo $onlinePer; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $onlinePer; ?>%"></div>
+              </div>
               <h5 class="subtitle subtitle-lined">计划概览</h5>
               <div class="table-responsive">
                 <table class="table table-striped">
@@ -479,6 +509,16 @@ jQuery(document).ready(function(){
           }
         }
       });
+    }
+  });
+
+  $(".chk").change(function() {
+    //alert($(this).is(':checked'));
+    var num = $(":input[name=itemchk]:checked").length;
+    if (num) {
+      $(".move").show();
+    } else {
+      $(".move").hide();
     }
   });
   
