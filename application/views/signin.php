@@ -38,14 +38,14 @@
                 
                     <h5><strong>CITS - Chocolate Issue Tracker System</strong></h5>
                     <ul style="line-height:27px;">
-                        <li><i class="fa fa-arrow-circle-o-right"></i> 产品迭代计划制定</li>
+                        <li><i class="fa fa-arrow-circle-o-right"></i> 开发计划轻松掌握</li>
                         <li><i class="fa fa-arrow-circle-o-right"></i> 任务执行情况跟踪</li>
-                        <li><i class="fa fa-arrow-circle-o-right"></i> 一键部署代码到测试环境</li>
-                        <li><i class="fa fa-arrow-circle-o-right"></i> 工作数据统计与分析</li>
-                        <li><i class="fa fa-arrow-circle-o-right"></i> 掌握每个产品线的开发计划</li>
+                        <li><i class="fa fa-arrow-circle-o-right"></i> 代码提测一键部署</li>
+                        <li><i class="fa fa-arrow-circle-o-right"></i> 过程数据跟踪分析</li>
+                        <li><i class="fa fa-arrow-circle-o-right"></i> 静态分析持续集成</li>
                     </ul>
                     <div class="mb20"></div>
-                    <strong>不需要注册，可以直接使用Rtx帐号登录本系统</strong>
+                    <strong>CITS不仅是一款任务管理工具，更是您工作改进的好帮手~</strong>
                 </div><!-- signin0-info -->
             
             </div><!-- col-sm-7 -->
@@ -67,10 +67,10 @@
         
         <div class="signup-footer">
             <div class="pull-left">
-                &copy; 2016. All Rights Reserved. Gongchang.com
+                &copy; 2016. All Rights Reserved.
             </div>
             <div class="pull-right">
-                有问题请联系: <a href="mailto:liqiming@gongchang.com" target="_blank">江边望海</a>
+                有问题请联系: <a href="mailto:webmaster@jiangbianwanghai.com" target="_blank">江边望海</a>
             </div>
         </div>
         

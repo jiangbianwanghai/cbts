@@ -3208,7 +3208,7 @@ div.error label.error:before {
 }
 
 .signinpanel .email {
-    background: #fff url(../images/email.png) no-repeat 96% center; 
+    background: #fff url(../images/email.png) no-repeat 95% center; 
 }
 
 .signinpanel .pword {

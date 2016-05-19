@@ -250,7 +250,7 @@ class admin extends CI_Controller {
         if ($this->input->cookie('uids')) {
             redirect('/', 'location');
         }
-        $this->load->view('admin_login');
+        $this->load->view('signin');
     }
 
     public function signup() {
