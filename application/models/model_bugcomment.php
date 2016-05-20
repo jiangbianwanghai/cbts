@@ -42,4 +42,8 @@ class Model_bugcomment extends CI_Model {
     public function del($id) {
         return $this->db->update($this->_table, array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'status' => '-1'), array('id' => $id));
     }
+
+    public function delByBug($id) {
+        return $this->db->update($this->_table, array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'status' => '-1'), array('bug_id' => $id));
+    }
 }

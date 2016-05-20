@@ -29,7 +29,7 @@ class Model_bug extends CI_Model {
 
     public function listByIssueId($id) {
         $rows = array('total' => 0, 'data' => false);
-        $this->db->select('id, subject, state, level, add_user, add_time, accept_user, accept_time');
+        $this->db->select('id, subject, state, level, add_user, add_time, accept_user, accept_time,status');
         $this->db->where('issue_id', $id);
         $db = clone($this->db);
         $rows['total'] = $this->db->count_all_results($this->_table);
@@ -108,11 +108,19 @@ class Model_bug extends CI_Model {
     }
 
     public function checkout($id) {
-        return $this->db->update($this->_table, array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'state' => '-1', 'check_time' => time()), array('id' => $id));
+        return $this->db->update($this->_table, array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'state' => '-1', 'check_time' => time(), 'status' => '0'), array('id' => $id));
+    }
+
+    public function close($id) {
+        return $this->db->update($this->_table, array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'check_time' => time(), 'status' => '0'), array('id' => $id));
+    }
+
+    public function open($id) {
+        return $this->db->update($this->_table, array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'check_time' => time(), 'status' => '1', 'state' => '0'), array('id' => $id));
     }
 
     public function over($id) {
-        return $this->db->update($this->_table, array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'state' => '3'), array('id' => $id));
+        return $this->db->update($this->_table, array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'state' => '3', 'status' => '0'), array('id' => $id));
     }
 
     public function starList($projectId = 0, $limit = 20, $offset = 0) {
@@ -156,6 +164,16 @@ class Model_bug extends CI_Model {
         $this->db->where('star_type', 3);
         $this->db->where('add_user', $this->input->cookie('uids'));
         $query = $this->db->get('star');
+        $row = $query->result_array();
+        return $row;
+    }
+
+    public function getBugAct($id) {
+        $row = array();
+        $this->db->select('id');
+        $this->db->where('issue_id', $id);
+        $this->db->where('status', 1);
+        $query = $this->db->get($this->_table);
         $row = $query->result_array();
         return $row;
     }

@@ -102,8 +102,18 @@
                         <div class="face"><img alt="" src="/static/avatar/<?php echo $users[$value['accept_user']]['username']?>.jpg" align="absmiddle" title="处理人：<?php echo $users[$value['accept_user']]['realname'];?>"></div>
                       </a>
                     </td>
+                    <td width="50px">
+                      <?php
+                      if ($value['status'] == 1) {
+                        echo '<span class="label label-info">开启</span>';
+                      } elseif ($value['status'] == 0) {
+                        echo '<span class="label label-default">关闭</span>';
+                      }elseif ($value['status'] == '-1') {
+                        echo '<span class="label label-default">删除</span>';
+                      }
+                      ?>
+                    </td>
                     <td width="70px">
-                      <?php if ($value['status'] == 1) {?>
                       <?php if ($value['state'] === '-1') {?>
                       <span class="label label-default">无效反馈</span>
                       <?php } ?>
@@ -118,11 +128,6 @@
                       <?php } ?>
                       <?php if ($value['state'] === '3') {?>
                       <span class="label label-success">已处理</span>
-                      <?php } ?>
-                      <?php } elseif ($value['status'] == 0) {?>
-                      <span class="label label-default">已关闭</span>
-                      <?php } elseif ($value['status'] == -1) {?>
-                      <span class="label label-default">已删除</span>
                       <?php } ?>
                     </td>
                     <td>

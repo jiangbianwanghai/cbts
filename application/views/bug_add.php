@@ -23,8 +23,8 @@
         
         <h5 class="subtitle">快捷方式</h5>
         <ul class="nav nav-pills nav-stacked nav-email mb20">
-          <li><a href="/bug/index/to_me"><i class="glyphicon glyphicon-folder-open"></i> 我负责的</a></li>
-          <li><a href="/bug/index/from_me"><i class="glyphicon glyphicon-folder-open"></i> 我创建的</a></li>
+          <li><a href="/bug/index/to_me"><i class="glyphicon glyphicon-folder-close"></i> 我负责的</a></li>
+          <li><a href="/bug/index/from_me"><i class="glyphicon glyphicon-folder-close"></i> 我创建的</a></li>
         </ul>
       </div><!-- col-sm-3 -->
       <div class="col-sm-9 col-lg-10">
