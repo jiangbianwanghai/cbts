@@ -67,7 +67,16 @@
                               <h4 class="text-primary"><?php echo $users[$row['add_user']]['realname'];?></h4>
                               <small class="text-muted">BUG反馈人</small>
                               <h4 class="email-subject">
-                                <?php if ($row['status'] == 1) {?>
+                              <?php if ($row['level']) {?><?php echo "<strong style='color:#ff0000;' title='".$level[$row['level']]['alt']."'>".$level[$row['level']]['name']."</strong> ";?><?php } ?><?php echo $row['subject'];?>
+                              <?php
+                                if ($row['status'] == 1) {
+                                  echo '<span class="label label-info">开启</span>';
+                                } elseif ($row['status'] == 0) {
+                                  echo '<span class="label label-default">关闭</span>';
+                                }elseif ($row['status'] == '-1') {
+                                  echo '<span class="label label-default">删除</span>';
+                                }
+                                ?>
                                 <?php if ($row['state'] === '-1') {?>
                                 <span class="label label-default">无效反馈</span>
                                 <?php } ?>
@@ -83,12 +92,7 @@
                                 <?php if ($row['state'] === '3') {?>
                                 <span class="label label-success">已处理</span>
                                 <?php } ?>
-                                <?php } elseif ($row['status'] == 0) {?>
-                                <span class="label label-default">已关闭</span>
-                                <?php } elseif ($row['status'] == -1) {?>
-                                <span class="label label-default">已删除</span>
-                                <?php } ?>
-                              <?php if ($row['level']) {?><?php echo "<strong style='color:#ff0000;' title='".$level[$row['level']]['alt']."'>".$level[$row['level']]['name']."</strong> ";?><?php } ?><?php echo $row['subject'];?></h4>
+                              </h4>
                               <p><?php echo $row['content'];?></p>
                               <p>所属任务：<a href="/issue/view/<?php echo $issue['id'];?>" target="_blank"><?php echo $issue['issue_name'];?></a></p>
                             </div>
@@ -106,7 +110,7 @@
                             <div class="media-body">
                               <span class="media-meta pull-right"><?php echo friendlydate($value['add_time']);?></span><?php if ($value['add_user'] == $this->input->cookie('uids')) {?><br /><a class="del" ids="<?php echo $value['id'];?>" href="javascript:;">删除</a><?php } ?>
                               <h4 class="text-primary"><?php echo $users[$value['add_user']]['realname'];?></h4>
-                              <small class="text-muted">路人甲</small>
+                              <small class="text-muted"><?php if ($row['add_user'] == $value['add_user']) { echo 'BUG反馈人'; } elseif ($row['accept_user'] == $value['add_user']) { echo 'BUG受理人'; } else { echo '路人甲'; } ?></small>
                               <p><?php echo html_entity_decode($value['content']);?></p>
 							  
                           </div>

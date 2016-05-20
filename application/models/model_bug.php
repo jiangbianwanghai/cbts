@@ -108,7 +108,7 @@ class Model_bug extends CI_Model {
     }
 
     public function checkout($id) {
-        return $this->db->update($this->_table, array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'state' => '-1', 'check_time' => time()), array('id' => $id));
+        return $this->db->update($this->_table, array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'state' => '-1', 'check_time' => time(), 'status' => '0'), array('id' => $id));
     }
 
     public function over($id) {
