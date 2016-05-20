@@ -127,7 +127,7 @@
                       <td align="center" width="30px">
                         <?php if ($value['type'] == 2) {?><i class="fa fa-bug tooltips" data-toggle="tooltip" title="BUG"></i><?php } ?><?php if ($value['type'] == 1) {?><i class="fa fa-magic tooltips" data-toggle="tooltip" title="TASK"></i><?php } ?>
                       </td>
-                      <td><?php if ($value['level']) {?><?php echo "<strong style='color:#ff0000;' title='".$level[$value['level']]['alt']."'>".$level[$value['level']]['name']."</strong> ";?><?php } ?> <a href="/issue/view/<?php echo $value['id'];?>"><?php echo $value['issue_name'];?></a></span>
+                      <td><?php if ($value['level']) {?><?php echo "<strong style='color:#ff0000;' title='".$level[$value['level']]['alt']."'>".$level[$value['level']]['name']."</strong> ";?><?php } ?> <a href="/issue/view/<?php echo $value['id'];?>" target="_blank"><?php if ($value['status'] == '-1') { echo '<del>'.$value['issue_name'].'</del>'; } else { echo $value['issue_name']; } ?></a><?php if ($value['status'] == '-1') echo ' <span class="label label-default">已删除</span>'; ?>
                       </td>
                       <td><span class="media-meta pull-right"><?php echo date("Y/m/d H:i", $value['add_time'])?></span></td>
                     </tr>
