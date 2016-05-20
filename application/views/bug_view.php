@@ -309,7 +309,11 @@ $(function(){
 
   //反馈无效
   $(".ajax-btn2").click(function(){
-    content = $('#msg').val();
+    content = $.trim($('#msg').val());
+    if (!content) {
+      alert('请说明反馈无效的理由');
+      return false;
+    }
     bug_id = $("#bug_id").val();
     $.ajax({
       type: "POST",
