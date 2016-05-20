@@ -180,21 +180,16 @@
                 <?php
                   if ($test) {
                     foreach ($test as $value) {
-                      
-                          if (!isset($timeGroup[$value['repos_id']])) {
-                              
-                            echo '<tr><td colspan="8"><span class="fa fa-cloud-upload"></span> '.$repos[$value['repos_id']]['repos_name'].'</td></tr>';
-                          }
+                      if (!isset($timeGroup[$value['repos_id']])) {
                         $timeGroup[$value['repos_id']] = 1;
+                        echo '<tr><td colspan="8"><span class="fa fa-cloud-upload"></span> '.$repos[$value['repos_id']]['repos_name'].'</td></tr>';
+                      }
                 ?>
                 <tr id="tr-<?php echo $value['id'];?>" class="unread">
-                  <td><?php if ($value['status'] == '-1') { echo '<s><a title="'.$repos[$value['repos_id']]['repos_url'].'" href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a></s>'; } else { echo '<a title="'.$repos[$value['repos_id']]['repos_url'].'" href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a>'; }?>
+                  <td><a href="/conf/profile/<?php echo $value['add_user'];?>" class="pull-left"><div class="face"><img alt="" src="/static/avatar/<?php echo $users[$value['add_user']]['username']?>.jpg" align="absmiddle" title="添加人：<?php echo $users[$value['add_user']]['realname'];?>"></div></a></td>
+                  <td><?php if ($value['status'] == '-1') { echo '<s><a title="'.$repos[$value['repos_id']]['repos_url'].'" href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a></s>'; } else { echo '<a title="'.$repos[$value['repos_id']]['repos_url'].'" href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a>'; }?>@<?php echo $value['test_flag'];?>
                   </td>
-                  <td><a href="/conf/profile/<?php echo $value['add_user'];?>" class="pull-left">
-                          <div class="face"><img alt="" src="/static/avatar/<?php echo $users[$value['add_user']]['username']?>.jpg" align="absmiddle" title="添加人：<?php echo $users[$value['add_user']]['realname'];?>"></div>
-                        </a></td>
-                  <td>@<?php echo $value['test_flag'];?></td>
-                  <td width="150">
+                  <td>
                     <?php if ($value['rank'] == 0) {?>
                     <button class="btn btn-default btn-xs"><i class="fa fa-coffee"></i> 开发环境</button>
                     <?php } ?>
@@ -205,7 +200,7 @@
                     <button class="btn btn-success btn-xs"><i class="fa fa-check-circle"></i> 生产环境</button>
                     <?php } ?>
                   </td>
-                  <td width="150">
+                  <td>
                     <?php if ($value['state'] == 0) {?>
                     <button class="btn btn-default btn-xs"><i class="fa fa-coffee"></i> 待测</button>
                     <?php } ?>
@@ -222,7 +217,7 @@
                     <button class="btn btn-success btn-xs"><i class="fa fa-exclamation-circle"></i> 已被后续版本覆盖</button>
                     <?php } ?>
                   </td>
-                  <td width="150">
+                  <td >
                     <?php if ($value['status'] == 1) {?>
                     <div class="btn-group nomargin">
                       <button type="button" class="btn btn-white btn-xs dropdown-toggle" data-toggle="dropdown">
@@ -238,8 +233,8 @@
                     </div>
                     <?php }?>
                   </td>
-                  <td width="110"><button class="btn btn-white btn-xs deploy" ids="<?php echo $value['id'];?>">获取部署代码</button></td>
-                  <td width="150">
+                  <td><button class="btn btn-white btn-xs deploy" ids="<?php echo $value['id'];?>">获取部署代码</button></td>
+                  <td>
                     <?php if ($row['status'] == 1) {?>
                     <?php if ($value['tice'] < 1) {?>
                     <a class="btn btn-white btn-xs" href="/test/edit/<?php echo $row['id'];?>/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 编辑</a>
@@ -247,9 +242,12 @@
                     <?php }?>
                     <?php }?> 
                   </td>
-                  <td width="120"><span class="media-meta pull-right"><?php echo date("Y/m/d H:i", $value['add_time'])?></span></td>
+                  <td><span class="media-meta pull-right"><?php echo date("Y/m/d H:i", $value['add_time'])?></span></td>
                 </tr>
-                <tr style="display:none;" id="abc-<?php echo $value['id'];?>"><td colspan="9" style="padding-left:0px;padding-right:0px;"><div class="abc" id="deploy-<?php echo $value['id'];?>"><?php $text = ''; if($repos[$value['repos_id']]['merge'] == 1) { $text = "cd ~/cap_scripts/" . $repos[$value['repos_id']]['repos_name'] . "/ && cap staging deploy br=" . str_replace('branches/', '', $value['br']) . " rev=" . $value['test_flag'] . " issue=" . $row['id'];}elseif($value['repos_id'] == 42){$text = "cd ~/cap_scripts/" . $repos[$value['repos_id']]['repos_name'] . "/ && cap staging deploy rev=" . $value['test_flag'] . " issue=" . $row['id'];} if(isset($text) && !empty($text)){echo "<input type='text' value='" . $text . "'  class=\"form-control\">"; } ?></div><?php if ($value['test_summary']) { ?><div style="padding:10px;line-height:1.2em"><blockquote style="font-size:14px;"><i class="fa fa-quote-left"></i><p><?php echo $value['test_summary']; ?></p><small><?php echo $users[$value['add_user']]['realname']; ?>：提测 <?php echo $repos[$value['repos_id']]['repos_name']; ?> 的注意事项</cite></small></blockquote></div><?php } ?></td></tr>
+                <tr style="display:none;" id="abc-<?php echo $value['id'];?>"><td colspan="8" style="padding-left:0px;padding-right:0px;"><div class="abc" id="deploy-<?php echo $value['id'];?>"><?php $text = ''; if($repos[$value['repos_id']]['merge'] == 1) { $text = "cd ~/cap_scripts/" . $repos[$value['repos_id']]['repos_name'] . "/ && cap staging deploy br=" . str_replace('branches/', '', $value['br']) . " rev=" . $value['test_flag'] . " issue=" . $row['id'];}elseif($value['repos_id'] == 42){$text = "cd ~/cap_scripts/" . $repos[$value['repos_id']]['repos_name'] . "/ && cap staging deploy rev=" . $value['test_flag'] . " issue=" . $row['id'];} if(isset($text) && !empty($text)){echo "<input type='text' value='" . $text . "'  class=\"form-control\">"; } ?></div></td></tr>
+                <?php if ($value['test_summary']) { ?>
+                <tr><td colspan="8" style="background-color:#fff"><div style="padding:10px;line-height:1.2em"><blockquote style="font-size:14px;"><i class="fa fa-quote-left"></i><p><?php echo $value['test_summary']; ?></p><small><?php echo $users[$value['add_user']]['realname']; ?>：提测 <?php echo $repos[$value['repos_id']]['repos_name']; ?> 的注意事项</cite></small></blockquote></div></td></tr>
+                <?php } ?>
                 <?php
                     }
                   } else {
