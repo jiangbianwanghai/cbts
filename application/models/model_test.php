@@ -86,7 +86,7 @@ class Model_test extends CI_Model {
         $db = clone($this->db);
         $rows['total'] = $this->db->count_all_results($this->_table);
         $this->db = $db;
-        $this->db->order_by('repos_id', 'desc');
+        $this->db->order_by('repos_id,id', 'desc');
         $query = $this->db->get($this->_table);
         $rows['data'] = $query->result_array();
         return $rows;

@@ -1018,6 +1018,21 @@ class issue extends CI_Controller {
             exit();
         }*/
 
+        //验证是否还存在激活的BUG
+        if ($flow == 'wait') {
+            $this->load->model('Model_bug', 'bug', TRUE);
+            $bugAct = $this->bug->getBugAct($id);
+            if ($bugAct) {
+                $callBack = array(
+                    'status' => false,
+                    'message' => '还有正常开启的BUG需要解决',
+                    'url' => '/issue/view/'.$row['id']
+                );
+                echo json_encode($callBack);
+                exit();
+            }
+        }
+
         //更改工作流
         $user = $this->input->cookie('uids');
         if ($flow == 'fixed') {

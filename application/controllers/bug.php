@@ -323,12 +323,21 @@ class bug extends CI_Controller {
         }
         $this->load->helper('friendlydate');
         if ($feedback['status']) {
+            if ($row['add_user'] == $this->input->cookie('uids')) { 
+                $role = 'BUG反馈人'; 
+            } elseif (
+                $row['accept_user'] == $this->input->cookie('uids')) { 
+                $role = 'BUG受理人'; 
+            } else { 
+                $role = '路人甲';
+            }
             $callBack = array(
                 'status' => true,
                 'message' => array(
                     'content'=>html_entity_decode($this->input->post('content')),
                     'username'=>$users[$this->input->cookie('uids')]['username'],
                     'realname'=>$users[$this->input->cookie('uids')]['realname'],
+                    'role' => $role,
                     'addtime' => friendlydate(time())
                 )
             );
@@ -441,6 +450,44 @@ class bug extends CI_Controller {
             $callBack = array(
                 'status' => false,
                 'message' => '删除失败'
+            );
+        }
+
+        echo json_encode($callBack);
+    }
+
+    public function close() {
+        $bugId = $this->uri->segment(3, 0);
+        $this->load->model('Model_bug', 'bug', TRUE);
+        $flag = $this->bug->close($bugId);
+        if ($flag) {
+            $callBack = array(
+                    'status' => true,
+                    'message' => '关闭成功'
+                );
+        } else {
+            $callBack = array(
+                'status' => false,
+                'message' => '关闭失败'
+            );
+        }
+
+        echo json_encode($callBack);
+    }
+
+    public function open() {
+        $bugId = $this->uri->segment(3, 0);
+        $this->load->model('Model_bug', 'bug', TRUE);
+        $flag = $this->bug->open($bugId);
+        if ($flag) {
+            $callBack = array(
+                    'status' => true,
+                    'message' => '操作成功'
+                );
+        } else {
+            $callBack = array(
+                'status' => false,
+                'message' => '操作失败'
             );
         }
 

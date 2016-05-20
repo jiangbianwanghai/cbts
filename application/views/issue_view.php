@@ -182,12 +182,13 @@
                     foreach ($test as $value) {
                       if (!isset($timeGroup[$value['repos_id']])) {
                         $timeGroup[$value['repos_id']] = 1;
-                        echo '<tr><td colspan="8"><span class="fa fa-cloud-upload"></span> '.$repos[$value['repos_id']]['repos_name'].'</td></tr>';
+                        echo '<tr><td colspan="9"><span class="fa fa-cloud-upload"></span> '.$repos[$value['repos_id']]['repos_name'].'</td></tr>';
                       }
                 ?>
                 <tr id="tr-<?php echo $value['id'];?>" class="unread">
                   <td><a href="/conf/profile/<?php echo $value['add_user'];?>" class="pull-left"><div class="face"><img alt="" src="/static/avatar/<?php echo $users[$value['add_user']]['username']?>.jpg" align="absmiddle" title="添加人：<?php echo $users[$value['add_user']]['realname'];?>"></div></a></td>
-                  <td><?php if ($value['status'] == '-1') { echo '<s><a title="'.$repos[$value['repos_id']]['repos_url'].'" href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a></s>'; } else { echo '<a title="'.$repos[$value['repos_id']]['repos_url'].'" href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a>'; }?>@<?php echo $value['test_flag'];?>
+                  <td></td>
+                  <td><?php if ($value['status'] == '-1') { echo '<s><a title="'.$repos[$value['repos_id']]['repos_url'].'" href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a></s>'; } else { echo '<a title="'.$repos[$value['repos_id']]['repos_url'].'" href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a>'; }?> @<?php echo $value['test_flag'];?><?php if ($timeGroup[$value['repos_id']] == 1) { echo ' <span class="badge badge-danger">当前</span>'; } ?>
                   </td>
                   <td>
                     <?php if ($value['rank'] == 0) {?>
@@ -242,13 +243,14 @@
                     <?php }?>
                     <?php }?> 
                   </td>
-                  <td><span class="media-meta pull-right"><?php echo date("Y/m/d H:i", $value['add_time'])?></span></td>
+                  <td width="130"><span class="media-meta pull-right"><?php echo date("Y/m/d H:i", $value['add_time'])?></span></td>
                 </tr>
                 <tr style="display:none;" id="abc-<?php echo $value['id'];?>"><td colspan="8" style="padding-left:0px;padding-right:0px;"><div class="abc" id="deploy-<?php echo $value['id'];?>"><?php $text = ''; if($repos[$value['repos_id']]['merge'] == 1) { $text = "cd ~/cap_scripts/" . $repos[$value['repos_id']]['repos_name'] . "/ && cap staging deploy br=" . str_replace('branches/', '', $value['br']) . " rev=" . $value['test_flag'] . " issue=" . $row['id'];}elseif($value['repos_id'] == 42){$text = "cd ~/cap_scripts/" . $repos[$value['repos_id']]['repos_name'] . "/ && cap staging deploy rev=" . $value['test_flag'] . " issue=" . $row['id'];} if(isset($text) && !empty($text)){echo "<input type='text' value='" . $text . "'  class=\"form-control\">"; } ?></div></td></tr>
                 <?php if ($value['test_summary']) { ?>
-                <tr><td colspan="8" style="background-color:#fff"><div style="padding:10px;line-height:1.2em"><blockquote style="font-size:14px;"><i class="fa fa-quote-left"></i><p><?php echo $value['test_summary']; ?></p><small><?php echo $users[$value['add_user']]['realname']; ?>：提测 <?php echo $repos[$value['repos_id']]['repos_name']; ?> 的注意事项</cite></small></blockquote></div></td></tr>
+                <tr><td colspan="9" style="background-color:#fff"><div style="padding:10px;line-height:1.2em"><blockquote style="font-size:14px;"><i class="fa fa-quote-left"></i><p><?php echo $value['test_summary']; ?></p><small><?php echo $users[$value['add_user']]['realname']; ?>：提测 <?php echo $repos[$value['repos_id']]['repos_name']; ?> 的注意事项</cite></small></blockquote></div></td></tr>
                 <?php } ?>
                 <?php
+                    $timeGroup[$value['repos_id']]++;
                     }
                   } else {
                 ?>
@@ -323,27 +325,41 @@
                     foreach ($bug as $value) {
                 ?>
                   <tr>
-                    <td width="50px"><?php echo $value['id']?></td>
+                    <td width="50px">
+                      <?php
+                      if ($value['status'] == 1) {
+                        echo '<span class="label label-info">开启</span>';
+                      } elseif ($value['status'] == 0) {
+                        echo '<span class="label label-default">关闭</span>';
+                      }elseif ($value['status'] == '-1') {
+                        echo '<span class="label label-default">删除</span>';
+                      }
+                      ?>
+                    </td>
                     <td width="50px"><i class="fa fa-bug tooltips" data-toggle="tooltip" title="Bug"></i></td>
                     <td width="50px">
                       <a href="/conf/profile/<?php echo $value['accept_user'];?>" class="pull-left" target="_blank">
                         <div class="face"><img alt="" src="/static/avatar/<?php echo $users[$value['accept_user']]['username']?>.jpg" align="absmiddle" title="当前受理人：<?php echo $users[$value['accept_user']]['realname'];?>"></div>
                       </a>
                     </td>
-                    <td><?php if ($value['level']) { ?><?php echo "<strong style='color:#ff0000;'>".$level[$value['level']]['name']."</strong> ";?><?php } ?><a href="/bug/view/<?php echo $value['id'];?>" target="_blank"><?php echo $value['subject']?></a></td>
+                    <td><?php if ($value['level']) { ?><?php echo "<strong style='color:#ff0000;'>".$level[$value['level']]['name']."</strong> ";?><?php } ?><a href="/bug/view/<?php echo $value['id'];?>"><?php echo $value['subject']?></a></td>
                     
-                    <td width="80px"><?php if ($value['state'] === '0') {?>
-                    <span class="label label-default">未确认</span>
-                    <?php } ?>
-                    <?php if ($value['state'] === '1') {?>
-                    <span class="label label-primary">处理中</span>
-                    <?php } ?>
-                    <?php if ($value['state'] === '3') {?>
-                    <span class="label label-success">已处理</span>
-                    <?php } ?>
-                    <?php if ($value['state'] === '-1') {?>
-                    <span class="label label-default">反馈无效</span>
-                    <?php } ?>
+                    <td width="80px">
+                      <?php if ($value['state'] === '0') {?>
+                      <span class="label label-default">未确认</span>
+                      <?php } ?>
+                      <?php if ($value['state'] === '1') {?>
+                      <span class="label label-primary">已确认</span>
+                      <?php } ?>
+                      <?php if ($value['state'] === '2') {?>
+                      <span class="label label-primary">已确认</span>
+                      <?php } ?>
+                      <?php if ($value['state'] === '3') {?>
+                      <span class="label label-success">已处理</span>
+                      <?php } ?>
+                      <?php if ($value['state'] === '-1') {?>
+                      <span class="label label-default">无效反馈</span>
+                      <?php } ?>
                     </td>
                   </tr>
                   <?php
