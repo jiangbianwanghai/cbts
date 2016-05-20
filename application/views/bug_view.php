@@ -104,11 +104,12 @@
                               <div class="face"><img alt="" src="/static/avatar/<?php echo $users[$value['add_user']]['username']?>.jpg" align="absmiddle" title="<?php echo $users[$value['add_user']]['realname'];?>"></div>
                             </div>
                             <div class="media-body">
-                              <span class="media-meta pull-right"><?php echo friendlydate($value['add_time']);?><?php if ($value['add_user'] == $this->input->cookie('uids')) {?><br /><a class="del" ids="<?php echo $value['id'];?>" href="javascript:;">删除</a></span><?php } ?>
+                              <span class="media-meta pull-right"><?php echo friendlydate($value['add_time']);?></span><?php if ($value['add_user'] == $this->input->cookie('uids')) {?><br /><a class="del" ids="<?php echo $value['id'];?>" href="javascript:;">删除</a></span><?php } ?>
                               <h4 class="text-primary"><?php echo $users[$value['add_user']]['realname'];?></h4>
                               <small class="text-muted">路人甲</small>
                               <p><?php echo html_entity_decode($value['content']);?></p>
 							  
+                          </div>
                           </div>
                           <?php
                               }
