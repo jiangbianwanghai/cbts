@@ -299,6 +299,9 @@ class issue extends CI_Controller {
         //获取任务详情
         $this->load->model('Model_issue', 'issue', TRUE);
         $data['row'] = $this->issue->fetchOne($id);
+        if (!$data['row']) {
+            show_error('您查找的任务不存在，请 <a href="/">返回首页</a>', 500, '错误');
+        }
         $data['PAGE_TITLE'] = 'ISSUE-'.$data['row']['id'].' - '.$data['row']['issue_name'].' - 任务详情';
 
         //获取相关提测记录
@@ -708,20 +711,29 @@ class issue extends CI_Controller {
      * 编辑任务
      */
     public function edit() {
+
+        //设置页面标题
         $data['PAGE_TITLE'] = '编辑任务';
+
+        //获取传入数据
         $id = $this->uri->segment(3, 0);
+
+        //验证数据是否存在
         $this->load->model('Model_issue', 'issue', TRUE);
-        //已经解决的任务自动归档不能编辑了
-        $resolve = $this->issue->checkResolve($id);
-        if ($resolve) {
-            exit('已经解决的任务自动归档不能编辑了~');
-        }
-        //已经受理并且受理人不是自己是没有办法编辑的
-        $accpetUser = $this->issue->checkAccept($id);
-        if (!empty($accpetUser) && $accpetUser != $this->input->cookie('uids')) {
-            exit('已经被别人受理了，你不能编辑了~');
-        }
         $row = $this->issue->fetchOne($id);
+        if (!$row) {
+            show_error('您查找的任务不存在，请 <a href="/">返回首页</a>', 500, '错误');
+        }
+
+        //验证是否有权编辑
+        if ($row['add_user'] != $this->input->cookie('uids')) {
+            show_error('只有任务创建人才可以编辑，请 <a href="/issue/view/'.$id.'">返回任务</a>', 500, '错误');
+        }
+
+        //已经解决的任务自动归档不能编辑了
+        if ($row['resolve']) {
+            show_error('已经解决的任务自动归档不能编辑了~，请 <a href="/issue/view/'.$id.'">返回任务</a>', 500, '错误');
+        }
 
         //载入配置信息
         $this->config->load('extension', TRUE);

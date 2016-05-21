@@ -119,19 +119,6 @@ class Model_issue extends CI_Model {
     }
 
     /**
-     * 验证任务是否已经解决
-     */
-    public function checkResolve($id) {
-        $row = $this->fetchOne($id);
-        if ($row) {
-            if ($row['resolve']) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * 更新信息
      */
     public function update($data) {

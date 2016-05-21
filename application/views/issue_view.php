@@ -286,11 +286,17 @@
                 <td><?php if ($plan) { echo '<a href="/plan?planId='.$plan['id'].'" target="_blank">'.$plan['plan_name'].'</a>'; }?></td>
                 <td width="120px">贡献者</td>
                 <td>
-                  <?php if ($acceptUsers) {
+                  <?php
+                  if ($acceptUsers) {
                     foreach ($acceptUsers as $key => $value) {
-                      echo ' <a href="/conf/profile/'.$value['accept_user'].'">'.$users[$value['accept_user']]['realname'].'</a>';
+                      $acceptUsersDup[] = $value['accept_user'];
                     }
-                  }?>
+                    $acceptUsersDup = array_unique($acceptUsersDup);
+                    foreach ($acceptUsersDup as $key => $value) {
+                      echo ' <a href="/conf/profile/'.$value.'">'.$users[$value]['realname'].'</a>';
+                    }
+                  }
+                  ?>
                 </td>
               </tr>
               <tr>
