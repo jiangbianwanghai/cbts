@@ -322,7 +322,7 @@
           </table>
           </div><!-- table-responsive -->
           <?php if ($bug_total_rows) {?>
-          <h5 class="subtitle subtitle-lined">发现的BUG</h5>
+          <h5 class="subtitle subtitle-lined">发现的BUG  <span class="badge badge-info"><?php echo $bug_total_rows;?></span></h5>
           <div class="table-responsive">
             <table class="table table-striped">
               <tbody>
