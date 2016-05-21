@@ -530,4 +530,15 @@ class bug extends CI_Controller {
         }
         echo json_encode($callBack);
     }
+
+    public function change_accept() {
+
+        //获取参数
+        $id = $this->uri->segment(3, 0);
+        $uid = $this->input->get("value", TRUE);
+
+        $this->load->model('Model_bug', 'bug', TRUE);
+        $flag = $this->bug->change_accept($id, $uid);
+        echo $flag;
+    }
 }

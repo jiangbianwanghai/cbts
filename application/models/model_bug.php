@@ -123,6 +123,10 @@ class Model_bug extends CI_Model {
         return $this->db->update($this->_table, array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'state' => '3', 'status' => '0'), array('id' => $id));
     }
 
+    public function change_accept($id, $uid) {
+        return $this->db->update($this->_table, array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'accept_user' => $uid), array('id' => $id));
+    }
+
     public function starList($projectId = 0, $limit = 20, $offset = 0) {
         $rows = array('total' => 0, 'data' => false);
         $this->db->select('*');

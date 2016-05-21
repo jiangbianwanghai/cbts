@@ -76,7 +76,7 @@
                             </div>
                             <div class="media-body">
                               <span class="media-meta pull-right"><?php echo friendlydate($row['add_time']);?></span>
-                              <h4 class="text-primary"><?php echo $users[$row['add_user']]['realname'];?></h4>
+                              <h4 class="text-primary"><?php echo $users[$row['add_user']]['realname'];?> 把这个BUG指派给了 <?php if ($row['status'] == 1 && ($row['add_user'] == $this->input->cookie('uids') || $row['accept_user'] == $this->input->cookie('uids'))) { ?><a href="javascript:;" id="country" data-type="select2" data-value="<?php echo $row['accept_user'];?>" data-title="更改受理人"></a><?php } else { echo $users[$row['accept_user']]['realname']; } ?></h4>
                               <small class="text-muted">BUG反馈人</small>
                               <h4 class="email-subject">
                               <?php if ($row['level']) {?><?php echo "<strong style='color:#ff0000;' title='".$level[$row['level']]['alt']."'>".$level[$row['level']]['name']."</strong> ";?><?php } ?><?php echo $row['subject'];?>
@@ -221,6 +221,7 @@
 <script src="/static/js/jquery.datatables.min.js"></script>
 <script src="/static/js/simple-pinyin.js"></script>
 <script src="/static/js/select2.min.js"></script>
+<script src="/static/js/bootstrap-editable.min.js"></script>
 <script src="/static/js/jquery.gritter.min.js"></script>
 
 <script src="/static/js/custom.js"></script>
@@ -266,6 +267,29 @@ $(function(){
       }
     });
   });
+
+  // Select 2 (dropdown mode)
+  var countries = [];
+  $.each({<?php foreach($users as $val) { ?>"<?php echo $val['uid'];?>": "<?php echo $val['realname'];?>",<?php } ?> }, function(k, v) {
+      countries.push({id: k, text: v});
+  });
+
+  jQuery('#country').editable({
+        inputclass: 'sel-xs',
+        source: countries,
+        type: 'text',
+        pk: 1,
+        ajaxOptions: {
+          type: 'GET'
+        },
+        url: '/bug/change_accept/<?php echo $row["id"];?>',
+        send: 'always',
+        select2: {
+            width: 150,
+            placeholder: '更改受理人',
+            allowClear: true
+        },
+    });
 
   $(".del").click(function(){
     var c = confirm('你确定要删除吗？');
