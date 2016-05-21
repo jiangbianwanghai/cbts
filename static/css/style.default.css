@@ -4636,6 +4636,7 @@ div.error label.error:before {
     -moz-border-radius: 50px;
     -webkit-border-radius: 50px;
     border-radius: 50px;
+    border: 1px solid #f1f1f1;
     float: left;
 }
 

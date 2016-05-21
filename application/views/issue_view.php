@@ -342,10 +342,15 @@
                       }
                       ?>
                     </td>
-                    <td width="50px"><i class="fa fa-bug tooltips" data-toggle="tooltip" title="Bug"></i></td>
+                    <td width="30px"><i class="fa fa-bug tooltips" data-toggle="tooltip" title="Bug"></i></td>
+                    <td width="50px">
+                      <a href="/conf/profile/<?php echo $value['add_user'];?>" class="pull-left" target="_blank">
+                        <div class="face"><img alt="" src="/static/avatar/<?php echo $users[$value['add_user']]['username']?>.jpg" align="absmiddle" title="反馈人：<?php echo $users[$value['add_user']]['realname'];?>"></div>
+                      </a>
+                    </td>
                     <td width="50px">
                       <a href="/conf/profile/<?php echo $value['accept_user'];?>" class="pull-left" target="_blank">
-                        <div class="face"><img alt="" src="/static/avatar/<?php echo $users[$value['accept_user']]['username']?>.jpg" align="absmiddle" title="当前受理人：<?php echo $users[$value['accept_user']]['realname'];?>"></div>
+                        <div class="face"><img alt="" src="/static/avatar/<?php echo $users[$value['accept_user']]['username']?>.jpg" align="absmiddle" title="受理人：<?php echo $users[$value['accept_user']]['realname'];?>"></div>
                       </a>
                     </td>
                     <td><?php if ($value['level']) { ?><?php echo "<strong style='color:#ff0000;'>".$level[$value['level']]['name']."</strong> ";?><?php } ?><a href="/bug/view/<?php echo $value['id'];?>"><?php echo $value['subject']?></a></td>
