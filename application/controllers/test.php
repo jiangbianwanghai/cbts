@@ -42,24 +42,30 @@ class test extends CI_Controller {
      * 添加表单
      */
     public function add() {
+
+        //设置页面标题
     	$data['PAGE_TITLE'] = '提交代码';
+
+        //获取传入参数
         $id = $this->uri->segment(3, 0);
+
+        //验证数据是否存在
         $this->load->model('Model_issue', 'issue', TRUE);
         $data['row'] = $this->issue->fetchOne($id);
-        if (!$data['row']) {
-            exit("查询数据错误.");
-        }
+        if (!$data['row'])
+            show_error('您查找的任务不存在，请 <a href="/">返回首页</a>', 500, '错误');
+
         //已经解决的任务不能再次添加提测信息
-        $resolve = $this->issue->checkResolve($id);
-        if ($resolve) {
-            exit('已经解决的任务不能再次添加提测信息~');
-        }
-        if (file_exists('./cache/repos.conf.php')) {
-            require './cache/repos.conf.php';
+        if ($data['row']['resolve'])
+            show_error('已经解决的任务不能再次添加提测信息~，请 <a href="/issue/view/'.$id.'">返回任务</a>', 500, '错误');
+        
+        if (file_exists(FCPATH.'/cache/repos.conf.php')) {
+            require FCPATH.'/cache/repos.conf.php';
             $data['repos'] = $repos;
         }
-        if (file_exists('./cache/users.conf.php')) {
-            require './cache/users.conf.php';
+        
+        if (file_exists(FCPATH.'/cache/users.conf.php')) {
+            require FCPATH.'/cache/users.conf.php';
             $data['users'] = $users;
         }
         $this->load->view('test_add', $data);
