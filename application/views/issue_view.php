@@ -167,10 +167,10 @@
           <br />
           <div align="right">
           <?php if (($row['workflow'] == 1 || $row['workflow'] == 3) && isset($acceptUsers['2']) && $acceptUsers['2']['accept_user'] != $this->input->cookie('uids')) { ?>
-          <a href="/test/add/<?php echo $row['id'];?>" class="label label-danger" target="_blank">其他人可以点击此处提交代码</a>
+          <a href="/test/add/<?php echo $row['id'];?>" class="label label-danger">其他人可以点击此处提交代码</a>
           <?php } ?>
           <?php if (($row['workflow'] >=3 && $row['workflow'] <= 5) && isset($acceptUsers['3']) && $acceptUsers['3']['accept_user'] != $this->input->cookie('uids')) { ?>
-           <a href="/bug/add/<?php echo $row['id'];?>" class="label label-danger" target="_blank">其他人可以点击此处反馈BUG</a>
+           <a href="/bug/add/<?php echo $row['id'];?>" class="label label-danger">其他人可以点击此处反馈BUG</a>
           <?php } ?>
           </div>
           <h5 class="subtitle subtitle-lined">开发信息 <span class="badge badge-info"><?php echo $total_rows;?></span></h5>
