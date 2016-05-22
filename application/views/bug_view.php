@@ -78,7 +78,7 @@
                               <span class="media-meta pull-right"><?php echo friendlydate($row['add_time']);?></span>
                               <h4 class="text-primary"><?php echo $users[$row['add_user']]['realname'];?> 把这个BUG指派给了 <?php if ($row['status'] == 1 && ($row['add_user'] == $this->input->cookie('uids') || $row['accept_user'] == $this->input->cookie('uids'))) { ?><a href="javascript:;" id="country" data-type="select2" data-value="<?php echo $row['accept_user'];?>" data-title="更改受理人"></a><?php } else { echo $users[$row['accept_user']]['realname']; } ?></h4>
                               <small class="text-muted">BUG反馈人</small>
-                              <h4 class="email-subject">
+                              <h4 class="email-subject" style="font-size:18px;">
                               <?php if ($row['level']) {?><?php echo "<strong style='color:#ff0000;' title='".$level[$row['level']]['alt']."'>".$level[$row['level']]['name']."</strong> ";?><?php } ?><?php echo $row['subject'];?>
                               <?php
                                 if ($row['status'] == 1) {
