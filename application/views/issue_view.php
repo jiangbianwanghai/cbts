@@ -182,7 +182,7 @@
                     foreach ($test as $value) {
                       if (!isset($timeGroup[$value['repos_id']])) {
                         $timeGroup[$value['repos_id']] = 1;
-                        echo '<tr><td colspan="9"><span class="fa fa-cloud-upload"></span> '.$repos[$value['repos_id']]['repos_name'].'</td></tr>';
+                        echo '<tr><td colspan="8"><span class="fa fa-cloud-upload"></span> '.$repos[$value['repos_id']]['repos_name'].'</td></tr>';
                       }
                 ?>
                 <tr id="tr-<?php echo $value['id'];?>" class="unread">
@@ -218,23 +218,35 @@
                     <button class="btn btn-success btn-xs"><i class="fa fa-exclamation-circle"></i> 已被后续版本覆盖</button>
                     <?php } ?>
                   </td>
-                  <td >
+                  <td>
                     <?php if ($value['status'] == 1) {?>
                     <div class="btn-group nomargin">
-                      <button type="button" class="btn btn-white btn-xs dropdown-toggle" data-toggle="dropdown">
-                        更改提测状态 <span class="caret"></span>
-                      </button>
-                      <ul class="dropdown-menu" role="menu">
-                        <li><a href="javascript:;" class="wait" testid="<?php echo $value['id']?>">我暂时不测了</a></li>
-                        <li><a href="javascript:;" class="zhanyong" testid="<?php echo $value['id']?>">我要占用测试环境</a></li>
-                        <li><a href="javascript:;" class="pass" testid="<?php echo $value['id']?>">测试不通过</a></li>
-                        <li><a href="javascript:;" class="launch" testid="<?php echo $value['id']?>">测试通过待上线</a></li>
-                        <li><a href="javascript:;" class="online" testid="<?php echo $value['id']?>">代码已上线</a></li>
-                      </ul>
+                      <div class="btn-group nomargin">
+                        <button type="button" class="btn btn-white btn-sm dropdown-toggle" data-toggle="dropdown">
+                          更改提测状态 <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="javascript:;" class="wait" testid="<?php echo $value['id']?>">我暂时不测了</a></li>
+                          <li><a href="javascript:;" class="zhanyong" testid="<?php echo $value['id']?>">我要占用测试环境</a></li>
+                          <li><a href="javascript:;" class="pass" testid="<?php echo $value['id']?>">测试不通过</a></li>
+                          <li><a href="javascript:;" class="launch" testid="<?php echo $value['id']?>">测试通过待上线</a></li>
+                          <li><a href="javascript:;" class="online" testid="<?php echo $value['id']?>">代码已上线</a></li>
+                        </ul>
+                      </div>
+                      <div class="btn-group nomargin">
+                        <button type="button" class="btn btn-white btn-sm dropdown-toggle" data-toggle="dropdown">
+                          获取部署代码 <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="javascript:;" class="deploy" env="192.168.8.190" br="<?php echo $value['br'];?>" rev="<?php echo $value['test_flag'];?>" repos="<?php echo $repos[$value['repos_id']]['repos_name'];?>" merge="<?php echo $repos[$value['repos_id']]['merge']?>" ids="<?php echo $value['id']?>">190（测试环境01）</a></li>
+                          <li><a href="javascript:;" class="deploy" env="192.168.8.192" br="<?php echo $value['br'];?>" rev="<?php echo $value['test_flag'];?>" repos="<?php echo $repos[$value['repos_id']]['repos_name'];?>" merge="<?php echo $repos[$value['repos_id']]['merge']?>" ids="<?php echo $value['id']?>">192（测试环境02）</a></li>
+                          <li><a href="javascript:;" class="deploy" env="192.168.8.193" br="<?php echo $value['br'];?>" rev="<?php echo $value['test_flag'];?>" repos="<?php echo $repos[$value['repos_id']]['repos_name'];?>" merge="<?php echo $repos[$value['repos_id']]['merge']?>" ids="<?php echo $value['id']?>">193（测试环境03）</a></li>
+                        </ul>
+                      </div>
+                    </div>
                     </div>
                     <?php }?>
                   </td>
-                  <td><button class="btn btn-white btn-xs deploy" ids="<?php echo $value['id'];?>">获取部署代码</button></td>
                   <td>
                     <?php if ($row['status'] == 1) {?>
                     <?php if ($value['tice'] < 1) {?>
@@ -245,9 +257,12 @@
                   </td>
                   <td width="130"><span class="media-meta pull-right"><?php echo date("Y/m/d H:i", $value['add_time'])?></span></td>
                 </tr>
-                <tr style="display:none;" id="abc-<?php echo $value['id'];?>"><td colspan="8" style="padding-left:0px;padding-right:0px;"><div class="abc" id="deploy-<?php echo $value['id'];?>"><?php $text = ''; if($repos[$value['repos_id']]['merge'] == 1) { $text = "cd ~/cap_scripts/" . $repos[$value['repos_id']]['repos_name'] . "/ && cap staging deploy br=" . str_replace('branches/', '', $value['br']) . " rev=" . $value['test_flag'] . " issue=" . $row['id'];}elseif($value['repos_id'] == 42){$text = "cd ~/cap_scripts/" . $repos[$value['repos_id']]['repos_name'] . "/ && cap staging deploy rev=" . $value['test_flag'] . " issue=" . $row['id'];} if(isset($text) && !empty($text)){echo "<input type='text' value='" . $text . "'  class=\"form-control\">"; } ?></div></td></tr>
+                <tr id="abc-<?php echo $value['id'];?>" style="display:none;">
+                  <td colspan="8" id="deploy-<?php echo $value['id'];?>" curr="0"><input type="text" class="form-control input-sm">
+                  <small>提醒：可以使用快捷键 <code>Ctrl+C</code> 将部署代码复制到剪切板上</small></td>
+                </tr>
                 <?php if ($value['test_summary']) { ?>
-                <tr><td colspan="9" style="background-color:#fff"><div style="padding:10px;line-height:1.2em"><blockquote style="font-size:14px;"><i class="fa fa-quote-left"></i><p><?php echo $value['test_summary']; ?></p><small><?php echo $users[$value['add_user']]['realname']; ?>：提测 <?php echo $repos[$value['repos_id']]['repos_name']; ?> 的注意事项</cite></small></blockquote></div></td></tr>
+                <tr><td colspan="8" style="background-color:#fff"><div style="padding:10px;line-height:1.2em"><blockquote style="font-size:14px;"><i class="fa fa-quote-left"></i><p><?php echo $value['test_summary']; ?></p><small><?php echo $users[$value['add_user']]['realname']; ?>：提测 <?php echo $repos[$value['repos_id']]['repos_name']; ?> 的注意事项</cite></small></blockquote></div></td></tr>
                 <?php } ?>
                 <?php
                     $timeGroup[$value['repos_id']]++;
@@ -1058,13 +1073,30 @@ $(function(){
 
   $('.deploy').click(function(){
     var id = $(this).attr('ids');
+    var env = $(this).attr('env');
+    var repos = $(this).attr('repos');
+    var br = $(this).attr('br');
+    var rev = $(this).attr('rev');
     var obj = "#deploy-"+id;
+    var curr = $(obj).attr('curr');
+    $(obj).attr('curr', env);
+    var merge = $(this).attr('merge');
+    if (merge == 1) {
+      var cap = "cd ~/"+env+"/"+repos+"/ && cap staging deploy br="+br+" rev="+rev+" issue=<?php echo $row['id']; ?>";
+    } else {
+      var cap = '此代码库不适合使用capistrano部署，请使用CAP部署';
+    }
+    
+    $(obj+' input').val(cap).select();
     if(!$(obj).hasClass('open')) {
       $("#abc-"+id).show();
       $(obj).addClass('open');
     } else {
-      $("#abc-"+id).hide();
-      $(obj).removeClass('open');
+      if (curr == env) {
+        $("#abc-"+id).hide();
+        $(obj).removeClass('open');
+        $("#abc-"+id).css({"display":"none"});
+      }
     }
     return false;
   });
