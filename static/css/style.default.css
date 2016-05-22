@@ -4640,12 +4640,6 @@ div.error label.error:before {
     float: left;
 }
 
-.abc{
-    display: none;
-}
-.open{
-    display: block;
-}
 .deploy{
     cursor: pointer;
 }
