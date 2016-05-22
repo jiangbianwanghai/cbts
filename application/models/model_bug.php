@@ -34,6 +34,7 @@ class Model_bug extends CI_Model {
         $db = clone($this->db);
         $rows['total'] = $this->db->count_all_results($this->_table);
         $this->db = $db;
+        $this->db->order_by('status', 'desc');
         $this->db->order_by('id', 'desc');
         $query = $this->db->get($this->_table);
         $rows['data'] = $query->result_array();

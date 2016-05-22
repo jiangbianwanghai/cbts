@@ -190,7 +190,7 @@
                   <td></td>
                   <td><?php if ($value['status'] == '-1') { echo '<s><a title="'.$repos[$value['repos_id']]['repos_url'].'" href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a></s>'; } else { echo '<a title="'.$repos[$value['repos_id']]['repos_url'].'" href="/test/repos/'.$value['repos_id'].'">'.$repos[$value['repos_id']]['repos_name'].'</a>'; }?> @<?php echo $value['test_flag'];?><?php if ($timeGroup[$value['repos_id']] == 1) { echo ' <span class="badge badge-danger">当前</span>'; } ?>
                   </td>
-                  <td>
+                  <td width="120">
                     <?php if ($value['rank'] == 0) {?>
                     <button class="btn btn-default btn-xs"><i class="fa fa-coffee"></i> 开发环境</button>
                     <?php } ?>
@@ -201,7 +201,7 @@
                     <button class="btn btn-success btn-xs"><i class="fa fa-check-circle"></i> 生产环境</button>
                     <?php } ?>
                   </td>
-                  <td>
+                  <td width="90">
                     <?php if ($value['state'] == 0) {?>
                     <button class="btn btn-default btn-xs"><i class="fa fa-coffee"></i> 待测</button>
                     <?php } ?>
@@ -218,7 +218,7 @@
                     <button class="btn btn-success btn-xs"><i class="fa fa-exclamation-circle"></i> 已被后续版本覆盖</button>
                     <?php } ?>
                   </td>
-                  <td>
+                  <td width="240">
                     <?php if ($value['status'] == 1) {?>
                     <div class="btn-group nomargin">
                       <div class="btn-group nomargin">
@@ -238,16 +238,16 @@
                           获取部署代码 <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu" role="menu">
-                          <li><a href="javascript:;" class="deploy" env="192.168.8.190" br="<?php echo $value['br'];?>" rev="<?php echo $value['test_flag'];?>" repos="<?php echo $repos[$value['repos_id']]['repos_name'];?>" merge="<?php echo $repos[$value['repos_id']]['merge']?>" ids="<?php echo $value['id']?>">190（测试环境01）</a></li>
-                          <li><a href="javascript:;" class="deploy" env="192.168.8.192" br="<?php echo $value['br'];?>" rev="<?php echo $value['test_flag'];?>" repos="<?php echo $repos[$value['repos_id']]['repos_name'];?>" merge="<?php echo $repos[$value['repos_id']]['merge']?>" ids="<?php echo $value['id']?>">192（测试环境02）</a></li>
-                          <li><a href="javascript:;" class="deploy" env="192.168.8.193" br="<?php echo $value['br'];?>" rev="<?php echo $value['test_flag'];?>" repos="<?php echo $repos[$value['repos_id']]['repos_name'];?>" merge="<?php echo $repos[$value['repos_id']]['merge']?>" ids="<?php echo $value['id']?>">193（测试环境03）</a></li>
+                          <li><a href="javascript:;" class="deploy" env="192.168.8.190" br="<?php echo str_replace('branches/', '', $value['br']);?>" rev="<?php echo $value['test_flag'];?>" repos="<?php echo $repos[$value['repos_id']]['repos_name'];?>" merge="<?php echo $repos[$value['repos_id']]['merge']?>" ids="<?php echo $value['id']?>">190（测试环境01）</a></li>
+                          <li><a href="javascript:;" class="deploy" env="192.168.8.192" br="<?php echo str_replace('branches/', '', $value['br']);?>" rev="<?php echo $value['test_flag'];?>" repos="<?php echo $repos[$value['repos_id']]['repos_name'];?>" merge="<?php echo $repos[$value['repos_id']]['merge']?>" ids="<?php echo $value['id']?>">192（测试环境02）</a></li>
+                          <li><a href="javascript:;" class="deploy" env="192.168.8.193" br="<?php echo str_replace('branches/', '', $value['br']);?>" rev="<?php echo $value['test_flag'];?>" repos="<?php echo $repos[$value['repos_id']]['repos_name'];?>" merge="<?php echo $repos[$value['repos_id']]['merge']?>" ids="<?php echo $value['id']?>">193（测试环境03）</a></li>
                         </ul>
                       </div>
                     </div>
                     </div>
                     <?php }?>
                   </td>
-                  <td>
+                  <td width="150">
                     <?php if ($row['status'] == 1) {?>
                     <?php if ($value['tice'] < 1) {?>
                     <a class="btn btn-white btn-xs" href="/test/edit/<?php echo $row['id'];?>/<?php echo $value['id'];?>"><i class="fa fa-pencil"></i> 编辑</a>
@@ -1091,6 +1091,7 @@ $(function(){
     if(!$(obj).hasClass('open')) {
       $("#abc-"+id).show();
       $(obj).addClass('open');
+      $(obj+' input').select();
     } else {
       if (curr == env) {
         $("#abc-"+id).hide();
