@@ -39,9 +39,15 @@
                                 <button class="btn btn-sm btn-primary tooltips" type="button" title="如果BUG反馈无效，请说明理由" id="checkout" data-toggle="modal" data-target="#myModal2">无效反馈</button>
                             </div>
                             <?php }?>
-                            <?php if ($row['status'] == 1 && $row['state'] == 1) { ?>
+                            <?php if ($row['status'] == 1 && $row['state'] == 1 && ($row['add_user'] == $this->input->cookie('uids') || $row['accept_user'] == $this->input->cookie('uids'))) { ?>
                             <div class="btn-group mr10">
-                                <button class="btn btn-sm btn-primary" type="button" id="over" ids="<?php echo $row['id'];?>">已修复</button>
+                                <button class="btn btn-sm btn-primary" type="button" id="over" ids="<?php echo $row['id'];?>">已处理</button>
+                            </div>
+                            <?php } ?>
+
+                            <?php if ($row['state'] == 3 && $row['add_user'] == $this->input->cookie('uids')) { ?>
+                            <div class="btn-group mr10">
+                                <button class="btn btn-sm btn-primary" type="button" id="return" ids="<?php echo $row['id'];?>">通过回归</button>
                             </div>
                             <?php } ?>
 
@@ -102,7 +108,10 @@
                                 <span class="label label-warning">处理中</span>
                                 <?php } ?>
                                 <?php if ($row['state'] === '3') {?>
-                                <span class="label label-success">已处理</span>
+                                <span class="label label-info">已处理</span>
+                                <?php } ?>
+                                <?php if ($row['state'] === '5') {?>
+                                <span class="label label-success">通过回归</span>
                                 <?php } ?>
                               </h4>
                               <p><?php echo $row['content'];?></p>
@@ -120,7 +129,7 @@
                               <div class="face"><img alt="" src="/static/avatar/<?php echo $users[$value['add_user']]['username']?>.jpg" align="absmiddle" title="<?php echo $users[$value['add_user']]['realname'];?>"></div>
                             </div>
                             <div class="media-body">
-                              <span class="media-meta pull-right"><?php echo friendlydate($value['add_time']);?><?php if ($value['add_user'] == $this->input->cookie('uids')) {?><br /><a class="del" ids="<?php echo $value['id'];?>" href="javascript:;">删除</a><?php } ?></span>
+                              <span class="media-meta pull-right"><?php echo friendlydate($value['add_time']);?><?php if ($value['add_user'] == $this->input->cookie('uids') && (time() - $value['add_time']) < 3600) {?><br /><a class="del" ids="<?php echo $value['id'];?>" href="javascript:;">删除</a><?php } ?></span>
                               <h4 class="text-primary"><?php echo $users[$value['add_user']]['realname'];?></h4>
                               <small class="text-muted"><?php if ($row['add_user'] == $value['add_user']) { echo 'BUG反馈人'; } elseif ($row['accept_user'] == $value['add_user']) { echo 'BUG受理人'; } else { echo '路人甲'; } ?></small>
                               <div><?php echo html_entity_decode($value['content']);?></div>
@@ -319,6 +328,25 @@ $(function(){
         $.ajax({
           type: "GET",
           url: "/bug/over/"+id,
+          dataType: "JSON",
+          success: function(data){
+            if (data.status) {
+              tip(data.message, '/bug/view/'+id, 'success', 1000);
+            } else {
+              alert('fail');
+            } 
+          }
+        });
+      }
+  });
+
+  $("#return").click(function(){
+    var c = confirm('你确定要已经回归测试了此BUG吗？');
+      if(c) {
+        id = $(this).attr("ids");
+        $.ajax({
+          type: "GET",
+          url: "/bug/returnbug/"+id,
           dataType: "JSON",
           success: function(data){
             if (data.status) {

@@ -405,6 +405,39 @@ class bug extends CI_Controller {
         echo json_encode($callBack);
     }
 
+    public function returnbug() {
+        $bugId = $this->uri->segment(3, 0);
+        $this->load->model('Model_bug', 'bug', TRUE);
+        $this->load->model('Model_bugcomment', 'bugcomment', TRUE);
+        $flag = $this->bug->returnbug($bugId);
+        if ($flag) {
+            $post = array(
+                'bug_id' => $bugId,
+                'content' => '此BUG已经回归测试通过',
+                'add_user' => $this->input->cookie('uids'),
+                'add_time' => time(),
+            );
+            $feedback = $this->bugcomment->add($post);
+            if ($feedback['status']) {
+                $callBack = array(
+                    'status' => true,
+                    'message' => '操作成功'
+                );
+            } else {
+                $callBack = array(
+                    'status' => false,
+                    'message' => '操作失败'
+                );
+            }
+        } else {
+            $callBack = array(
+                'status' => false,
+                'message' => '操作失败'
+            );
+        }
+        echo json_encode($callBack);
+    }
+
     public function checkout() {
         $this->load->model('Model_bug', 'bug', TRUE);
         $this->load->model('Model_bugcomment', 'bugcomment', TRUE);

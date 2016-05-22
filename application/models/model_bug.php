@@ -29,7 +29,7 @@ class Model_bug extends CI_Model {
 
     public function listByIssueId($id) {
         $rows = array('total' => 0, 'data' => false);
-        $this->db->select('id, subject, state, level, add_user, add_time, accept_user, accept_time,status');
+        $this->db->select('id, subject, state, level, add_user, add_time, accept_user, accept_time, status');
         $this->db->where('issue_id', $id);
         $db = clone($this->db);
         $rows['total'] = $this->db->count_all_results($this->_table);
@@ -121,7 +121,11 @@ class Model_bug extends CI_Model {
     }
 
     public function over($id) {
-        return $this->db->update($this->_table, array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'state' => '3', 'status' => '0'), array('id' => $id));
+        return $this->db->update($this->_table, array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'state' => '3'), array('id' => $id));
+    }
+
+    public function returnbug($id) {
+        return $this->db->update($this->_table, array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'state' => '5', 'status' => '0'), array('id' => $id));
     }
 
     public function change_accept($id, $uid) {

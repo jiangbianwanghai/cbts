@@ -255,7 +255,7 @@
                     <?php }?>
                     <?php }?> 
                   </td>
-                  <td width="130"><span class="media-meta pull-right"><?php echo date("Y/m/d H:i", $value['add_time'])?></span></td>
+                  <td width="140"><span class="media-meta pull-right"><?php echo date("Y/m/d H:i", $value['add_time'])?></span></td>
                 </tr>
                 <tr id="abc-<?php echo $value['id'];?>" style="display:none;">
                   <td colspan="8" id="deploy-<?php echo $value['id'];?>" curr="0"><input type="text" class="form-control input-sm">
@@ -381,7 +381,10 @@
                       <span class="label label-primary">已确认</span>
                       <?php } ?>
                       <?php if ($value['state'] === '3') {?>
-                      <span class="label label-success">已处理</span>
+                      <span class="label label-info">已处理</span>
+                      <?php } ?>
+                      <?php if ($value['state'] === '5') {?>
+                      <span class="label label-success">通过回归</span>
                       <?php } ?>
                       <?php if ($value['state'] === '-1') {?>
                       <span class="label label-default">无效反馈</span>
