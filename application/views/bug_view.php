@@ -443,6 +443,32 @@ $(function(){
     minimumResultsForSearch: -1
   });
 
+  //图片等比例缩放
+  $('.media-body img').each(function() {  
+    $(this).css({"cursor":"pointer"});
+    var maxWidth =$(".media-body").width();
+    var maxHeight =1500;  
+    var ratio = 0; 
+    var width = $(this).width();  
+    var height = $(this).height();  
+    if(width > maxWidth){    
+      ratio = maxWidth / width;   
+      $(this).css("width", maxWidth);    
+      height = height * ratio;   
+      $(this).css("height", height);  
+    } 
+    if(height > maxHeight){    
+      ratio = maxHeight / height;  
+      $(this).css("height", maxHeight);  
+      width = width * ratio;   
+      $(this).css("width", width); 
+    }
+  });
+
+  $('.media-body img').click(function() {
+    window.open($(this).attr('src'));  
+  });
+
 });
 
 //消息提醒通用组建配置
