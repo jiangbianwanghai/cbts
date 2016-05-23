@@ -146,10 +146,13 @@
                               <div class="face"><img alt="" src="/static/avatar/<?php echo $users[$this->input->cookie('uids')]['username']?>.jpg" align="absmiddle" title="<?php echo $users[$this->input->cookie('uids')]['realname'];?>"></div>
                             </div>
                             <div class="media-body">
-                              <textarea id="content" name="content"></textarea>
-                              <div class="mb10"></div>
-                              <input type="hidden" value="<?php echo $row['id'];?>" id="bug_id" name="bug_id">
-                              <button class="btn btn-primary" id="btnSubmit">提交</button>
+                              <input type="text" class="form-control" id="post-commit" placeholder="我要发表评论">
+                              <div id="simditor" style="display:none;">
+                                <textarea id="content" name="content"></textarea>
+                                <div class="mb10"></div>
+                                <input type="hidden" value="<?php echo $row['id'];?>" id="bug_id" name="bug_id">
+                                <button class="btn btn-primary" id="btnSubmit">提交</button>
+                              </div>
                             </div>
                           </div>
                         </div><!-- read-panel -->
@@ -398,6 +401,11 @@ $(function(){
       }
     });
   });
+
+  $('#post-commit').click(function () {
+      $(this).hide();
+      $('#simditor').show();
+    });
 
   //返回上一页面
   $("#back").click(function(){
