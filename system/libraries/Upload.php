@@ -737,7 +737,13 @@ class CI_Upload {
 	public function get_extension($filename)
 	{
 		$x = explode('.', $filename);
-		return '.'.end($x);
+		//由于剪切板上粘贴过来的文件是没有扩展名的，默认使用png
+		if (count($x) > 1) {
+			$x = '.'.end($x);
+		} else {
+			$x = '.png';
+		}
+		return $x;
 	}
 
 	// --------------------------------------------------------------------
