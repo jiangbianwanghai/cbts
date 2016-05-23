@@ -145,7 +145,7 @@ function callBack(data) {
     });
     setTimeout(function(){
       location.href = data.url;
-    }, 2000);
+    }, 1000);
   } else {
     jQuery.gritter.add({
       title: '提醒',
@@ -202,6 +202,7 @@ jQuery(document).ready(function(){
     textarea : $('#content'),
     toolbar : toolbar,  //工具栏
     defaultImage : '/static/simditor-2.3.6/images/image.png', //编辑器插入图片时使用的默认图片
+    pasteImage: true,
     upload: {
         url: '/admin/upload',
         params: {'<?php echo $this->security->get_csrf_token_name();?>':'<?php echo $this->security->get_csrf_hash();?>'}, //键值对,指定文件上传接口的额外参数,上传的时候随文件一起提交  

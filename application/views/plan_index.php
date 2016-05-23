@@ -28,7 +28,7 @@
           <?php } ?>
         </div><!-- col-sm-3 -->
         <div class="col-sm-9 col-lg-10">
-          <div class="mb10" align="right"><a href="/issue/add?planId=<?php echo $currPlan['id'];?>" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> 添加任务</a></div>
+          <?php if ($planFolder) {?><div class="mb10" align="right"><a href="/issue/add?planId=<?php echo $currPlan['id'];?>" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> 添加任务</a></div><?php } ?>
           <?php if ($planId) {?>
           <div class="panel panel-default">
             <div class="panel-body">

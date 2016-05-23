@@ -222,6 +222,7 @@ jQuery(document).ready(function(){
     placeholder : '这里输入内容...',
     toolbar : toolbar,  //工具栏
     defaultImage : '/static/simditor-2.3.6/images/image.png', //编辑器插入图片时使用的默认图片
+    pasteImage: true,
     upload: {
         url: '/admin/upload',
         params: {'<?php echo $this->security->get_csrf_token_name();?>':'<?php echo $this->security->get_csrf_hash();?>'}, //键值对,指定文件上传接口的额外参数,上传的时候随文件一起提交  
