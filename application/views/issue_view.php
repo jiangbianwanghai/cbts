@@ -431,10 +431,13 @@
               <div class="face"><img alt="" src="/static/avatar/<?php echo $users[$this->input->cookie('uids')]['username']?>.jpg" align="absmiddle" title="<?php echo $users[$this->input->cookie('uids')]['realname'];?>"></div>
             </div>
             <div class="media-body">
-              <textarea id="content" name="content"></textarea>
-              <div class="mb10"></div>
-              <input type="hidden" value="<?php echo $row['id'];?>" id="issue_id" name="issue_id">
-              <button class="btn btn-primary" id="btnSubmit">提交</button>
+              <input type="text" class="form-control" id="post-commit" placeholder="我要发表评论">
+              <div id="simditor" style="display:none;">
+                <textarea id="content" name="content"></textarea>
+                <div class="mb10"></div>
+                <input type="hidden" value="<?php echo $row['id'];?>" id="issue_id" name="issue_id">
+                <button class="btn btn-primary" id="btnSubmit">提交</button>
+              </div>
             </div>
           </div>
         </div><!-- row -->  
@@ -558,6 +561,11 @@
   }
 
   $(document).ready(function(){
+
+    $('#post-commit').click(function () {
+      $(this).hide();
+      $('#simditor').show();
+    });
 
     $('#deadline').countdown('<?php echo date("Y-m-d H:i", $row['deadline']);?>', function(event) {
       $(this).html(event.strftime('%D days %H:%M:%S'));
