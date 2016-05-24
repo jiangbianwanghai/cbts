@@ -210,34 +210,6 @@ class test extends CI_Controller {
     }
 
     /**
-     *  我的任务列表
-     */
-    public function my() {
-        $data['PAGE_TITLE'] = '我的提测列表';
-        $this->config->load('extension', TRUE);
-        $config = $this->config->item('pages', 'extension');
-        $offset = trim($this->uri->segment(3, 0));
-        $this->load->model('Model_test', 'test', TRUE);
-        $rows = $this->test->my($offset, $config['per_page']);
-        $data['rows'] = $rows['data'];
-        if (file_exists('./cache/repos.conf.php')) {
-            require './cache/repos.conf.php';
-            $data['repos'] = $repos;
-        }
-        if (file_exists('./cache/users.conf.php')) {
-            require './cache/users.conf.php';
-            $data['users'] = $users;
-        }
-        $this->load->library('pagination');
-        $config['total_rows'] = $rows['total_rows'];
-        $config['cur_page'] = $offset;
-        $config['base_url'] = '/test/my';
-        $this->pagination->initialize($config);
-        $data['pages'] = $this->pagination->create_links();
-        $this->load->view('test_my', $data);
-    }
-
-    /**
      * 任务删除
      */
     public function del() {
@@ -343,61 +315,6 @@ class test extends CI_Controller {
     }
 
     /**
-     * 提测广场列表
-     */
-    public function plaza() {
-        $data['PAGE_TITLE'] = '提测广场列表';
-
-        $this->config->load('extension', TRUE);
-        $config = $this->config->item('pages', 'extension');
-
-        //页码
-        $offset = $this->uri->segment(7, 0);
-
-        //阶段
-        $rank = $this->uri->segment(3, 'dev');
-
-        //任务状态
-        $state = $this->uri->segment(4, 'wait');
-
-        //申请角色
-        $add_user = $this->uri->segment(5, 'all');
-
-        //受理角色
-        $accept_user = $this->uri->segment(6, 'all');
-
-        //读取数据
-        $this->load->model('Model_test', 'test', TRUE);
-
-        $rows = $this->test->plaza($add_user, $accept_user, $rank, $state, $offset, $config['per_page']);
-        $data['rows'] = $rows['data'];
-        $data['total_rows'] = $rows['total_rows'];
-
-        if (file_exists('./cache/repos.conf.php')) {
-            require './cache/repos.conf.php';
-            $data['repos'] = $repos;
-        }
-        if (file_exists('./cache/users.conf.php')) {
-            require './cache/users.conf.php';
-            $data['users'] = $users;
-        }
-        $this->load->library('pagination');
-        $config['total_rows'] = $rows['total_rows'];
-        $config['cur_page'] = $offset;
-        $config['base_url'] = '/test/plaza/'.$rank.'/'.$state.'/'.$add_user.'/'.$accept_user;
-        $this->pagination->initialize($config);
-        $data['pages'] = $this->pagination->create_links();
-
-        $data['offset'] = $offset;
-        $data['rank'] = $rank;
-        $data['state'] = $state;
-        $data['add_user'] = $add_user;
-        $data['accept_user'] = $accept_user;
-
-        $this->load->view('test_plaza', $data);
-    }
-
-    /**
      * 某个版本库的提测列表
      */
     public function repos() {
@@ -428,98 +345,6 @@ class test extends CI_Controller {
         $data['pages'] = $this->pagination->create_links();
 
         $this->load->view('test_repos', $data);
-    }
-
-    /**
-     * 我的待测
-     */
-    public function todo() {
-        $data['PAGE_TITLE'] = '我的待测';
-        $this->config->load('extension', TRUE);
-        $config = $this->config->item('pages', 'extension');
-        $offset = trim($this->uri->segment(3, 0));
-        $this->load->model('Model_test', 'test', TRUE);
-        $rows = $this->test->todo($offset, $config['per_page']);
-        $data['rows'] = $rows['data'];
-        if (file_exists('./cache/repos.conf.php')) {
-            require './cache/repos.conf.php';
-            $data['repos'] = $repos;
-        }
-        if (file_exists('./cache/users.conf.php')) {
-            require './cache/users.conf.php';
-            $data['users'] = $users;
-        }
-        $this->load->library('pagination');
-        $config['total_rows'] = $rows['total_rows'];
-        $config['cur_page'] = $offset;
-        $config['base_url'] = '/test/todo';
-        $this->pagination->initialize($config);
-        $data['pages'] = $this->pagination->create_links();
-        $this->load->view('test_todo', $data);
-    }
-
-    /**
-     * 分析
-     */
-    public function analytics() {
-
-        $data = array(
-            'PAGE_TITLE' => '', //页面标题
-            'users' => array(), //用户缓存文件
-            'repos' => array(), //代码库缓存文件
-            'rankByUsers' => array(), //提测量人员排行
-            'rankByUsersTotalNum' => 0, //提测量人员排行总记录数
-            'rankByRepos' => array(), //提测量代码库排行
-            'rankByReposTotalNum' => 0, //提测量代码库排行总记录数
-            'day' => 0 //筛选天数
-        );
-
-        $leftTime = $data['leftTime'] = strtotime(date("Y-m-d", time()));
-        $rightTime = $data['rightTime'] = strtotime(date("Y-m-d", strtotime("+1 day")));
-
-        $picker = $this->input->get('picker', TRUE);
-        if ($picker) {
-            $pickerArr = explode(' - ', $picker);
-            if (count($pickerArr) == 2) {
-                $leftTime = strtotime($pickerArr[0]);
-                $rightTime = strtotime($pickerArr[1]);
-                $data['day'] = round(($rightTime - $leftTime)/86400)-1;
-                $data['leftTime'] = $leftTime;
-                $data['rightTime'] = $rightTime;
-            }
-        }
-        
-        $data['PAGE_TITLE'] = '测试统计';
-
-        if (file_exists('./cache/users.conf.php')) {
-            require './cache/users.conf.php';
-            $data['users'] = $users;
-        }
-
-        if (file_exists('./cache/repos.conf.php')) {
-            require './cache/repos.conf.php';
-            $data['repos'] = $repos;
-        }
-
-        $this->load->model('Model_test', 'test', TRUE);
-
-        //提测量人员排行总记录数
-        $data['rankByUsers'] = $this->test->rankByUsers($leftTime, $rightTime);
-        if ($data['rankByUsers']) {
-            foreach ($data['rankByUsers'] as $key => $value) {
-                $data['rankByUsersTotalNum'] += $value['num'];
-            }
-        }
-
-        //统计代码库提测量排行
-        $data['rankByRepos'] = $this->test->rankByRepos($leftTime, $rightTime);
-        if ($data['rankByRepos']) {
-            foreach ($data['rankByRepos'] as $key => $value) {
-                $data['rankByReposTotalNum'] += $value['num'];
-            }
-        }
-
-        $this->load->view('test_analytics', $data);
     }
 
     /**

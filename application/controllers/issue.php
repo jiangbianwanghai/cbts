@@ -383,112 +383,7 @@ class issue extends CI_Controller {
         $this->load->view('issue_view', $data);
     }
 
-    /**
-     * 我的任务列表
-     */
-    public function my() {
-        $data['PAGE_TITLE'] = '我的任务列表';
-        $this->config->load('extension', TRUE);
-        $config = $this->config->item('pages', 'extension');
-        $offset = trim($this->uri->segment(3, 0));
-        $this->load->model('Model_issue', 'issue', TRUE);
-        $rows = $this->issue->my($offset, $config['per_page']);
-        $data['rows'] = $rows['data'];
-        if (file_exists('./cache/users.conf.php')) {
-            require './cache/users.conf.php';
-            $data['users'] = $users;
-        }
-        $this->load->library('pagination');
-        $config['total_rows'] = $rows['total_rows'];
-        $config['cur_page'] = $offset;
-        $config['base_url'] = '/issue/my';
-        $this->pagination->initialize($config);
-        $data['pages'] = $this->pagination->create_links();
-        $this->load->view('issue_my', $data);
-    }
-
-    /**
-     * 我的受理列表
-     */
-    public function todo() {
-        $data['PAGE_TITLE'] = '我的受理列表';
-        $this->config->load('extension', TRUE);
-        $config = $this->config->item('pages', 'extension');
-        $offset = trim($this->uri->segment(3, 0));
-        $this->load->model('Model_issue', 'issue', TRUE);
-        $rows = $this->issue->todo($offset, $config['per_page']);
-        $data['rows'] = $rows['data'];
-        if (file_exists('./cache/users.conf.php')) {
-            require './cache/users.conf.php';
-            $data['users'] = $users;
-        }
-        $this->load->library('pagination');
-        $config['total_rows'] = $rows['total_rows'];
-        $config['cur_page'] = $offset;
-        $config['base_url'] = '/issue/todo';
-        $this->pagination->initialize($config);
-        $data['pages'] = $this->pagination->create_links();
-        $this->load->view('issue_todo', $data);
-    }
-
-    /**
-     * 任务广场列表
-     */
-    public function plaza() {
-        $data['PAGE_TITLE'] = '任务广场列表';
-
-        $this->load->helper(array('friendlydate','countdown'));
-
-        $this->config->load('extension', TRUE);
-        $config = $this->config->item('pages', 'extension');
-
-        //页码
-        $offset = $this->uri->segment(8, 0);
-
-        //处理进度
-        $resolve = $this->uri->segment(3, 'able');
-
-        //任务状态
-        $status = $this->uri->segment(4, 'able');
-
-        //申请角色
-        $add_user = $this->uri->segment(5, 'all');
-
-        //受理角色
-        $accept_user = $this->uri->segment(6, 'all');
-
-        //任务类型
-        $issueType = $this->uri->segment(7, 'all');
-        
-        //读取数据
-        $this->load->model('Model_issue', 'issue', TRUE);
-
-        $rows = $this->issue->plaza($add_user, $accept_user, $status, $resolve, $issueType, $offset, $config['per_page']);
-        $data['rows'] = $rows['data'];
-        $data['total_rows'] = $rows['total_rows'];
-
-
-        if (file_exists('./cache/users.conf.php')) {
-            require './cache/users.conf.php';
-            $data['users'] = $users;
-        }
-        $this->load->library('pagination');
-        $config['total_rows'] = $rows['total_rows'];
-        $config['cur_page'] = $offset;
-        $config['base_url'] = '/issue/plaza/'.$resolve.'/'.$status.'/'.$add_user.'/'.$accept_user.'/'.$issueType;
-        $this->pagination->initialize($config);
-        $data['pages'] = $this->pagination->create_links();
-
-        $data['offset'] = $offset;
-        $data['resolve'] = $resolve;
-        $data['status'] = $status;
-        $data['issueType'] = $issueType;
-        $data['add_user'] = $add_user;
-        $data['accept_user'] = $accept_user;
-
-        $this->load->view('issue_plaza', $data);
-    }
-
+   
     /**
      * 任务删除
      */
@@ -782,30 +677,6 @@ class issue extends CI_Controller {
         echo json_encode($callBack);
     }
 
-
-    /**
-     * 分析
-     */
-    public function analytics() {
-        $data['PAGE_TITLE'] = '任务统计';
-
-        $leftTime = $data['leftTime'] = strtotime(date("Y-m-d", time()));
-        $rightTime = $data['rightTime'] = strtotime(date("Y-m-d", strtotime("+1 day")));
-        
-        //按天统计任务统计量（未解决，已经解决）
-        $this->load->model('Model_issue', 'issue', TRUE);
-        $stacked = $this->issue->stacked(0, $leftTime, $rightTime);
-        if ($stacked) {
-            $stacked_str = "[";
-            foreach ($stacked as $key => $value) {
-                $stacked_str .= "{ y: '".$value['perday']."', a: ".$value['close'].", b: ".$value['able']." },";
-            }
-            $stacked_str .= "]";
-        }
-        $data['stacked'] = $stacked_str;
-        $this->load->view('issue_analytics', $data);
-    }
-
     /**
      * 更改受理人
      */
@@ -1092,30 +963,5 @@ class issue extends CI_Controller {
         }
         echo json_encode($callBack);
 
-    }
-
-    private function rtx($toList,$url,$subject)
-    {
-        $subject = str_replace(array('#', '&', ' '), '', $subject);
-        $pushInfo = array(
-            'to' => $toList,
-            'title' => 'CBTS提醒你：',     
-            'msg' => $subject . $url,
-            'delaytime' => '',                                                                                                                                                               
-        );
-        $receiver        = iconv("utf-8","gbk//IGNORE", $pushInfo['to']);
-        $this->config->load('extension', TRUE);
-        $rtx = $this->config->item('rtx', 'extension');
-        $url = $rtx['url'].'/sendtortx.php?receiver=' . $receiver . '&notifytitle=' .$pushInfo['title']. '&notifymsg=' . $pushInfo['msg'] . '&delaytime=' . $pushInfo['delaytime'];           
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt ($curl, CURLOPT_TIMEOUT, 60);
-        curl_setopt($curl, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.9.2.8) Gecko/20100722 Firefox/3.6.8");
-        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, TRUE);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        $str = curl_exec($curl);
-        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
     }
 }
