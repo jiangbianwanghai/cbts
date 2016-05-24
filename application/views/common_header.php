@@ -25,8 +25,7 @@
 </head>
 
 <body class="leftpanel-collapsed">
-  <div style="display:none;"><script language="javascript" type="text/javascript" src="http://js.users.51.la/18869959.js"></script></div>
-
+  <?php if ($_SERVER['SERVER_ADDR'] == '192.168.8.91') { ?><div style="display:none;"><script language="javascript" type="text/javascript" src="http://js.users.51.la/18869959.js"></script></div><?php } ?>
 <section>
 
   <div class="leftpanel">
