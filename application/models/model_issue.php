@@ -463,4 +463,43 @@ class Model_issue extends CI_Model {
         $num = $query->num_rows();
         return $num;
     }
+
+    /**
+     * 查询
+     * @param string $where 查询条件。$where = array(array('sKey' => 'id', 'sValue' => '12,23'),array('sKey' => 'status', 'sValue' => '1'));
+     * @param string $field 查询的字段。$field = 'id, workflow';
+     *
+     * @return fix
+     */
+    public function search($where, $field = false) {
+
+        //查询字段
+        if ($field)
+            $this->db->select($field);
+        else
+            $this->db->select('*');
+
+        //查询条件
+        foreach ($where as $key => $value) {
+            if (strpos($value['sValue'], ',')) {
+                $val = explode(',', $value['sValue']);
+                $this->db->where_in($value['sKey'], $val);
+            } else {
+                $this->db->where($value['sKey'], $value['sValue']);
+            }
+        }
+        $query = $this->db->get($this->_table);
+        return $query->result_array();
+    }
+
+    /**
+     * 更新
+     * @param string $set 设置数组。$set = array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'status' => '0');
+     * @param string $where 查询条件。$where = array('id' => $id);
+     *
+     * @return fix
+     */
+    public function change($set, $where) {
+        return $this->db->update($this->_table, $set, $where);
+    }
 }

@@ -1,4 +1,5 @@
 application/config/extension.php
+application/logs/*
 cache
 static/avatar/*.*
 *DS_Store

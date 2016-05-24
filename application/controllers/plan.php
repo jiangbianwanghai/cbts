@@ -311,4 +311,45 @@ class plan extends CI_Controller {
             $callBack = array('status' => false, 'error' => '操作失败', 'code' => 3001);
         echo json_encode($callBack);
     }
+
+    /**
+     * 在计划间移动任务。（只有未开发的任务可以移动）
+     */
+    public function move_issue() {
+
+        //验证传入参数是否合法
+        $this->load->library('form_validation');
+        if ($this->form_validation->run() == FALSE)
+            exit(json_encode(array('status' => false, 'error' => validation_errors(), 'code' => 3001)));
+
+        //获取传入参数
+        $planId = $this->input->post('planId');
+        $issueId = $this->input->post('issueId');
+
+        //验证传入的任务ID是否符合移动的条件
+        $this->load->model('Model_issue', 'issue', TRUE);
+        $filter = array(
+            array('sKey' => 'id', 'sValue' => $issueId),
+            array('sKey' => 'status', 'sValue' => '1')
+        );
+        $rows = $this->issue->search($filter, 'id, workflow', true);
+        $fitId = array();
+        if ($rows) {
+            foreach ($rows as $key => $value) {
+                if ($value['workflow'] == 0)
+                    $fitId[] = $value['id'];
+            }
+        }
+
+        //得到符合条件的Id
+        if ($fitId) {
+            foreach ($fitId as $key => $value) {
+                $this->issue->change(array('plan_id' => $planId, 'last_user' => $this->input->cookie('uids'), 'last_time' => time()), array('id' => $value));
+            }
+            exit(json_encode(array('status' => true, 'message' => count($fitId).'个任务被成功移动')));
+        } else {
+            exit(json_encode(array('status' => false, 'error' => '没有符合条件的任务被移动', 'code' => 3001)));
+        }
+        
+    }
 }

@@ -85,6 +85,18 @@ $config = array(
             'label'   => '密码', 
             'rules'   => 'trim|required|min_length[6]|xss_clean'
         )
+    ),
+    'plan/move_issue' => array(
+        array(
+            'field'   => 'planId', 
+            'label'   => '计划ID', 
+            'rules'   => 'trim|required|is_natural_no_zero|xss_clean'
+        ),
+        array(
+            'field'   => 'issueId', 
+            'label'   => '任务ID', 
+            'rules'   => 'trim|required|regex_match[/^\d+(,\d+)*$/]|xss_clean'
+        ),
     )
 );
 
