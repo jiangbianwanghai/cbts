@@ -35,13 +35,13 @@
               <div class="pull-right">
                 <div class="btn-group move" style="display:none">
                   <div class="btn-group nomargin">
-                    <button data-toggle="dropdown" class="btn btn-sm btn-info dropdown-toggle" type="button" style="text-transform:uppercase;">
+                    <button data-toggle="dropdown" class="btn btn-sm btn-info dropdown-toggle tooltips" title="只有新建的任务才可以移动" type="button" style="text-transform:uppercase;">
                       把选中的任务移动到 <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" role="menu">
                       <?php foreach ($planFolder as $key => $value) {?>
                       <?php if ($value['id'] != $planId) {?>
-                      <li><a href="javascript:;"><?php echo $value['plan_name'];?></a></li>
+                      <li><a href="javascript:;" class="move-issue" data-planid="<?php echo $value['id']; ?>"><?php echo $value['plan_name'];?></a></li>
                       <?php } ?>
                       <?php } ?>
                     </ul>
@@ -513,13 +513,51 @@ jQuery(document).ready(function(){
   });
 
   $(".chk").change(function() {
-    //alert($(this).is(':checked'));
     var num = $(":input[name=itemchk]:checked").length;
     if (num) {
       $(".move").show();
     } else {
       $(".move").hide();
     }
+  });
+
+  //移动任务
+  $(".move-issue").click(function() {
+    var planId = $(this).attr('data-planid');
+    var chk_value = [];
+    $('input[name="itemchk"]:checked').each(function() {
+      chk_value.push($(this).val());
+    });
+    $.ajax({
+      type: "POST",
+      url: "/plan/move_issue",
+      data: "planId="+planId+"&issueId="+chk_value+"&<?php echo $this->security->get_csrf_token_name();?>=<?php echo $this->security->get_csrf_hash();?>",
+      dataType: "JSON",
+      success: function(data){
+        if (data.status) {
+          jQuery.gritter.add({
+            title: '提醒',
+            text: data.message,
+              class_name: 'growl-success',
+              image: '/static/images/screen.png',
+            sticky: false,
+            time: ''
+          });
+          setTimeout(function(){
+            location.href = '/plan?planId='+planId;
+          }, 1000);
+        } else {
+          jQuery.gritter.add({
+            title: '提醒',
+            text: data.error,
+              class_name: 'growl-danger',
+              image: '/static/images/screen.png',
+            sticky: false,
+            time: ''
+          });
+        }
+      }
+    });
   });
   
 });

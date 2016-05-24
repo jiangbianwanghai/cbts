@@ -132,30 +132,6 @@ class Model_issue extends CI_Model {
     /**
      * 我的任务列表
      */
-    public function my($offset = 0, $per_page = 20) {
-        $rows = array(
-            'total_rows' => 0,
-            'data' => false
-        );
-
-        //获取总数
-        $sql = "SELECT * FROM `choc_issue` WHERE `add_user` = '".$this->input->cookie('uids')."' AND `status` = '1'";
-        $query = $this->db->query($sql);
-        $rows['total_rows'] = $query->num_rows;
-
-        //获取翻页数据
-        $sql = "SELECT * FROM `choc_issue` WHERE `add_user` = '".$this->input->cookie('uids')."' AND `status` = '1' ORDER BY `id` DESC LIMIT ".$offset .", ".$per_page."";
-        $query = $this->db->query($sql);
-        foreach ($query->result_array() as $row)
-        {
-            $rows['data'][] = $row;
-        }
-        return $rows;
-    }
-
-    /**
-     * 我的任务列表
-     */
     public function profile($id, $role, $leftTime, $rightTime, $offset = 0, $per_page = 20) {
         $rows = array(
             'total_rows' => 0,
@@ -189,68 +165,6 @@ class Model_issue extends CI_Model {
     }
 
     /**
-     * 我的受理列表
-     */
-    public function todo($offset = 0, $per_page = 20) {
-        $rows = array(
-            'total_rows' => 0,
-            'data' => false
-        );
-
-        //获取总数
-        $sql = "SELECT * FROM `choc_issue` WHERE `accept_user` = '".$this->input->cookie('uids')."' AND `status` = '1'";
-        $query = $this->db->query($sql);
-        $rows['total_rows'] = $query->num_rows;
-
-        //获取翻页数据
-        $sql = "SELECT * FROM `choc_issue` WHERE `accept_user` = '".$this->input->cookie('uids')."' AND `status` = '1' ORDER BY `id` DESC LIMIT ".$offset .", ".$per_page."";
-        $query = $this->db->query($sql);
-        foreach ($query->result_array() as $row)
-        {
-            $rows['data'][] = $row;
-        }
-        return $rows;
-    }
-
-    /**
-     * 任务广场列表
-     */
-    public function plaza($add_user, $accept_user, $status, $resolve, $issueType, $offset = 0, $per_page = 20) {
-        $rows = array(
-            'total_rows' => 0,
-            'data' => false
-        );
-
-        $addUserStr = $acceptUserStr = $issueTypeStr = "";
-
-        if ($add_user == 'my') {
-            $addUserStr = "`add_user` = '".$this->input->cookie('uids')."' AND ";
-        }
-        if ($accept_user == 'my') {
-            $acceptUserStr = "`accept_user` = '".$this->input->cookie('uids')."' AND ";
-        }
-
-        if ($issueType == 'bug' || $issueType == 'task') {
-            $array = array('task' => 1, 'bug' => 2);
-            $issueTypeStr = "`type` = '".$array[$issueType]."' AND ";
-        }
-
-        //获取总数
-        $sql = "SELECT * FROM `choc_issue` WHERE ".$addUserStr.$acceptUserStr.$issueTypeStr."`status` = '".$this->statusArr[$status]."' AND `resolve` = '".$this->resolveArr[$resolve]."'";
-        $query = $this->db->query($sql);
-        $rows['total_rows'] = $query->num_rows;
-
-        //获取翻页数据
-        $sql = "SELECT * FROM `choc_issue` WHERE ".$addUserStr.$acceptUserStr.$issueTypeStr."`status` = '".$this->statusArr[$status]."' AND `resolve` = '".$this->resolveArr[$resolve]."' ORDER BY `id` DESC LIMIT ".$offset .", ".$per_page."";
-        $query = $this->db->query($sql);
-        foreach ($query->result_array() as $row)
-        {
-            $rows['data'][] = $row;
-        }
-        return $rows;
-    }
-
-    /**
      * 受理
      */
     public function accept($id) {
@@ -275,71 +189,6 @@ class Model_issue extends CI_Model {
             }
         }
         return false;
-    }
-
-    public function stacked($userId = 0, $leftTime, $rightTime) {
-        $rows = false;
-        $where = 'WHERE `status` >=0';
-        if ($userId) {
-            $where .= " AND `add_user` = '".$userId."' AND `add_time` >= '".$leftTime."' AND `add_time` < '".$rightTime."'";
-        }
-        //正常状态的
-        $sql = "SELECT FROM_UNIXTIME(`add_time`,'%Y-%m-%d') AS `perday`, SUM(`status` = 1)  AS `count` FROM `choc_issue` ".$where." GROUP BY FROM_UNIXTIME(`add_time`,'%Y-%m-%d')";
-        $query = $this->db->query($sql);
-        $row1 = $query->result_array();
-        //关闭状态
-        $sql = "SELECT FROM_UNIXTIME(`add_time`,'%Y-%m-%d') AS `perday`, SUM(`status` = 0)  AS `count` FROM `choc_issue` ".$where." GROUP BY FROM_UNIXTIME(`add_time`,'%Y-%m-%d')";
-        $query = $this->db->query($sql);
-        $row2 = $query->result_array();
-        foreach ($row1 as $key=>$value)
-        {
-            $rows[$key]['perday'] = $value['perday'];
-            $rows[$key]['able'] = $value['count'];
-            $rows[$key]['close'] = $row2[$key]['count'];
-        }
-        return $rows;
-    }
-
-    public function stackedByQa($userId = 0, $leftTime, $rightTime) {
-        $rows = false;
-        $where = 'WHERE `status` >=0';
-        if ($userId) {
-            $where .= " AND `accept_user` = '".$userId."' AND `accept_time` >= '".$leftTime."' AND `accept_time` < '".$rightTime."'";
-        }
-        //正常状态的
-        $sql = "SELECT FROM_UNIXTIME(`accept_time`,'%Y-%m-%d') AS `perday`, SUM(`status` = 1)  AS `count` FROM `choc_issue` ".$where." GROUP BY FROM_UNIXTIME(`accept_time`,'%Y-%m-%d')";
-        $query = $this->db->query($sql);
-        $row1 = $query->result_array();
-        //关闭状态
-        $sql = "SELECT FROM_UNIXTIME(`accept_time`,'%Y-%m-%d') AS `perday`, SUM(`status` = 0)  AS `count` FROM `choc_issue` ".$where." GROUP BY FROM_UNIXTIME(`accept_time`,'%Y-%m-%d')";
-        $query = $this->db->query($sql);
-        $row2 = $query->result_array();
-        foreach ($row1 as $key=>$value)
-        {
-            $rows[$key]['perday'] = $value['perday'];
-            $rows[$key]['able'] = $value['count'];
-            $rows[$key]['close'] = $row2[$key]['count'];
-        }
-        return $rows;
-    }
-
-    public function topUser() {
-        $sql = "SELECT COUNT(1) AS `num`, `add_user` FROM `choc_issue` WHERE `status` >=0 GROUP BY `add_user` ORDER BY `num` DESC LIMIT 5";
-        $query = $this->db->query($sql);
-        return $query->result_array();
-    }
-
-    public function tongji($uid) {
-        $array = array('taskNumByme' => 0);
-        //统计他在3月份创建了多少任务
-        $sql = "SELECT count(1) as total FROM `choc_issue` WHERE `add_time` >= '1456761600' AND `add_time` < '1459440000' AND `add_user`='".$uid."' AND 'status' >= 0";
-        $query = $this->db->query($sql);
-        if ($query->num_rows()) {
-            $row = $query->row_array();
-            $array['taskNumByme'] = $row['total'];
-        }
-        //
-        return $array;
     }
 
     public function listByPlan($planId, $projectId, $flow = '-1', $taskType, $limit = 20, $offset = 0) {
@@ -613,5 +462,44 @@ class Model_issue extends CI_Model {
         $query = $this->db->get($this->_table);
         $num = $query->num_rows();
         return $num;
+    }
+
+    /**
+     * 查询
+     * @param string $where 查询条件。$where = array(array('sKey' => 'id', 'sValue' => '12,23'),array('sKey' => 'status', 'sValue' => '1'));
+     * @param string $field 查询的字段。$field = 'id, workflow';
+     *
+     * @return fix
+     */
+    public function search($where, $field = false) {
+
+        //查询字段
+        if ($field)
+            $this->db->select($field);
+        else
+            $this->db->select('*');
+
+        //查询条件
+        foreach ($where as $key => $value) {
+            if (strpos($value['sValue'], ',')) {
+                $val = explode(',', $value['sValue']);
+                $this->db->where_in($value['sKey'], $val);
+            } else {
+                $this->db->where($value['sKey'], $value['sValue']);
+            }
+        }
+        $query = $this->db->get($this->_table);
+        return $query->result_array();
+    }
+
+    /**
+     * 更新
+     * @param string $set 设置数组。$set = array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'status' => '0');
+     * @param string $where 查询条件。$where = array('id' => $id);
+     *
+     * @return fix
+     */
+    public function change($set, $where) {
+        return $this->db->update($this->_table, $set, $where);
     }
 }
