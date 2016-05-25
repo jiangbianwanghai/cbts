@@ -38,8 +38,10 @@
                 <a href="javascript:;" id="watch" issueid="<?php echo $row['id']; ?>" class="btn btn-sm btn-white"><i class="glyphicon glyphicon-eye-open"></i> 关注(<?php echo count($row['watch']); ?>)</a>
                 <a href="javascript:;" id="unwatch" style="display: none;" issueid="<?php echo $row['id']; ?>" class="btn btn-sm btn-white"><i class="glyphicon glyphicon-eye-open"></i> 已关注(<?php echo (count($row['watch']) + 1); ?>)</a>
                 <?php } ?>
+                <?php if ($row['status'] == 1) { ?>
                 <a href="/issue/edit/<?php echo $row['id'];?>" class="btn btn-sm btn-white"><i class="fa fa-pencil mr5"></i> 编辑</a>
                 <a href="javascript:;" id="del" reposid="<?php echo $row['id'];?>" class="btn btn-sm btn-white"><i class="fa fa-trash-o mr5"></i> 删除</a>
+                <?php } ?>
             </div>
           </div>
           <h5 class="bug-key-title"><?php if ($row['type'] == 2) {?><i class="fa fa-bug tooltips" data-toggle="tooltip" title="BUG"></i><?php } ?><?php if ($row['type'] == 1) {?><i class="fa fa-magic tooltips" data-toggle="tooltip" title="TASK"></i><?php } ?> ISSUE-<?php echo $row['id'];?></h5>
@@ -543,11 +545,11 @@
               });
               setTimeout(function(){
                 location.href = data.url;
-              }, 2000);
+              }, 1000);
             } else {
               jQuery.gritter.add({
                 title: '提醒',
-                text: data.message,
+                text: data.error,
                   class_name: 'growl-danger',
                   image: '/static/images/screen.png',
                 sticky: false,
