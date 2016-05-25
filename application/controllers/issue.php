@@ -388,53 +388,31 @@ class issue extends CI_Controller {
      * 任务删除
      */
     public function del() {
+
+        //获取传入的参数
         $id = $this->uri->segment(3, 0);
+
+        //验证传入参数的合法性（利用了验证表单类库中的方法）
+        $this->load->library('form_validation');
+        if ($this->form_validation->is_natural_no_zero($id) == FALSE)
+            exit(json_encode(array('status' => false, 'error' => '参数格式不正确', 'code' => 3001)));
+
+        //验证数据是否存在
         $this->load->model('Model_issue', 'issue', TRUE);
+        $row = $this->issue->fetchOne($id);
+        if (!$row)
+            exit(json_encode(array('status' => false, 'error' => '数据不存在', 'code' => 3001)));
 
-        //已经解决的任务自动归档不能删除了
-        $resolve = $this->issue->checkResolve($id);
-        if ($resolve) {
-            $callBack = array(
-                'status' => false,
-                'message' => '已经解决的任务自动归档不能删除了',
-                'url' => '/issue/my'
-            );
-            echo json_encode($callBack);
-            exit(); 
-        }
+        //验证是否有权限删除，只有创建人才可以删除
+        if ($row['add_user'] != $this->input->cookie('uids'))
+            exit(json_encode(array('status' => false, 'error' => '只有创建人才有权限删除', 'code' => 3001)));
 
-        //已经受理并且受理人不是自己是没有办法删除的
-        $accpetUser = $this->issue->checkAccept($id);
-        if (!empty($accpetUser) && $accpetUser != $this->input->cookie('uids')) {
-            $callBack = array(
-                'status' => false,
-                'message' => '已经被别人受理了，你不能删除~',
-                'url' => '/issue/my'
-            );
-            echo json_encode($callBack);
-            exit(); 
-        }
-
-        //任务删除后相关的提测信息也需要删除
-        $issue_flag = $this->issue->del($id);
-        $callBack['url'] = '/issue/view/'.$id;
-        if ($issue_flag) {
-            $callBack['message'] = '任务删除成功';
-            //删除相关的提测任务
-            $this->load->model('Model_test', 'test', TRUE);
-            $test_flag = $this->test->delByIssueID($id);
-            if ($test_flag) {
-                $callBack['status'] = true;
-                $callBack['message'] .= '，相关提测也已经删除成功';
-            } else {
-                $callBack['status'] = false;
-                $callBack['message'] .= '，相关提测删除失败';
-            }
-        } else {
-            $callBack['status'] = false;
-            $callBack['message'] = '任务删除失败';
-        }
-        echo json_encode($callBack);
+        //执行删除（更改状态，标记删除）
+        $flag = $this->issue->change(array('last_time' => time(), 'last_user' => $this->input->cookie('uids'), 'status' => '-1'),  array('id' => $id));
+        if ($flag)
+            exit(json_encode(array('status' => true, 'message' => '操作成功', 'url' => '/issue/view/'.$id)));
+        else
+            exit(json_encode(array('status' => false, 'error' => '操作成功', 'code' => 3001)));
     }
 
     /**
