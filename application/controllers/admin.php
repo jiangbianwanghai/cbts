@@ -329,4 +329,18 @@ class admin extends CI_Controller {
             echo json_encode($array);
         }
     }
+
+    public function test() {
+        $this->load->library('curl');
+        $Post_data = array();
+        $Post_data['sender'] = 1;
+        $Post_data['action'] = '创建了一个任务';
+        $Post_data['target_type'] = 2;
+        $Post_data['target'] = 999;
+        $Post_data['type'] = 1;
+        $res = $this->curl->post('http://api.cits.org.cn/handle/write', $Post_data);
+        print_r($res);
+        $output = json_decode($res['output'], true);
+        print_r($output);
+    }
 }

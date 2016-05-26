@@ -261,6 +261,7 @@ class issue extends CI_Controller {
             $this->load->model('Model_accept', 'accept', TRUE);
             $this->accept->add(array('accept_user' => $this->input->cookie('uids'), 'accept_time' => time(), 'issue_id' => $feedback['id'], 'flow' => 1));
             $this->accept->add(array('accept_user' => $this->input->post('accept_user'), 'accept_time' => time(), 'issue_id' => $feedback['id'], 'flow' => 2));
+
             $callBack = array(
                 'status' => true,
                 'message' => '提交成功',
