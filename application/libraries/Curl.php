@@ -29,16 +29,44 @@ class Curl
         	'output' => false, //请求返回的内容
         	'httpcode' => 0 //请求反馈的状态码
         );
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_HEADER, 0);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_USERAGENT, $this->agent());
-        curl_setopt($curl, CURLOPT_HTTPHEADER , $this->header());
-        curl_setopt($curl, CURLOPT_TIMEOUT, $this->_timeout);
-        $data['output'] = curl_exec($curl);
-        $data['httpcode'] = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_USERAGENT, $this->agent());
+        curl_setopt($ch, CURLOPT_HTTPHEADER , $this->header());
+        curl_setopt($ch, CURLOPT_TIMEOUT, $this->_timeout);
+        $data['output'] = curl_exec($ch);
+        $data['httpcode'] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $data['total_time'] = curl_getinfo($ch, CURLINFO_TOTAL_TIME);
+        curl_close($ch);
+        return $data;
+    }
+
+    /**
+     * 以get方式获取要请求url的内容及状态码
+     * @param  string $url  要请求的url
+     * @return string | false
+     */
+    public function post($url, $post_data)
+    {
+        $data = array(
+            'output' => false, //请求返回的内容
+            'httpcode' => 0 //请求反馈的状态码
+        );
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_USERAGENT, $this->agent());
+        curl_setopt($ch, CURLOPT_HTTPHEADER , $this->header());
+        curl_setopt($ch, CURLOPT_TIMEOUT, $this->_timeout);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+        $data['output'] = curl_exec($ch);
+        $data['httpcode'] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $data['total_time'] = curl_getinfo($ch, CURLINFO_TOTAL_TIME);
+        curl_close($ch);
         return $data;
     }
 
