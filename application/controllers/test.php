@@ -152,33 +152,39 @@ class test extends CI_Controller {
      * 编辑提测
      */
     public function edit() {
+
+        //设置页面标题
         $data['PAGE_TITLE'] = '编辑提测';
+
+        //获取传入数据
         $issueId = $this->uri->segment(3, 0);
+
+        //验证任务是否存在
         $this->load->model('Model_issue', 'issue', TRUE);
         $data['row'] = $this->issue->fetchOne($issueId);
         if (!$data['row']) {
-            exit("查询数据错误.");
-        }
-        //只有发布人和受理人可以编辑
-        if ($data['row']['add_user'] == $this->input->cookie('uids') || $data['row']['accept_user'] == $this->input->cookie('uids')) {
-            $testId = $this->uri->segment(4, 0);
-            $this->load->model('Model_test', 'test', TRUE);
-            $row = $this->test->fetchOne($testId);
-            if ($row) {
-                $data['test'] = $row;
-                if (file_exists('./cache/repos.conf.php')) {
-                    require './cache/repos.conf.php';
-                    $data['repos'] = $repos;
-                }
-                $this->load->view('test_edit', $data);
-            } else {
-                echo '你查找的数据不存在.';
-            }
-        } else {
-            exit("只有发布人和受理人可以编辑");
+            show_error('您查找的任务不存在，请 <a href="/">返回首页</a>', 500, '错误');
         }
 
-        
+        //验证提测是否存在
+        $testId = $this->uri->segment(4, 0);
+        $this->load->model('Model_test', 'test', TRUE);
+        $data['test'] = $this->test->fetchOne($testId);
+        if (!$data['test']) {
+            show_error('您查找的提测信息不存在，请 <a href="/issue/view/'.$issueId.'">返回任务</a>', 500, '错误');
+        }
+
+        if (file_exists('./cache/repos.conf.php')) {
+            require './cache/repos.conf.php';
+            $data['repos'] = $repos;
+        }
+
+        //只有创建人未提测可以编辑
+        if ($data['test']['add_user'] == $this->input->cookie('uids') && $data['test']['tice'] == 0) {
+            $this->load->view('test_edit', $data);
+        } else {
+            show_error('只有发布人在提测前可以编辑 <a href="/issue/view/'.$issueId.'">返回任务</a>', 500, '错误');
+        }
     }
 
     /**
@@ -843,5 +849,37 @@ class test extends CI_Controller {
         }
         $callBack = array('status' => true, 'output' => $str);
         echo json_encode($callBack);
+    }
+
+    /**
+     * 更改提测环境
+     */
+    public function env() {
+
+        //获取提测记录ID
+        //获取部署的环境ID
+        $test_id = $this->input->get('testId');
+        $env_id = $this->input->get('envId');
+
+        //验证传入数据的合法性
+        $this->load->model('Model_test', 'test', TRUE);
+        $row = $this->test->fetchOne($test_id);
+        if (!$row) {
+            exit(json_encode(array('status' => false, 'error' => '数据错误')));
+        }
+
+        //检查是否有人占用测试环境
+        $row = $this->test->getUseRow($row['repos_id'], $env_id);
+        if ($row) {
+            exit(json_encode(array('status' => false, 'error' => '前面有占用的任务。issue-id:'.$row['issue_id'].'#test-id'.$row['id'])));
+        }
+
+        //更改占用状态
+        $flag = $this->test->env($test_id, $env_id);
+        if ($flag) {
+            exit(json_encode(array('status' => true, 'message' => '操作成功')));
+        } else {
+            exit(json_encode(array('status' => false, 'error' => '操作失败')));
+        }
     }
 }

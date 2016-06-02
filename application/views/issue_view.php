@@ -197,7 +197,7 @@
                     <button class="btn btn-default btn-xs"><i class="fa fa-coffee"></i> 开发环境</button>
                     <?php } ?>
                     <?php if ($value['rank'] == 1) {?>
-                    <button class="btn btn-primary btn-xs"><?php if ($value['state'] == 5) { ?><i class="fa fa-exclamation-circle"></i> <s>测试环境</s><?php } else {?><i class="fa fa-check-circle"></i> 测试环境<?php } ?></button>
+                    <button class="btn btn-primary btn-xs tooltips" data-toggle="tooltip" title="<?php echo $env[$value['env']]['ip'];?>"><?php if ($value['state'] == 5) { ?><i class="fa fa-exclamation-circle"></i> <s><?php echo $env[$value['env']]['name'];?></s><?php } else {?><i class="fa fa-check-circle"></i> <?php echo $env[$value['env']]['name'];?><?php } ?></button>
                     <?php } ?>
                     <?php if ($value['rank'] == 2) {?>
                     <button class="btn btn-success btn-xs"><i class="fa fa-check-circle"></i> 生产环境</button>
@@ -223,18 +223,34 @@
                   <td width="240">
                     <?php if ($value['status'] == 1) {?>
                     <div class="btn-group nomargin">
+                      <?php if ($value['rank'] == 0) { ?>
+                      <div class="btn-group nomargin">
+                        <button type="button" class="btn btn-white btn-sm dropdown-toggle" data-toggle="dropdown">
+                          占用测试环境 <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                          <?php
+                          foreach ($env as $k => $v) {
+                            echo '<li><a href="javascript:;" class="zhanyong" testid="'.$value['id'].'" data-value="'.$k.'">'.$v['name'].'('.$v['ip'].')</a></li>';
+                          }
+                          ?>
+                        </ul>
+                      </div>
+                      <?php } ?>
+                      <?php if ($value['rank'] == 1) { ?>
                       <div class="btn-group nomargin">
                         <button type="button" class="btn btn-white btn-sm dropdown-toggle" data-toggle="dropdown">
                           更改提测状态 <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu" role="menu">
                           <li><a href="javascript:;" class="wait" testid="<?php echo $value['id']?>">我暂时不测了</a></li>
-                          <li><a href="javascript:;" class="zhanyong" testid="<?php echo $value['id']?>">我要占用测试环境</a></li>
                           <li><a href="javascript:;" class="pass" testid="<?php echo $value['id']?>">测试不通过</a></li>
                           <li><a href="javascript:;" class="launch" testid="<?php echo $value['id']?>">测试通过待上线</a></li>
                           <li><a href="javascript:;" class="online" testid="<?php echo $value['id']?>">代码已上线</a></li>
                         </ul>
                       </div>
+                      <?php } ?>
+                      <?php if ($value['rank'] < 2) { ?>
                       <div class="btn-group nomargin">
                         <button type="button" class="btn btn-white btn-sm dropdown-toggle" data-toggle="dropdown">
                           获取部署代码 <span class="caret"></span>
@@ -245,6 +261,7 @@
                           <li><a href="javascript:;" class="deploy" env="192.168.8.193" br="<?php echo str_replace('branches/', '', $value['br']);?>" rev="<?php echo $value['test_flag'];?>" repos="<?php echo $repos[$value['repos_id']]['repos_name'];?>" merge="<?php echo $repos[$value['repos_id']]['merge']?>" ids="<?php echo $value['id']?>">193（测试环境03）</a></li>
                         </ul>
                       </div>
+                      <?php } ?>
                     </div>
                     </div>
                     <?php }?>
@@ -583,12 +600,13 @@
       changeIssueStatus('#resolve','resolve','确认验证通过并告知任务添加人吗？')
     );
     $(".zhanyong").click(function(){
-      var c = confirm('确认要改为测试状态吗？');
+      var c = confirm('确认要占用这个环境吗？');
       if(c) {
         id = $(this).attr("testid");
+        env = $(this).attr('data-value');
         $.ajax({
           type: "GET",
-          url: "/test/change_tice/"+id+"/zhanyong",
+          url: "/test/env?testId="+id+"&envId="+env,
           dataType: "JSON",
           success: function(data){
             if (data.status) {
@@ -601,12 +619,12 @@
                 time: ''
               });
               setTimeout(function(){
-                location.href = data.url;
-              }, 2000);
+                location.href = "/issue/view/<?php echo $row['id'];?>";
+              }, 1000);
             } else {
               jQuery.gritter.add({
                 title: '提醒',
-                text: data.message,
+                text: data.error,
                   class_name: 'growl-danger',
                   image: '/static/images/screen.png',
                 sticky: false,
@@ -688,7 +706,7 @@
       }
     });
     $(".pass").click(function(){
-      var c = confirm('你确定不测了，将测试环境让给他人吗？');
+      var c = confirm('你确定将状态改为不通过？');
       if(c) {
         id = $(this).attr("testid");
         $.ajax({

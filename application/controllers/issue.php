@@ -380,6 +380,7 @@ class issue extends CI_Controller {
         //载入配置信息
         $this->config->load('extension', TRUE);
         $data['level'] = $this->config->item('level', 'extension');
+        $data['env'] = $this->config->item('env', 'extension');
 
         $this->load->view('issue_view', $data);
     }
@@ -613,15 +614,11 @@ class issue extends CI_Controller {
         $this->config->load('extension', TRUE);
         $data['level'] = $this->config->item('level', 'extension');
 
-        if ($row) {
-            $data['row'] = $row;
-            if ($data['row']) {
-                $data['row']['url'] = unserialize($data['row']['url']);
-            }
-            $this->load->view('issue_edit', $data);
-        } else {
-            show_error('你查找的数据不存在', 500, '错误');
+        $data['row'] = $row;
+        if ($data['row']) {
+            $data['row']['url'] = unserialize($data['row']['url']);
         }
+        $this->load->view('issue_edit', $data);
     }
 
     /**
