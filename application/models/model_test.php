@@ -285,7 +285,7 @@ class Model_test extends CI_Model {
             return $this->db->update('test', array('tice' => 7,'state' => 3, 'rank' => 2, 'last_time' => time(), 'last_user' => $this->input->cookie('uids')), array('id' => $id));
         }
         if ($status == 'wait') {
-            return $this->db->update('test', array('tice' => 0,'state' => 0, 'rank' => 0, 'last_time' => time(), 'last_user' => $this->input->cookie('uids')), array('id' => $id));
+            return $this->db->update('test', array('tice' => 0,'state' => 0, 'rank' => 0, 'env' => 0, 'last_time' => time(), 'last_user' => $this->input->cookie('uids')), array('id' => $id));
         }
         if ($status == 'pass') {
             return $this->db->update('test', array('tice' => 1,'state' => -3, 'rank' => 0, 'last_time' => time(), 'last_user' => $this->input->cookie('uids')), array('id' => $id));
@@ -329,5 +329,20 @@ class Model_test extends CI_Model {
         $query = $this->db->get($this->_table);
         $rows = $query->result_array();
         return $rows;
+    }
+
+    public function getUseRow($repos_id, $env_id) {
+        $this->db->select('id, issue_id');
+        $this->db->where('repos_id', $repos_id);
+        $this->db->where('rank', 1);
+        $this->db->where('env', $env_id);
+        $this->db->where('status', 1);
+        $query = $this->db->get($this->_table);
+        $row = $query->row_array();
+        return $row;
+    }
+
+    public function env($testId, $envId) {
+        return $this->db->update($this->_table, array('tice' => 1,'state' => 1, 'rank' => 1, 'tice_time' => time(), 'env' => $envId, 'last_time' => time(), 'last_user' => $this->input->cookie('uids')), array('id' => $testId));
     }
 }
